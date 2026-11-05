@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+  <ID>probably_decentralized</ID>
+  <Name>Probably Decentralized</Name>
+  <Author>edward</Author>
+  <ModVersion>1.0.0</ModVersion>
+  <Description>Mine PSC with graphics cards, trade it on a fictional exchange, and cash it out past the compliance desk. Work in progress. All coins, exchanges and events are fictional and have no real-world value.</Description>
+  <GameVersions>
+    <Version>0.46</Version>
+  </GameVersions>
+  <Prerequisites />
+  <Assemblies>
+    <Assembly>ProbablyDecentralized.dll</Assembly>
+    <Assembly>ProbablyDecentralized.Domain.dll</Assembly>
+  </Assemblies>
+  <Capabilities />
+</Manifest>

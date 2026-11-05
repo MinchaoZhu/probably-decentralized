@@ -1,0 +1,957 @@
+# Probably Decentralized 本地化表：简体中文（zh）
+upgrade.tab,Web3
+upgrade.title,Web3 治理社区
+upgrade.desc,成员可获得一台交易终端、一个硬件钱包、一个矿架、一张 RTX 60 显卡和一本显卡鉴定指南。终端里有银行、Poinbase 交易所、Web3 页、挖矿页和钱包页。更多显卡和矿架由杰克逊博士出售。
+item.terminal.name,交易终端
+item.terminal.desc,钱包、Poinbase 交易所与夜间挖矿报告。
+item.rig.name,矿架
+item.rig.desc,最多装 {0} 张显卡。算力 {1} MH/s。耗电 {2} kJ/天。
+rig.label.modules,模块
+item.rig.modules,模块：算力 {0}，耗电 {1}，损耗 {2}。
+item.rig.next,"第 {0} 槽：把{1}拖到矿架上（{2}/{3}）。"
+mat.common_electronic,普通电子元件
+mat.rare_electronic,稀有电子元件
+rig.label.cards,显卡
+item.gpu.name,{0} {1}
+item.gpu.desc,标称算力 {0} MH/s。标称耗电 {1} kJ/天。成色 {2}。
+item.gpu.burnt.name,烧毁的 {0} {1}
+item.gpu.burnt.desc,此显卡已无法工作。
+term.title,交易终端
+tab.report,报告
+wallet.line,{0}：{1}（约 {2} 信用点）
+wallet.empty,钱包为空。
+wallet.total,总值：{0} 信用点
+wallet.taint,污点：{0} 信用点
+trade.amount,数量
+trade.deposit,存入信用点
+trade.withdraw,提取 CRC
+trade.pair,{0}/{1}（{2}）
+trade.price,价格 {0}
+trade.buy,买入
+trade.sell,卖出
+venue.Exchange,Poinbase
+venue.Dex,DEX
+venue.Darknet,暗网
+msg.amount,未输入数量。
+msg.balance,余额不足。
+msg.trade,支付 {0} {1}，获得 {2} {3}。
+msg.deposit,已存入 {0} 信用点，兑换为 CRC。
+msg.cashout,到账 {0} 信用点。税 {1} 信用点。
+msg.aml_light,合规审查：{0} 信用点的污点资金被扣留。
+msg.aml_heavy,合规审查：{0} 信用点的污点资金被没收，并已上报治安部。
+report.none,暂无挖矿报告。
+report.day,第 {0} 天夜间
+report.rigs,供电矿架：{0} / {1}
+report.hash,算力：{0} MH/s（全网 {1} MH/s）
+report.mined,挖出：{0} PSC（约 {1} 信用点）
+report.energy,耗电：{0} kJ
+report.burnt,烧毁的显卡：{0}
+report.price,PSC 价格：{0} 信用点
+nightlog.mined,矿架挖出 {0} PSC。
+nightlog.burnt,一张 {0} 烧毁了。
+coinpay.line,成交，{0} {1}。
+nightlog.coinpay,代币支付共结算 {0} 信用点，已兑换并存入热钱包。
+nightlog.unpowered,{0} 台矿架或矿机未通电。
+news.open.title,Poinbase 上架 PSC
+news.open.desc,上层交易所 Poinbase 上架 PSC/CRC 交易对。全站显卡需求上升。
+news.halving.title,PSC 出块奖励减半
+news.halving.desc,矿工每晚获得的币减半。
+appraisal.gpu,"显卡"
+dealer.name,"二手货贩子"
+dealer.line1.1,"矿场清仓的卡，成色都在名字后面标着。"
+dealer.line1.2,"几张挖过的卡，便宜出。"
+dealer.line1.3,"路上收来的货，一手价。"
+dealer.line2.1,"自己看，背面也翻过来看。"
+dealer.line2.2,"不保修，看好了再拿。"
+dealer.line2.3,"要的话价钱好商量。"
+inspect.flip.back,"翻到背面"
+inspect.flip.front,"翻到正面"
+item.gpu.grade.1,"接近全新"
+item.gpu.grade.2,"成色尚可"
+item.gpu.grade.3,"明显旧了"
+item.gpu.grade.4,"磨损严重"
+point.none.1,"没毛病，你看错了吧。"
+point.none.2,"这儿哪有问题？不买别瞎说。"
+point.worn.1,"……行，这点毛病是有，算你便宜点。"
+point.worn.2,"眼睛挺毒。好吧，这个价。"
+point.fake.1,"……被你看出来了。是翻新的货，按真的价给你。"
+point.fake.2,"啧，不是原装的。那就按芯片本来的价吧。"
+lbl.fan.0,"叶片干净"
+lbl.fan.1,"叶片积灰"
+lbl.fan.2,"叶片缺角"
+lbl.fingers.0,"光亮"
+lbl.fingers.1,"发暗"
+lbl.fingers.2,"氧化发绿"
+lbl.print.0,"与型号一致"
+lbl.print.1,"印着另一个型号"
+lbl.print.2,"重印过，字歪"
+lbl.said,"（卖家说：{0}）"
+lbl.point,"指出"
+lbl.edit,"改"
+cust.fake.1,"这不是它标的那块。你拿假货糊弄我？"
+cust.fake.2,"型号对不上，里面的芯片根本不是这个。"
+cust.worn.1,"跟你写的不一样，毛病你没说。"
+cust.worn.2,"标签上的成色是假的吧，这个价我不要。"
+lbl.row.fan,"叶片"
+lbl.row.fingers,"金手指"
+lbl.row.bracket,"挡板"
+lbl.row.print,"背面丝印"
+lbl.row.serial,"序列号"
+lbl.row.seal,"封条"
+lbl.bracket.0,"完好"
+lbl.bracket.1,"有划痕"
+lbl.serial.0,"合规"
+lbl.serial.1,"工厂码或位数不合规"
+lbl.serial.2,"型号码不符"
+lbl.seal.0,"完好"
+lbl.seal.2,"已缺失"
+item.guide.name,显卡鉴定指南
+item.guide.desc,鉴定显卡真伪与价值的指南。
+lbl.row.spec,"型号"
+news.prehalving.title,"PSC 即将减半"
+news.prehalving.desc,"三天后矿工每晚获得的币减半。持币者预期币价上行。"
+tab.home,"首页"
+tab.bank,"银行"
+tab.poinbase,"Poinbase"
+tab.web3,"Web3"
+home.enter,"进入"
+home.open,打开
+home.summary,"信用点 {0}　｜　链上资产约 {1} 信用点"
+home.lastnight,第 {0} 天夜间：挖出 {1} PSC，{2} / {3} 台矿架通电
+entry.bank,"银行"
+entry.bank.l1,"信用点存取、房租"
+entry.bank.l2,"信用点 {0}"
+entry.poinbase,"Poinbase"
+entry.poinbase.l1,"合规交易所"
+entry.poinbase.l2,"PSC {0} 信用点"
+entry.web3,"Web3"
+entry.web3.l2,"约 {0} 信用点"
+entry.help,帮助
+entry.help.l1,Web3 手册
+bank.cash,"信用点：{0}"
+bank.rent,"房租：{0} 信用点，{1} 天后支付"
+bank.crc,"Poinbase 账户（CRC）：{0}"
+poin.account,"Poinbase 账户：CRC {0}，PSC {1}"
+avg.line,"{0} 买入均价：{1} 信用点"
+avg.short,"买入均价 {0}"
+avg.none,"—"
+col.asset,"币种"
+col.amount,"数量"
+col.value,"估值"
+col.avg,"买入均价"
+bank.cash.k,"信用点"
+bank.rent.k,"房租"
+bank.rent.v,"{0}，{1} 天后支付"
+bank.crc.k,"Poinbase 账户（CRC）"
+poin.account.h,"Poinbase 账户"
+trade.h,"交易"
+web3.wallet.h,"链上钱包"
+stable.ok,"锚定正常"
+stable.depeg,"脱锚"
+stable.warn,"预兆：储备覆盖率告急"
+stable.spiral,"崩盘中"
+aml.taint,"账户污点比例：{0}%"
+mixer.h,混币器
+mixer.ok,状态：运行正常
+mixer.sanctioned,状态：已被制裁（还有 {0} 天），此期间提出的币视为被标记。
+mixer.pending,在途存入
+mixer.none,暂无在途存入。
+mixer.col.taint,污点
+mixer.col.ready,到期
+mixer.day,第 {0} 天
+mixer.deposit,存入
+mixer.balance,余额：{1} {0}
+mixer.rounds,轮数
+mixer.preview,"预计提回 {0} {1}，污点约降低 {2}%，第 {3} 天到期。"
+mixer.go,存入混币器
+mixer.min,存入价值不得低于 {0} 信用点。
+mixer.done,已存入 {0} {1}，第 {2} 天提回。
+mixer.upgrade.title,混币器
+mixer.upgrade.desc,"解锁终端灰网页里的混币器：把带污点的币存进去，几天后提回，污点降低。出金审查对刚从混币器出来的币更严格；镇压期间混币器可能被制裁，期间提出的币会被标记。"
+news.sanction.title,混币器被列入制裁名单
+news.sanction.desc,"安保部门宣布制裁一批混币服务。此后几天从混币器提出的资金将被视为可疑。"
+nightlog.mixer,混币器提回 {0} {1}，污点 {2} → {3}。
+nightlog.mixer_flag,（制裁期间提出，地址被标记）
+nightlog.mixer_rug,混币器的运营者卷款跑路了：{0} {1} 没有提回。
+web3.sub.trade,交易
+gray.sub.mixer,混币器
+msg.frozen,代币处于冻结状态，到期前无法使用。
+wallet.frozen,"{0} 冻结 {1}，第 {2} 天解冻"
+nightlog.crt_freeze,镇压期间黑市移交地址清单：{0} CRT 已被冻结，将于第 {1} 天解冻。
+nightlog.thaw,冻结的 {0} {1} 已解冻。
+news.crtfreeze.title,黑市配合镇压冻结部分 CRT 地址
+news.crtfreeze.desc,"传闻黑市为换取放行，向安保交出了一批 CRT 地址。声望低的持有者更容易被冻结。"
+black.upgrade.title,Web3 商店
+black.upgrade.desc,"解锁终端灰网页里的商店：黑市派系在链上的实体。货架上每周上一批违禁品，偶尔有高科技物品和显卡（要加价）；可以直接买现货，也可以下订单等快递员上门。只收币（PSC、CRT、CRA、Ponero），脏币也收。需要黑市声望，镇压期间下线。"
+black.offline,镇压期间，商店的链上入口已经下线。
+black.closed,黑市声望需达到 {0}（当前 {1}）。
+black.sub.buy,买货
+black.shop.h,现货柜台
+black.rep,"黑市声望 {0}"
+black.empty,本周商品已售罄。
+black.offer,"{0} ×{1}　{2} 信用点等值"
+black.buy,购买
+black.bought,成交：{0} 已存入储藏区。
+black.pay.h,付款
+black.desk.h,Ponero 兑换处
+black.desk.left,今日剩余兑换额度：{0}（上限 {1}）
+black.desk.price,"Ponero 价格：{0}"
+black.desk.swap,兑换
+black.desk.in,兑入 Ponero
+black.desk.out,兑出 Ponero
+black.desk.go,兑换
+black.desk.fail,兑换失败：余额不足、超出限额或数量无效。
+black.sub.orders,订单
+black.rugged,"平台出事了，入口关闭，还要 {0} 天才会有人重新开张。"
+black.seller,"成交 {1}，好评 {2}%"
+black.orders.h,订单目录
+black.order,下单
+black.mode.Escrow,托管
+black.mode.Advance,提前放款
+black.ordered,"已下单：{0}，预计第 {1} 天到。"
+black.mine.h,我的订单
+black.mine.none,暂无订单。
+black.mine.line,"{0}（{1}，{2}）：{3}，第 {4} 天"
+black.state.Pending,在途
+black.state.Ready,到货
+black.state.Done,已取
+black.state.Refunded.scam,卖家跑路，已退款
+black.state.Lost.scam,卖家跑路，钱没了
+black.state.Lost.rug,平台跑路，钱没了
+black.state.Lost.intercept,被截获
+black.forum.h,论坛情报
+black.forum.quiet,最近很安静。
+black.forum.scam,"有人说 {0} 收了钱不发货。"
+black.forum.rug,"最近提币变慢了，全场还在搞促销，投诉帖被删了不少。"
+nightlog.bm.scam_refund,商店：卖家 {0} 跑路了，{1} 的托管款已退回。
+nightlog.bm.scam_loss,商店：卖家 {0} 拿了提前放款的钱跑路，{1} 没有了（{2} 信用点等值）。
+nightlog.bm.intercept,商店：{0} 的包裹被截获，{1} 信用点等值的货款没了。
+nightlog.bm.rug,商店：平台跑路，{0} 的在途款项（{1}）归零。
+nightlog.bm.reopen,商店：有人在老地方重新开张了。
+news.bmrug.title,黑市平台跑路
+news.bmrug.desc,"黑市的链上入口一夜之间下线，托管和提前放款的资金全部清零。几天后会有新的入口。"
+courier.name,快递员
+courier.line1.1,"东西到了。"
+courier.line1.2,"有你的包裹。"
+courier.line2.1,"别问我里面是什么，我也不想知道。"
+courier.line2.2,"货放这儿了，我走了。"
+gray.sub.black,商店
+black.stock,"剩 {0} 件"
+black.price,"{0} 信用点等值"
+black.noadvance,不接受提前放款
+black.kind.gpu,"显卡　成色 {0}%"
+black.kind.Contraband.1,违禁品（低）
+black.kind.Contraband.2,违禁品（中）
+black.kind.Contraband.3,违禁品（高）
+black.kind.Tech,高科技物品（加价）
+nightlog.bm.ready,商店：{0} 到货，开店后会有快递员上门。
+guide.web3.title,Web3 手册
+guide.web3.text,"银行与交易：银行页只读，显示现金、房租和 Poinbase 账户里的 CRC。Poinbase 的资金页管入金和出金，先选币种：CRC 可以走银行账户或钱包，其他币只能走钱包。从银行入金把信用点换成 Poinbase 账户里的 CRC；出金到银行把 CRC 换回信用点，要过合规审查，审查看 Poinbase 账户的污点。出金到钱包要填收款地址，等几次确认才到账，Gas 费固定按普通档、从转出的币里扣；地址格式或校验位不对会被拒绝，格式对但没人用的地址，币转过去就没了。¶交易：PSC 全称 Probably Stolen Coin，是显卡和矿机挖出的币。买入按计价币的数量支付，卖出按所交易币的数量卖出。¶Web3 交易页可以任选两种币互换，实际都经 CRC 中转：CRC 在一端走一个池，否则走两个池，付两次手续费、滑点叠加，预览里会显示得到的数量、经过的池数和损耗。§硬件钱包：链上的币放在 PLEDGER 硬件钱包里，每个钱包的余额和污点分别计算。钱包是一件物品，拖到交易终端上加载；在终端的钱包页打开，在终端右上角连接或断开。Web3 页的交易和灰网页的商店、混币器用已连接的钱包，没有钱包或没有连接时只能看，余额都是 0；用币付款的顾客也进已连接的钱包。¶付款（商店、混币器、Ponero 兑换处、上架费）先在终端开账单，再在钱包里手输收款地址、按住 ✓ 签名；地址末尾两位是校验位，输错一位多半会被拦下，偶尔碰巧合法，币就转进了没人用的地址。DEX 兑换也要在钱包上签名。¶Poinbase 是托管账户，入金要从钱包转到它的充值地址（PSC、CRC、CRT、CRA、SPARK 都收），出金在 Poinbase 的资金页发起。钱包页的浏览器可以按地址查转账记录，只显示真实发生的转账（你的钱包、出金、矿机收益）。更多硬件钱包向杰克逊博士购买，拖到交易终端上添加，最多 {WalletMax} 个；商店里也有更便宜的。不要的钱包可以在钱包页销毁，里面的币永久丢失，之后发到这个地址的币也丢了。¶转账要付 Gas 费，分慢、普通、快三档，Gas 价格大约一周一个起落；网络拥堵时 Gas 费变贵，慢档可能被挤出内存池。转账前核对完整地址。§质押：把 CRA 质押进革命军质押池每天有日息，利息并入本金；取出要先申请，等四天才到账，等待期间没有利息，也不能提前拿。CRA 是部分抵押的：每份 CRA 由革命军持有的 CRC 储备和平衡代币 SPARK 共同支撑，储备覆盖率和抵押率显示在质押页。质押利息以没有抵押的新 CRA 付出，会稀释储备覆盖率，质押的人越多稀释越快；覆盖率太低革命军会降息。革命军有时会挪用储备，先有风声，那是预兆；挪用后覆盖率跌破 {CraCrashRatio:%} 就崩盘：三天内 CRA 归零，四天的解锁期来不及；没跌破只是折价，劫掠上层带来的资金会慢慢把储备补回来。¶官方铸造：存入 CRC 和 SPARK（比例按当前抵押率，界面预览需要多少）铸造 CRA，排 {CraMintDaysMin}～{CraMintDaysMax} 天，铸出的 CRA 直接进质押；销毁把 CRA 换回 CRC 和 SPARK，等待和解锁期一样长，储备不足时 CRC 份额按覆盖率打折。排队的铸造和销毁，官方可能整笔不兑现：每晚的概率是 CRA 价格低于 1 的幅度乘以 {CraRugPerDepeg}，价格不低于 1 就不会。¶质押可以存 CRA、CRC、CRT、SPARK：后三种先在二级市场按市价换成 CRA（经 CRC 中转，付手续费和滑点）再质押。SPARK 价格波动很大，崩盘时会跟着暴跌。质押、铸造、销毁都是合约调用，要在钱包上签名。§矿机：RatDigg 矿机（M1 / M2 / M3）是独立的机器，算力比显卡大得多、耗电更省，要放电池才挖，可以放模块，不占矿架槽位；只在商店的矿机商那里有，要黑市声望（M1 {AsicRepM1}、M2 {AsicRepM2}、M3 {AsicRepM3}），偶尔有二手的。烧毁后须按顺序把电子元件拖到它身上修复，修复后健康降低 {AsicRepairHealthCut}。第 {EraMin} 到 {EraMax} 天之间会有一次""矿机时代""，提前几天上报纸预告，之后大矿场的耗电成本砍半，全网算力涨上去，显卡矿工的收益被摊薄，低档显卡几乎不赚钱，矿机受影响较小。¶收款地址：每台矿机（矿架和 ASIC 矿机）在自己的窗口里设置收款地址，挖矿产出每晚按算力占比发到这个地址，两台矿机可以发给两个地址。默认没设置，没设置或地址对应的钱包已销毁，这一份产出就丢了；换了钱包要记得改地址。§永续合约：Poinbase 的""永续""页，用账户里的 CRC 当保证金，PSC 最高 {PerpPscLev} 倍、SPARK 最高 {PerpSparkLev} 倍，只支持逐仓，同一时间只有一个仓位，不能同时多空，想加码只能追加保证金。成交价比现价差一截（单越大差得越多，和现货池一样），开平仓还收手续费。强平只在夜里按当天均价检查，权益不到名义价值的 {PerpMaint:%} 就被强平，保证金归零；每晚还有资金费，价格比近 7 天均价高时多头付给空头。¶强平后亏光保证金还不够的缺口，先由保险基金垫，基金见底（SPARK 崩盘这类大行情会耗尽它）后盈利的仓位会被自动减仓、少拿一半盈利，再不够就记成你的欠款：欠款每天涨 {PerpDebtInterest:%}，账户里的 CRC 每晚先用于还款；未还清前不能开仓、不能出金，{PerpDebtDays} 天不还就没收店里的物品抵债，抵不够的核销并拉黑永续账户 {PerpBanDays} 天。§商店：只收币，不收 CRC，价格比正常渠道贵 {BmPremium:%}，高科技物品和显卡另有加价；付出去的币带着按比例的污点留在卖家那边，货不带赃物标签；显卡不保证真假，自己鉴定。¶商店购买：左边选卖家，右边是货架，点""购买""后在付款面板里定数量、付款方式和币种。每类卖家收的币不同：硬件、技术类收 PSC 和 CRT，军火、药物、化学品、证件、奢侈品、个人卖家收 CRT 和隐私币，农业、养殖、水务、酿酒收 PSC 和 CRA，平台现货收 PSC、CRT、CRA。手里没有它收的币，可以用 Web3 内置的自动换币：从钱包里别的币换出，多付 {BmAutoSwapSlip:%} 滑点，签名一次完成；也可以自己先去 DEX 换，滑点小得多，但要多一步。上架费同样在付款时选币。¶商店购物车：点货架上的""购买""是加入购物车，右下角的悬浮购物车显示件数，点开进结算页。结算页左边是购物车详情（按商家分组，可增减数量、删除，接受提前放款的商家可选托管或提前放款），右边是付款：每家商家的收款地址不同，所以逐家付款——选这家收的币，生成账单，在钱包里转账；也可以用钱包里别的币自动换币（多付 {BmAutoSwapSlip:%} 滑点）一次签名付清这一家。§订单与出售：订单比现货便宜，要等几天，路上可能被截获；商家按类型卖货，价格系数各不相同，一次订 {BmBulk1Count} 件以上减 {BmBulk1Discount:%}、{BmBulk2Count} 件以上减 {BmBulk2Discount:%}，大宗商家随机出现，价格最低但要等 {BmBulkDays} 天；托管多付 {BmEscrowFee:%} 托管费，收货后放款，卖家跑路时退款；提前放款再减 {BmAdvanceDiscount:%}，卖家若是骗子，货款不退，只有成交 {BmAdvanceMinTrades} 单以上的卖家接受；平台自己也可能跑路，也可能被执法接管，或者卖家落网，之后你的订单会被追查、记罪证；论坛上的传闻可以当预兆。被截获的包裹有时会变成执法人员上门：签收当场记罪证并查封，拒签只损失货款。¶出售：在商店的卖货页把储藏区里的违禁品、高科技物品和显卡上架，标价是参考价的 {BmSellMin} 到 {BmSellMax} 倍。倍率越高成交越慢（{BmSellFastMult} 以下约 {BmSellDaysFast} 天，{BmSellDay1Mult} 约 {BmSellDays1} 天，{BmSellMax} 约 {BmSellDaysMax} 天），货款带污点的可能性和比例也越高，近 7 天出售的量越大，污点越重；卖货页默认是已上架的橱窗，点“上架更多”备货：同种货聚在一起，用加减键定数量，倍率在左边选，点右下角的货架付上架费后才上架；同一种货倍率必须相同，要改倍率得先全部下架；同时最多上架 {BmMaxKinds} 种、每种最多 {BmMaxStack} 件，每件收 {BmListFee:%} 上架费；橱窗里可以下架，货回储藏区，上架费不退；橱窗页的“收款币种”选愿意接受的币，每多接受一种，每晚就多一轮成交判定（顺序随机，各币的买家多少不同），接受的币越多越容易成交，货款用成交那一轮的币到账；成交扣 {BmCommission:%} 抽成，货款托管 {BmSaleHold} 天后进钱包；卖假卡可能被买家看穿而退货，拉低好评；平台跑路时上架的货和未放款的货款均损失。§预测市场（Web3 预测页，游戏第 {PredictUnlockDay} 天起）：每个盘口是一道是非题，只问游戏自己掷骰或排期的事：新闻事件出现、派系行动开始、明天的水纯度、PSC 价格。盘口开放到窗口开始前，窗口最后一天夜里结算；买「是」「否」用链上钱包的 CRC（合约调用，要在钱包上签名，持仓记在签名的钱包名下），价格就是市场认为的概率，买得越多越贵，押中每份兑付 1 信用点，买卖各收 {PredictFee:%}。每个盘口有持仓上限。押中的钱继承押注资金的污点比例。¶传闻纸条、派系特权让你提前知道某件事会发生，在这类盘口押「是」算内幕单；内幕持仓太大，结算时或赚钱卖出时有 {PredictInsiderCatch:%} 概率被查，本金和收益全部没收，收益的一半记诈骗罪证。窗口里缺了游戏数据（例如那几天没睡觉结算），盘口作废退回本金。§消息反应：每晚盘口向当时公开信息下的合理概率靠拢一半，再加一点随机波动；所以先从报纸、传闻纸条、派系特权看到消息的人可以抢在前面买，涨价后卖出，不用等到结算。盘口面板的线索栏列出和这个盘口有关的已知信息：排期、冷却、减半日、gas 近几天的数值、CRA 储备水位、矿机时代预告。¶可以推演的规律：派系行动由隐藏的势力值按阈值触发；gas 七天一个周期；减半前一周价格锚逐日抬高；排期好的镇压和停电会压低或抬高锚，但盘口价格不会预先反映；储备消耗越快（质押越多）CRA 越早预警；PSC 价格盘的价格能被你自己的大单推动。情报贩子（黑市声望够了才有）卖局势简报（五个势力值和各派系现在能发起的行动，CRT）和三档内幕消息（只针对已经定下来的派系行动、矿机时代盘口，三档准确率依次升高，价格按盘口规模；有的是假情报，说的与真相相反）；买了内幕消息再押同一边算内幕单。盘口规模随天数增长，押错则本金全部亏损。§操纵检出：你在 Poinbase 现货上的大单会把价格推离没有你时的水平（推价幅度每晚随价格回归衰减，预测盘线索里能看到）。推价幅度超过 {ManipFree:%} 后，如果你从价格里赚到钱——行情盘押中而且方向和你推价的方向一致，或者永续平仓盈利而且方向一致——有概率被查：幅度越大越容易（封顶 {ManipMax:%}）。被查则预测盘的本金和收益全部没收、永续盈利没收，收益的一半记诈骗罪证，永续账户冻结 {ManipFreezeDays} 天，报纸报道调查。先空后砸不是稳赚：永续单边滑点和现货来回的价差往往比空头赚到的还多。§高息理财（理财页""发行""，游戏第 {PonziMinDay} 天起，一个存档只能开一次）：定一个日息（{PonziRates[0]:%}–{PonziRates[4]:%}），付宣传费开张（开张、卷走都是合约调用，要在钱包上签名），下层的人按日息和下层声望往池子里存 CRC，日息越高存得越快。每晚先用新存入的钱付利息，不够从发行钱包补，补不上就挤兑崩盘；池子每晚被取走 {PonziWithdraw:%}，池子越大、日息越高越容易被举报，被举报同样崩盘。崩盘时池子被没收。随时可以卷走池子（点两次确认）：池子进发行钱包，污点全额（要洗了才好出金）。卷走和崩盘都记诈骗罪证，下层声望清零。风声一栏提示被举报的风险高低。§骗局：插针——有时开门后价格被瞬间打上去或砸下来 {WickMin:%}–{WickMax:%}，多数当晚回去一大半，有的是真的；永续标记价只计一半。¶空投（Web3 空投页）——每个空投要先为钱包授权（签一次授权合约），再签名领取；授权前看清授权范围：正规空投不要授权或只要几十的小额授权；要""无上限授权""或远超奖励的大额授权的，就是钓鱼，名字也常是仿冒（0 和 o、1 和 l），一两晚后会把这个钱包里那种币转走。授权列在空投页右边，可以签名撤销，撤销后就转不走了。¶第三方收益池（理财页""存钱""）——日息 {YieldRates[0]:%}–{YieldRates[2]:%}，看得到储备、有没有时间锁、有没有审计，看不到是不是骗局：日息越高越可能跑路，有时间锁、有审计的少一些；正规池储备付不起利息时退本金关闭，骗局池每晚都可能卷款跑路。有时间锁的池子取款要等 {YieldLockDays} 天。¶假客服——自称 Poinbase 客服上门，要你把 CRC 转到""安全地址""：Poinbase 不会上门，也不会要你转账。伪造转账——用币付款的顾客开口说""已经转了，给你看截图，快给货""的，币不会到账；正常顾客会说链上确认要一会儿。§行情图：Poinbase 现货页、Web3 交易页可以切换各个币的日 K（永续页是当前品种，预测页是 PSC），绿涨红跌，黄线是 7 日均线（永续资金费按它算），下方的柱子是成交量（灰色是市场，青色是你自己：现货、DEX、铸销、Ponero 兑换、永续开平仓都算）。价格波动越大市场成交越多；插针会留下长影线。§剧情联动：游戏里几条剧情线的选择会改变这里的市场，第二天报纸会登出来，市场要过几天才反应完。塞尔皮科的证据交给革命军：CRA 储备注资、{StorySecDays} 天内崩盘概率减半、SPARK {StorySparkNights} 晚内涨 {StorySerpicoSpark:+%}；交给黑市：CRT 脱锚和镇压时被出卖的概率减半；交给治安部：{StorySecDays} 天内出金审查、混币器制裁、操纵和内幕查处都更严。埃莉诺泄露数据盘：CRC 托管银行减记的概率翻倍、SPARK 涨 {StoryLeakSpark:+%}；交回数据盘：CRC 脱锚概率减半。伦警官被捕：{StoryLunDays} 天内出金审查、操纵和内幕查处更严。¶混币器运营者 Tumbler（解锁混币器、第 {TumblerMinDay} 天起）：他会上门几次，最后求你帮忙藏密钥盘。藏好、到时还给他：混币器手续费减半、匿名集变大，另有谢礼；但密钥盘是违禁品，期间被搜出来会记罪证。举报他：拿赏金和治安部声望，混币器永久关停（在途的照常提回）。卖给黑市：拿一笔 CRT（一半带污点）和黑市声望，之后混币器手续费上涨、跑路概率变大。§混币器与隐私币：选币种、填数量和轮数，每轮扣手续费并降低污点，轮数即等待天数，到期提回同一个地址；存入越多，清洗越差。¶隐私币兑换（Web3 交易页，要黑市声望）：Ponero 是隐私币，兑入时这部分价值的污点被清除；兑入、兑出各收 {PoneroFee:%} 手续费，每天有额度；从 Ponero 兑出的币来路不明，出金审查会加重。§出金审查（界面不显示额度和命中概率，规则如下）：从 Poinbase 提取 CRC 换回信用点时按当天房租判定——单笔超过 {AmlBigRents} 倍房租、近 {AmlWindowDays} 天累计超过 {AmlCumRents} 倍房租，超出的部分按比例抬高被查概率；污点占这笔金额的比例达到 {AmlTaintRatio:%} 起，概率另加「比例 × {AmlTaintMult}」；资金来自近期混币器提回或被标记的钱包，再加 {AmlMixerBonus:%}；概率最高 {AmlMaxChance:%}。命中后：污点占比低于 {AmlHeavyRatio:%} 为轻度，没收污点部分，不记罪证；达到 {AmlHeavyRatio:%} 为重度，没收污点部分，并把污点额记为销赃罪证。没命中则全额到账。出金收 {ExchangeFee:%} 手续费，超出成本的收益另征 {TaxRate:%} 税。拆成小额、分几天提、先洗再提都能压低概率，但额度和概率不会提示，要自己估。¶销毁钱包前必须自己把币转出，持仓和存款也要先取出：留在里面的会随钱包一起没有。"
+courier.odd1,……东西到了。
+courier.odd2,"（他的手一直放在口袋里）在这儿签个字。"
+courier.sign,签收
+courier.refuse,拒签
+courier.signed,"好。别动，治安部的。"
+courier.refused,"……那就算了。"
+black.state.Lost.seized,被查封
+black.state.Lost.refused,拒签
+black.forum.easy,"最近太顺了，卖家发货比平时都快，还多了几个没见过的新号。"
+black.forum.busted,"有人说 {0} 被抓了，他的订单记录还在。"
+nightlog.bm.trap.honeypot,商店：平台曾被执法接管，你买的 {0} 被追查，记罪证 {1}。
+nightlog.bm.trap.seller,商店：卖家落网，他留存的订单记录连累了你：{0}，记罪证 {1}。
+tab.mining,挖矿
+courier.sign.say,签收。
+courier.refuse.say,不收，退回去。
+black.forum.busted_buyer,"有人说最近一批买家被抓了，成交记录还在平台上。"
+nightlog.bm.sale_sold,商店：你上架的 {0} 卖出了，货款 {1}，第 {2} 天放款。
+nightlog.bm.sale_paid,商店：{0} 的货款 {1} 到账（CRT），其中污点 {2}。
+nightlog.bm.sale_fake,商店：买家看穿了 {0} 是假卡，退了货，你的好评下降。
+nightlog.bm.sale_rug,商店：平台跑路，你的 {0} 和货款（{1}）没了。
+black.sub.sell,卖货
+black.sell.h,出售
+black.sell.mult,标价倍率
+black.sell.none,储藏区无符合上架条件的物品。
+black.sell.rating,"好评 {0}%"
+black.mine.sale,"{0}　参考 {1}　标价 {2}（×{3}）：{4}"
+black.sale.Listed,上架中
+black.sale.Paid,已到账
+black.sale.Lost,平台跑路，没了
+black.sale.Delisted,已撤下
+black.sale.Delisted.fake,买家看穿假卡退货
+black.kind.gpunew,显卡　全新
+merchant.GpuNew,全新矿卡
+merchant.GpuUsed,二手矿卡
+merchant.Arms,军火
+merchant.Docs,证件芯片
+merchant.Pharma,药物
+merchant.Bulk,大宗
+black.days,"{0} 天到货"
+black.sell.listedall,"已上架 {0} 件。"
+merchant.Rigs,矿架与能源
+merchant.Modules,模组
+merchant.GunMods,枪匠配件
+merchant.Chem,化学品
+merchant.Brewer,酿酒
+merchant.Farm,水培农场
+merchant.Husbandry,养殖
+merchant.Miner,矿工
+merchant.Water,水务
+merchant.Storage,仓储
+merchant.Tools,工具
+merchant.Luxury,奢侈品
+black.kind.Goods,商品
+merchant.Elite,尖端店铺
+merchant.Personal,个人卖家
+black.pay.confirm,账单
+black.pay.to,"收款地址：{0}"
+black.pay.cancel,作废
+pay.mix,"混币器 {0} {1}"
+pay.swap,"Ponero 兑换处 {0} {1}"
+black.edit.cancel,取消
+merchant.Platform,平台
+black.platform.line,平台现货　立即到货
+black.orders.in,买入
+black.orders.out,卖出
+black.desk.pair,"PONERO [隐私币]　价格 {0}"
+black.pay.amount,"金额：{0} {1}（约 {2} 信用点）"
+black.pay.wallet,打开钱包转账
+hw.total,"合计 ≈ {0} 信用点"
+hw.pending.bill,"待付：{0}"
+hw.pending.sign,"待签名：{0}"
+hw.send,发送
+hw.review,签名请求
+hw.to,收款地址
+hw.avail,"可用 {1} {0}"
+hw.amount,金额
+hw.bill,"账单：{0}　{1} {2}"
+hw.fill,填入账单金额
+hw.next,✓ 下一步　× 返回
+hw.err.format,地址格式错误。
+hw.err.checksum,地址校验失败。
+hw.err.self,不可向当前钱包地址转账。
+hw.err.asset,账单指定代币为 {0}。
+hw.err.short,转账金额低于账单要求：{0} {1}。
+hw.err.nobill,无待支付账单。
+hw.review.h,核对
+hw.contract,合约调用
+hw.review.to,收款地址
+hw.review.amount,"{0} {1}（约 {2} 信用点）"
+hw.review.bill,"账单：{0}"
+hw.review.unknown,目标地址无历史交易记录。
+hw.review.over,超额支付 {0} {1}，超出部分不予退还。
+hw.hold,按住 ✓ 签名　× 拒绝
+hw.tx.h,交易
+hw.tx.signing,签名中…
+hw.tx.mempool,已广播，内存池等待打包…
+hw.tx.packed,"已打包，区块 #{0}"
+hw.tx.confirm,"区块 #{0}　确认 {1}/{2}"
+hw.skip,跳过
+hw.done.h,已确认
+hw.done.block,"区块 #{0}"
+hw.done.sent,"{0} {1} → {2}"
+hw.done.void,目标地址为非活跃地址，转入资金无法找回。
+hw.back,返回
+hw.rejected,已在钱包上拒绝签名。
+hw.wait,等待钱包确认。
+hw.swap,"兑换 {0} {1} → 约 {2} {3}"
+tab.wallets,钱包
+hw.wallet.n,"钱包 {0}"
+hw.review.own,"自己的钱包：{0}"
+hw.review.poinbase,Poinbase 充值地址
+poin.deposit,"充值地址：{0}"
+wallets.count,"钱包 {0}/{1}"
+wallets.col.name,名称
+wallets.col.addr,地址
+wallets.col.taint,污点
+wallets.open,打开
+wallets.use,连接
+wallets.current,已连接
+wallets.added,"已添加{0}：{1}"
+nightlog.drained,{0}：代币已被未经授权转出，折合约 {1} 信用点。
+item.hwwallet.name,PLEDGER 硬件钱包
+item.hwwallet.desc,大屏硬件钱包。拖到交易终端上，添加一个钱包（最多 5 个）。
+poin.empty,账户为空。
+hw.copy,复制
+hw.paste,粘贴
+hw.copied,地址已复制。
+hw.copied.addr,"已复制 {0}"
+hw.balance.frozen,"（冻结 {0}）"
+wallets.destroy,销毁
+wallets.destroy.sure,确认销毁
+wallets.destroyed,"已销毁{0}：{1}"
+wallets.destroy.warn,销毁 {0} 后里面的币永久丢失。再点一次确认。
+payout.label,收款
+payout.unset,未设置
+payout.set,设置地址
+payout.h,收款地址
+payout.cur,当前：{0}
+payout.pick,自己的钱包：
+payout.manual,或输入地址：
+payout.clear,清除
+payout.err,地址无效。
+nightlog.mined.lost,挖出的 {0} PSC 丢失：矿机没有设置收款地址，或地址对应的钱包已销毁。
+wallets.none,没有已加载的钱包。把硬件钱包拖到交易终端上。
+web3.err.noconn,没有连接钱包。
+web3.connect,连接钱包
+web3.disconnect,断开连接
+web3.conn,{0}  {1}
+hw.balance.value,"≈ {0}"
+wallets.rename,改名
+wallets.rename.h,"{0} 新名字"
+wallets.rename.ok,确定
+hw.fee.slow,慢
+hw.fee.normal,普通
+hw.fee.fast,快
+hw.fee,"Gas 费 {0} {1}（约 {2} 信用点）"
+hw.confs,"需要 {0} 次确认"
+hw.congested,网络拥堵
+hw.congested.slow,网络拥堵：慢档可能被挤出内存池
+hw.recent,最近
+hw.recent.out,"→ {0}　{1} {2}"
+hw.recent.in,"← {0}　{1} {2}"
+hw.review.history,有往来记录
+hw.tx.stuck,内存池排队中…
+hw.tx.dropped,交易已被挤出内存池，未能达成，网络 Gas 费已扣除。
+hw.dropped.h,未成交
+hw.err.fee,余额不足以支付 Gas 费。
+news.congest.title,链上拥堵
+news.congest.desc,一批空投抢跑让链上排起长队，Gas 费翻了几倍，低 Gas 费的交易可能被挤出内存池。
+news.phish.title,Poinbase 公告：充值地址迁移
+news.phish.desc,"Poinbase 完成钱包系统升级，旧充值地址即将停用，请将资产转入新地址 {0}。"
+black.forum.phish,"有人贴了混币器的新地址：{0}，说旧的被盯上了。"
+hw.gas,"Gas ×{0}"
+web3.sub.stake,质押
+stake.h,革命军质押池
+stake.rate,"日息 {0}%，取出要等 {1} 天，等待期间没有利息"
+stake.low,储备覆盖率告急，日息已下调
+stake.cra,"CRA 价格 {0}　{1}"
+stake.none,暂无质押。
+stake.col.wallet,钱包
+stake.col.amount,质押
+stake.col.queue,等待取出
+stake.day,（第 {0} 天）
+spark.price,"平衡代币 SPARK　{0} 信用点"
+stake.ops,"{0}"
+stake.avail,"CRA {0}　已质押 {1}"
+stake.do,质押
+stake.undo,申请取出
+stake.sum.in,"质押 {0} CRA"
+stake.sum.out,"申请取出 {0} CRA（{1} 天后到账）"
+stake.done.in,"已质押 {0} CRA。"
+stake.done.out,"已申请取出 {0} CRA，第 {1} 天回到钱包。"
+nightlog.stakeint,"质押利息 +{0} CRA。"
+nightlog.unstaked,"质押取出的 {0} CRA 回到了{1}。"
+news.crawarn.title,革命军质押池传出异动
+news.cralow.title,革命军下调质押日息
+stake.avail2,"SPARK {0}"
+poin.sub.spot,现货
+poin.sub.perp,永续
+perp.h,永续合约
+perp.acct,"保证金账户 CRC {0}"
+perp.debt,"欠款 {0}，{1} 天后没收物品抵债。没还清前不能开仓、不能出金。"
+perp.banned,永续账户已封禁，剩余 {0} 天。
+perp.none,暂无持仓。
+perp.col.pos,仓位
+perp.col.notional,名义价值
+perp.col.price,开仓 → 现价
+perp.col.pnl,盈亏
+perp.col.liq,强平价
+perp.long,多
+perp.short,空
+perp.rate,"{0}　现价 {1}　资金费 {2}%/晚"
+perp.fund,"保险基金 {0}"
+perp.open,开仓
+perp.margin,保证金金额（CRC）
+perp.do.open,开仓
+perp.do.add,追加保证金
+perp.do.close,平仓
+perp.opened,"已开 {0} {1}：保证金 {2} CRC，{3}×。"
+perp.added,"已追加 {0} CRC 保证金。"
+perp.closed,"已平仓，{0} CRC 回到账户（盈亏 {1}）。"
+perp.deficit,账户权益不足，缺口 {0} 由保险基金及欠款承担。
+perp.err.Banned,永续账户已被封禁。
+perp.err.Debt,存在未清欠款，禁止开仓。
+perp.err.Leverage,杠杆倍数超出该标的上限。
+perp.err.Size,超出该标的单仓名义价值上限。
+perp.err.Funds,账户 CRC 余额不足（含手续费）。
+perp.err.Opposite,同一标的不可双向持仓，须先平仓现有持仓。
+perp.err.NoPosition,当前无持仓。
+perp.err.Margin,未输入保证金数量。
+perp.debt.block,存在永续欠款，限制出金。
+nightlog.perp.liq,{0} 触发强制平仓，扣除保证金 {1}。
+nightlog.perp.adl,保险基金耗尽，{0} 盈利仓位触发自动减仓，扣减盈利 {1}。
+nightlog.perp.interest,永续欠款计息，当前欠款总额 {0}。
+nightlog.perp.seize,永续欠款逾期，罚没物品抵扣欠款 {0}。
+nightlog.perp.writeoff,未偿缺口 {0} 已核销，永续账户封禁 {1} 天。
+perp.slip.title,永续欠款没收单
+perp.preview2,"手续费 {0}　强平价 {1}"
+nightlog.perp.repaid,"永续穿仓欠款，从 Poinbase 账户扣了 {0} CRC 还款。"
+perp.err.Thin,订单预期滑点过大将立即触发强平。需降低开仓金额或杠杆倍数。
+perp.err.Single,同一时间只能持有一个仓位，只能追加保证金。
+mat.hypertech_electronic,超科技电子元件
+item.asic.name,RatDigg {0} 矿机
+item.asic.dead.name,损坏的 RatDigg {0} 矿机
+item.asic.desc,标称算力 {0} GH/s。标称耗电 {1} kJ/天。成色 {2}。独立矿机：放电池才挖，可以放模块。
+item.asic.dead.desc,烧坏了。把电子元件拖到它身上修好：现在要 {0} × {1}。修好后健康 −20。
+item.asic.dead.fixed,已经修好。
+merchant.Asic,矿机商
+black.kind.asic,矿机　成色 {0}%
+black.kind.asicnew,矿机　全新
+news.erawarn.title,RatDigg 新一代矿机即将发布
+news.erawarn.desc,专用矿机厂商宣布新品，业内预计不久后大型矿场会成批换机。有人说显卡挖矿的好日子要到头了。
+news.era.title,矿机时代
+news.era.desc,新一代专用矿机开始量产，大型矿场的耗电成本砍掉一半。全网算力会涨上去，显卡矿工的收益要被摊薄。
+web3.sub.predict,预测
+predict.h,预测市场
+predict.acct,链上钱包 {0}：CRC {1}
+predict.none,今日无开放盘口。
+predict.closed,已封盘
+predict.row,是 {0}　否 {1}
+predict.held,持有「{0}」{1} 份，成本 {2}
+predict.yes,是
+predict.no,否
+predict.void,作废
+predict.result,第 {0} 天　{1}　结果：{2}　{3}
+predict.pick,买卖
+predict.price,每份现价：是 {0}　否 {1}
+predict.pos,{0}：押「{1}」{2} 份
+predict.pos2,成本 {0}　押中得 {1}
+predict.sum.buy,"买入「{1}」，花 {2} CRC：{0}"
+predict.sum.sell,卖出预测持仓：{0}
+predict.closed.note,已封盘，等待结算。
+predict.preview,买「{0}」约 {1} 份（均价 {2}），押中净赚 {3}
+predict.buy.yes,买入「是」
+predict.buy.no,买入「否」
+predict.sell,全部卖出
+predict.bought,买入「{0}」，花 {2}，押中可得 {1}。
+predict.sold,卖出，收回 {0}。
+predict.err.Closed,这个盘口已经封盘。
+predict.err.Amount,金额不对。
+predict.err.Funds,钱包里的 CRC 不够。
+predict.err.Cap,超过这个盘口的持仓上限。
+predict.err.Opposite,这个盘口已经持有另一边，先全部卖出。
+predict.err.NoPosition,这个盘口没有持仓。
+predict.win.one,第 {0} 天
+predict.win.range,第 {0}–{1} 天
+predict.q.event,{0}：出现「{1}」
+predict.q.faction,{0}：{1}有行动开始
+predict.q.purity,{0}：{1}纯度 ≥ {2}
+predict.q.price,{0}：{1} 价格 ≥ {2}
+predict.faction.FACTION_SECURITY,安保派
+predict.faction.FACTION_REVOLUTION,革命军
+predict.faction.FACTION_LOWER_LEVEL,下层
+predict.faction.FACTION_UPPER_LEVEL,上层
+predict.faction.FACTION_BLACK_MARKET,黑市
+predict.purity.gutter,下层水
+predict.purity.rust,上层水
+nightlog.predict.win,预测押中：「{0}」，兑付 {1}。
+nightlog.predict.lose,预测押错：「{0}」，本金 {1} 没了。
+nightlog.predict.void,预测作废：「{0}」，退回本金 {1}。
+nightlog.predict.caught,内幕下注被查：「{0}」，本金和收益 {1} 全部没收，记诈骗罪证。
+predict.tab.markets,盘口
+predict.tab.intel,情报
+predict.acct.crt,链上钱包 {0}：CRT {1}
+predict.tier.0,低档
+predict.tier.1,中档
+predict.tier.2,高档
+predict.clue.tip,情报（{0}）：「{1}」
+predict.clue.queued,排期：第 {0} 天开始
+predict.clue.queued2,排期：第 {0} 天「{1}」
+predict.clue.cool,该事件进行中或冷却中
+predict.clue.busy,该派系行动进行中，近期无新行动
+predict.clue.halving,减半在第 {0} 天，前一周抬价
+predict.clue.anchor,当前价格锚 {0}
+predict.clue.gas,近几天 gas：{0}
+predict.clue.drain,每晚消耗 {0}
+predict.clue.era,第 {0}–{1} 天间随机，提前预告
+predict.clue.era.warned,预告已出：第 {0}–{1} 天开始
+predict.q.gas,{0}：gas 指数 ≥ {1}
+predict.q.cra,{0}：CRA 发出预警
+predict.q.era,{0}：矿机时代开始
+predict.era,矿机时代
+predict.pos3,均价 {0}　现价 {1}
+predict.pos4,当前卖出可得 {0}
+intel.h,情报贩子
+intel.locked,需要 Web3 商店和黑市声望 {0}。
+intel.brief.buy,购买局势简报（{0} CRT）
+intel.brief.none,尚未购买简报。
+intel.brief.day,第 {0} 天的简报
+intel.tips.h,内幕消息
+intel.tips.none,无可查询的盘口（仅限派系行动与矿机时代）。
+intel.tip.buy,准确率约 {0}%　{1} CRT
+intel.err.funds,钱包 CRT 不足，或该盘口已不可交易。
+intel.brief.sum,局势简报，{0} CRT
+intel.tip.sum,内幕消息 {0} CRT：{1}
+intel.brief.done,已取得局势简报。
+intel.tip.done,情报内容：「{0}」。
+predict.brief.levels,安保 {0}　革命军 {1}　黑市 {2}　动荡 {3}　上层 {4}
+predict.brief.busy,{0}：行动进行中
+predict.brief.queued,{0}：行动已排期
+predict.brief.none,{0}：暂时发起不了
+predict.brief.can,{0}：可发起 {1}
+predict.clue.push,玩家推价 {0}%，操纵风险高
+nightlog.predict.manip,预测被判操纵：「{0}」，本金 {1} 没收，记诈骗罪证。
+news.manip.title,交易所调查异常交易
+news.manip.desc,监管部门通报，有人用大额现货单推动价格，从合约和预测里获利，涉事资金已被追缴。
+perp.manip,平仓盈利 {0} 被判操纵价格，已没收，永续账户冻结 {1} 天。
+web3.sub.ponzi,理财
+ponzi.h,高息理财
+ponzi.acct,发行钱包 {0}：CRC {1}
+ponzi.rate,日息 {0}%
+ponzi.pool,池子 {0} / 上限 {1}
+ponzi.inflow,昨日存入 {0}
+ponzi.interest,今晚应付利息 {0}
+ponzi.own,自付利息合计 {0}
+ponzi.wind,举报风险：{0}
+ponzi.wind.low,低
+ponzi.wind.mid,中
+ponzi.wind.high,高
+ponzi.idle,未发行理财产品。
+ponzi.done,理财产品已关闭。每个存档限发行一次。
+ponzi.ops,操作
+ponzi.rug,卷走资金池（{0}）
+ponzi.rug.confirm,确认卷走 {0}
+ponzi.rugged,已卷走 {0}，污点全额。
+ponzi.open,发行理财产品
+ponzi.ad,宣传费 {0} CRC，从当前钱包支付，需签名。
+ponzi.start,发行
+ponzi.started,理财产品已发行。
+ponzi.err,钱包 CRC 不足以支付宣传费。
+nightlog.ponzi.collapse,理财付不出利息，挤兑，池子 {0} 被没收，记诈骗罪证，下层声望清零。
+nightlog.ponzi.reported,理财被举报，池子 {0} 被没收，记诈骗罪证，下层声望清零。
+news.ponzi.title,高息理财爆雷
+news.ponzi.desc,下层有人发行的高息理财被举报，投资人围堵，资金已被监管冻结。
+news.ponzi.rug.title,理财骗局
+news.ponzi.rug.desc,一款高息理财的发行人卷走了全部资金，下层的投资人血本无归。
+ponzi.start.sum,开高息理财，日息 {0}%，宣传费 {1} CRC
+ponzi.rug.sum,卷走理财池 {0}
+ponzi.err.wallet,需用发行钱包签名。
+predict.clue.counter,情报：已排期（柜台线人、传闻纸条）
+web3.sub.airdrop,空投
+air.h,空投
+air.none,暂无可领取的空投。
+air.row,{0}　奖励 {1} CRC　{2}　第 {3} 天截止
+air.claim,领取
+air.unlimited,授权 {0} 无上限
+air.limited,授权 {0} {1}
+air.approvals,{0} 的授权
+air.approvals.none,没有授权。
+air.approval,{0}：{1}
+air.revoke,撤销
+air.sum,领取空投 {0}（{1}）
+air.claimed,已领取 {0} CRC。
+air.auth,授权钱包
+air.unauth,未授权
+air.authed,已授权：{0}
+air.authed.msg,已为 {0} 授权钱包。
+air.auth.sum,授权 {0} 代表本钱包操作。范围：{1}。
+air.err.unauth,先为这个空投授权钱包。
+air.revoke.sum,撤销 {0} 的 {1} 授权
+air.revoked,授权已撤销。
+air.err.wallet,需用授权钱包签名。
+pool.h,第三方收益池（CRC）
+pool.none,暂无收益池。
+pool.col.name,池子
+pool.col.rate,日息
+pool.col.reserve,储备
+pool.col.lock,时间锁
+pool.col.audit,审计
+pool.col.mine,存款
+pool.yes,有
+pool.no,无
+pool.pending,取款中
+pool.closed,（已关闭）
+pool.deposit,存入
+pool.withdraw,取出
+pool.withdraw.lock,申请取出（{0} 天）
+pool.err.cap,超过资金池上限，可存额度 {0}。
+pool.err.none,没有存款。
+pool.sum.in,存入 {0}：{1} CRC
+pool.sum.out,从 {0} 取出 {1} CRC
+pool.done.in,存入 {0} CRC 到 {1}。
+pool.done.out,取出 {0} CRC。
+pool.done.lock,已申请取出 {0} CRC，第 {1} 天到账。
+nightlog.scam.drain,{0} 的 {1} {2} 被「{3}」用授权转走了。
+nightlog.scam.rug,收益池「{0}」跑路，{2} 存的 {1} CRC 没了。
+nightlog.scam.dry,收益池「{0}」储备用完关闭，{2} 的 {1} CRC 退回。
+nightlog.scam.paid,收益池「{0}」取款到账：{2} 收到 {1} CRC。
+nightlog.scam.fakepay,伪造转账：{0}
+nightlog.scam.sent,转给「客服」安全地址的 {0} {1} 进了骗子的口袋。
+coinpay.intro,我用 {0} 付，链上确认要一会儿。
+coinpay.intro.fake,{0} 我已经转过去了，截图给你看，赶紧给货，我赶时间。
+coinpay.fake.entry,{0} 拿走了 {1}，说付了 {2} 信用点的币，链上没有这笔。
+scam.support.name,Poinbase 客服
+scam.support.1,您好，我是 Poinbase 客服。系统检测到您的账户有异常登录，已经被风控了。
+scam.support.2,请在今天内把 {0} CRC 转到安全地址 {1} 做验证，验证完马上退回。
+scam.support.3,不处理的话账户会被永久冻结。我先走了，记得转。
+predict.sold.caught,卖出时内幕交易被查：本金和收益全部没收，记诈骗罪证。
+predict.row.move,（昨晚 {0} {1}）
+predict.stats.h,历史（开盘均价 / 实际发生）
+predict.stats.row,{0}：{1} 个，开盘均价 {2}，发生 {3}%
+predict.kind.Event,新闻事件
+predict.kind.Faction,派系行动
+predict.kind.Purity,水纯度
+predict.kind.Price,PSC 价格
+predict.kind.Gas,gas
+predict.kind.Cra,CRA 预警
+predict.kind.Era,矿机时代
+nightlog.predict.move,预测盘「{0}」价格 {1} → {2}
+nightlog.predict.why,（{0}）
+chart.empty,{0} 日K：暂无历史，自今日起记录。
+chart.caption,{0} 日K　高 {2}　低 {3}　收 {4}（{5}%）
+chart.legend,<size=80%>绿涨红跌　黄线 7 日均线　柱：灰 市场 / 青 玩家</size>
+chart.legend.thr,<size=80%>绿涨红跌　黄线 7 日均线　蓝虚线 阈值</size>
+news.story.serpico_rev.title,革命军握有治安部把柄
+news.story.serpico_rev.desc,据传革命军拿到了治安部内部腐败的证据。质押池传出消息：一笔大额资金注入革命军储备，SPARK 近日走强。
+news.story.serpico_bm.title,黑市与治安部达成默契
+news.story.serpico_bm.desc,一份治安部内部文件在黑市易手。此后暗网结算通道明显稳定，CRT 的兑付没再出过岔子。
+news.story.serpico_sec.title,治安部启动内部整顿
+news.story.serpico_sec.desc,治安部宣布彻查内部腐败，同时加强对资金流向的监控。Poinbase 收紧出金审查，混币服务被点名。
+news.story.eleanor_leak.title,营养果育种数据曝光
+news.story.eleanor_leak.desc,下层报社公开了一份营养果重新结籽的研究数据，帕斯泰尔公司股价重挫。托管上层资金的银行传出坏账，革命军声势上涨。
+news.story.eleanor_return.title,帕斯泰尔追回失窃数据
+news.story.eleanor_return.desc,帕斯泰尔公司证实追回一份失窃的研究数据。上层资本松了口气，CRC 的托管银行评级上调。
+news.story.lun_arrested.title,伦警官因滥用职权被捕
+news.story.lun_arrested.desc,治安部当场逮捕了滥用职权的伦警官，并表示接下来两周将从严查处各类违法交易。
+tumbler.name,Tumbler
+tumbler.v1.1,你好。听说你这儿的终端连着我的混币器。
+tumbler.v1.2,那东西是我写的。圈子里都叫我 Tumbler。
+tumbler.v1.3,它不碰你的货，也不记你的账，只是把币搅匀。
+tumbler.v1.4,顺路过来看看，用户长什么样。
+tumbler.v2.1,最近不太平。治安部在查链上的混币服务。
+tumbler.v2.2,他们盯上了几个大额地址，顺着摸到了我的节点。
+tumbler.v2.3,这几天混币器要是停了，别慌，在里面的币不会丢。
+tumbler.v3.1,节点被封了。他们迟早会查到我住的地方。
+tumbler.v3.2,我手上有个密钥盘，里面是混币器的签名密钥。
+tumbler.v3.3,要是落到治安部手里，所有用户的记录都能还原出来。包括你的。
+tumbler.v3.ask,能帮我藏几天吗？
+tumbler.v3.choice.hide,[收下密钥盘，帮他藏好]
+tumbler.v3.choice.report,[假装答应，转头通知治安部]
+tumbler.v3.choice.sell,[收下密钥盘，转手卖给黑市]
+tumbler.v3.thanks1,谢了。过几天我来取。
+tumbler.v3.thanks2,别放在显眼的地方。搜查的时候被翻出来，咱俩都完蛋。
+tumbler.v3.report1,……好。我晚点再过来。
+tumbler.v4.back.1,我来取密钥盘了。
+tumbler.v4.back.2,节点挪到了新地方，治安部一时半会儿找不着。
+tumbler.v4.back.3,这是谢礼。以后你用混币器，手续费给你打对折。
+tumbler.v4.lost.1,密钥盘呢？
+tumbler.v4.lost.2,……你把它弄丢了？
+tumbler.v4.lost.3,算了。我自己想办法。
+tumbler.v4.sold.1,密钥盘是你卖给黑市的吧。
+tumbler.v4.sold.2,混币器现在归他们管了。费用翻了一倍，用户的钱随时可能被卷走。
+tumbler.v4.sold.3,我会记住这件事的。
+tumbler.v4.none.1,算了，当我没来过。
+item.keydrive.name,密钥盘
+item.keydrive.desc,Tumbler 托你保管的数据棒，里面是混币器的签名密钥。违禁品，搜查时被翻出来会记罪证。
+mixer.closed,混币器已关停，不再接受存入。在途资金照常提回。
+news.tumbler.sanction.title,治安部查封混币节点
+news.tumbler.sanction.desc,治安部宣布查封一处链上混币服务的节点，称其为洗钱提供便利。服务暂时中断。
+news.tumbler.caught.title,混币器运营者落网
+news.tumbler.caught.desc,化名 Tumbler 的混币器运营者在下层区被捕。治安部表示，相关混币服务已永久关停。
+news.tumbler.sold.title,混币服务易主
+news.tumbler.sold.desc,有消息称，下层区一家混币服务的签名密钥已落入黑市之手，费用随即上调。用户担心资金安全。
+nightlog.tumbler.gift,Tumbler 取回了密钥盘，留下 {0} CRT 谢礼（已转入 {1}），混币器手续费减半。
+mixer.status.closed,状态：已关停
+yield.sub.pools,收益池
+yield.sub.mine,发行理财
+pool.side.h,存入
+ponzi.early,第 {0} 天起可发行高息理财。
+bpay.h,付款
+bpay.qty,数量
+bpay.total,合计 {0} 信用点等值
+bpay.need,"需付 {0} {1}　钱包余额 {2}"
+bpay.invoice,生成账单
+bpay.swap.h,"自动换币为 {0}"
+bpay.swap.none,钱包里没有足够的其他币种
+bpay.swap.need,"付 {0} {1}，含滑点 {2}%"
+bpay.swap.btn,自动换币并付款
+bpay.swap.sum,"{0}：自动换币，付 {2} {1}，换成 {3} 后下单"
+bpay.back,返回
+cart.fab,购物车 {0}
+cart.h,购物车
+cart.empty,购物车是空的。
+cart.added,已加入购物车：{0}
+cart.back,返回商店
+cart.done,"已结算 {0} 件。"
+cart.partial,"已结算 {0} 件，{1} 件没成（库存或余额不足）。"
+black.info.accepts,收币：{0}
+black.info.advance.yes,接受提前放款
+black.info.advance.no,不接受提前放款
+settings.section.ui,界面
+settings.section.story,剧情
+settings.section.difficulty,难度
+settings.terminal_size,交易终端窗口大小
+settings.terminal_size_desc,窗口尺寸（宽×高，界面单位）。下次打开终端时生效。
+settings.tumbler_story,Tumbler 剧情
+settings.tumbler_story_desc,Tumbler 上门与藏密钥盘的支线。关闭后不再有新的上门，已有进度保留。
+settings.risk_scale,风险倍率
+settings.risk_scale_desc,骗局、跑路、钱包投毒、地址劫持和钓鱼的发生概率倍数。对所有存档生效。
+settings.mining_scale,挖矿产出倍率
+settings.mining_scale_desc,挖矿设备拿到的区块奖励倍数。对所有存档生效。
+gg.header,空间站贸易委员会
+gg.p1.cap,显卡图示
+gg.p1.makers,空间站上共有两家常见的制造商：\n\n      - Probidia（“PB”）\n      - PMD（“MD”）
+gg.p1.note,无论制造商是谁，显卡的价值只取决于真实芯片的型号定价和健康度：满健康时等于型号定价，健康度为 0 时只剩 {CardValueFloor:%}。
+gg.fan.h,叶片
+gg.fan.0,叶片干净（价格不变）
+gg.fan.1,叶片积灰（-{CardFanDust:%}）
+gg.fan.2,叶片缺角（-{CardFanChipped:%}）
+gg.fin.h,金手指
+gg.fin.0,光亮（价格不变）
+gg.fin.1,发暗（-{CardFingersDark:%}）
+gg.fin.2,氧化发绿（-{CardFingersOxidized:%}）
+gg.brk.h,挡板
+gg.brk.0,挡板完好（价格不变）
+gg.brk.1,挡板划痕（-{CardBracketScratch:%}）
+gg.seal.h,封条
+gg.seal.0,封条完好（价格不变）
+gg.seal.2,封条缺失（-{CardSealMissing:%}）
+gg.wear.note,叶片、金手指、挡板随每晚损耗变差，只会越来越旧；封条是固定特征。成色还会影响算力、损耗和暴毙概率。
+gg.serial.h,序列号
+gg.serial.cap,背面图示（序列号贴纸）
+gg.serial.pb,Probidia（“PB”）\n      合规工厂码：11、12、21、34、47
+gg.serial.md,PMD（“MD”）\n      合规工厂码：13、22、35、41、58
+gg.print.h,背面丝印
+gg.print.0,与型号一致
+gg.print.1,印着另一个型号（假冒）
+gg.print.2,重印过，字歪（假冒）
+gg.point.h,指出
+gg.ex.card,示例：{0}，健康度 {1}%
+gg.ex.base,基础价值：+{0}
+gg.ex.fan,叶片缺角：-{0}
+gg.ex.fin,金手指发暗：-{0}
+gg.ex.seal,封条缺失：-{0}
+gg.ex.total,最终价值：{0}
+gg.ex.note,各项折价都按基础价值计算，相加后扣除。
+gg.ex.fan1,叶片积灰：-{0}
+gg.ex.fin2,金手指氧化：-{0}
+gg.ex.brk,挡板划痕：-{0}
+gg.ex.nodisc,没有折价：-0
+gg.ex.fake,标称 {0}，实际芯片 {1}：按实际芯片计价
+gg.ex.claimed,按标称型号的报价：{0}
+gg.ex.gap,与报价相差：{0}
+gg.ex.h2,鉴定示例：假冒显卡
+gg.ex.h3,鉴定示例：成色很差的显卡
+gg.ex.h4,鉴定示例：轻微使用
+gg.ex.h5,鉴定示例：全新显卡
+lbl.price,标签价：{0}
+lbl.row.count,风扇数
+lbl.row.pin,供电口
+lbl.count.1,单风扇
+lbl.count.2,双风扇
+lbl.count.3,三风扇
+lbl.pin.0,6 针
+lbl.pin.1,8 针
+lbl.pin.2,双 8 针
+gg.p1.body,显卡是矿机的核心部件，也是二手市场上最常被假冒的货物。\n判断一张显卡是不是正品，看四项：风扇数、供电口、背面丝印、序列号。四项全部符合标称型号才是正品，任何一项对不上就是假冒。\n显卡的价值取决于真实芯片的型号和健康度，外观上的每一处磨损都会折价。\n\n本指南将提供鉴定显卡所需的全部知识。
+gg.p2.h,显卡型号
+gg.p2.body,型号决定风扇数和供电口。假冒显卡是低型号的芯片套着高型号的外壳，性能和价值都按里面的真实芯片算。
+gg.tier.0,RTX 60 / RX 70：6 针，单风扇
+gg.tier.1,RTX 70 / RX 80：8 针，双风扇
+gg.tier.2,RTX 80 / RX 800：8 针，三风扇
+gg.tier.3,RTX 90 / RX 900：双 8 针，三风扇
+gg.count.h,风扇数
+gg.count.body,风扇数由型号决定：RTX 60 和 RX 70 为单风扇，RTX 70 和 RX 80 为双风扇，RTX 80、RTX 90、RX 800 和 RX 900 为三风扇。\n实物的风扇数对不上标称型号，即为假冒。
+gg.pin.h,供电口
+gg.pin.body,供电口也由型号决定：RTX 60 和 RX 70 为 6 针，RTX 70、RTX 80、RX 80 和 RX 800 为 8 针，RTX 90 和 RX 900 为双 8 针。\n实物的供电口对不上标称型号，即为假冒。
+gg.serial.body,序列号贴在显卡背面，格式为：前缀、型号码、连字符、两位工厂码、连字符、四位流水号，例如 PB2-21-6251。
+gg.serial.rule,型号码 1 至 4 依次对应 RTX 60 / RX 70、RTX 70 / RX 80、RTX 80 / RX 800、RTX 90 / RX 900。\n型号码与型号不符（贴的是原芯片的序列号），或工厂码、位数不合规（后补的贴纸），均为假冒。工厂码只用来判真伪，不影响价格。
+gg.print.note,风扇数、供电口、丝印、序列号四项全部符合才是正品。假冒显卡至少有一项对不上，但可能其余几项都做得规矩，所以每一项都要看。
+gg.point.body,用放大镜检视。标签栏里只有型号一行有“指出型号”按钮，下面的风扇数、供电口、背面丝印、序列号四行只读；叶片、金手指、挡板、封条四项成色各有自己的“指出”。\n指出隐瞒的成色问题，这一行改成真实情况，价格按差额回落；指出的是真话，对方不认，信誉受损。\n风扇数、供电口、丝印、序列号任何一项与标称型号对不上，就指出型号：这张卡被认定为假冒，型号改回真实芯片，价格按真实芯片重算。\n\n鉴定公会的客户带来的卡也一样：指出问题后估价跟着变，最后报出正确价值。
+gg.ex.serial,序列号：{0}
+gg.ex.h,鉴定示例：叶片缺角、金手指发暗、封条缺失
+rig.label.status,状态
+rig.st.cards,显卡数
+rig.st.power,耗电
+rig.st.hash,算力
+rig.st.kj,{0} kJ/天
+lbl.point.model,指出型号
+col.crcprice,CRC 价格
+swap.pay,支付
+swap.get,获得
+swap.preview,约得 {0} {1}　经 {2} 个池，损耗 {3}%
+swap.go,兑换
+swap.same,支付和获得的币种不能相同。
+mint.need,需要 {0} CRC 和 {1} SPARK
+mint.reserve,储备覆盖率 {0}%　抵押率 {1}%
+mint.queue,待处理
+mint.order,{0} {1} CRA，第 {2} 天
+stake.coin,存入币种
+stake.sum.via,兑换 {0} {1} → 约 {2} CRA 并质押
+nightlog.cra.lost,官方没有回应：{0} CRA 的{1}单丢失。
+news.crawarn.desc,有人在清点革命军的储备，质押的 CRA 恐怕兑付不了。解锁需要四天，有人说该动手了。
+news.cralow.desc,储备覆盖率告急，革命军把 CRA 质押日息降到了原来的零头。
+poin.sub.funds,资金
+funds.receive,入金
+funds.send,出金
+funds.bank,银行账户
+funds.wallet,钱包
+funds.to,收款地址
+funds.go,发送
+funds.sending,正在转出 {0} {1} 到 {2}
+funds.confirm,确认 {0}/{1}
+funds.done,{0} {1} 已到账：{2}。
+funds.done.void,已转出 {0} {1}；该地址无人持有，币无法找回。
+funds.err.addr,地址格式或校验位不对。
+funds.err.self,这是 Poinbase 自己的充值地址。
+funds.err.known,该地址只接受对应账单的付款。
+funds.err.fee,数额不够付 Gas 费。
+wallets.sub.explorer,浏览器
+explorer.search,地址
+explorer.all,最近
+explorer.none,没有转账记录。
+explorer.col.block,区块
+explorer.col.amount,数额
+explorer.mixer,混币器
+cra.mint,铸造
+cra.burn,销毁
+mint.h,官方铸造（CRC 加 SPARK）
+mint.sum.in,用 {1} CRC 和 {2} SPARK 铸造 {0} CRA（{3}～{4} 天）
+mint.sum.out,销毁 {0} CRA 换回 CRC 和 SPARK（{1} 天）
+mint.done.in,已提交铸造，第 {0} 天结算。
+mint.done.out,已提交销毁，第 {0} 天结算。
+nightlog.cra.minted,铸造的 {0} CRA 已进入质押（{1}）。
+nightlog.cra.burned,销毁 {0} CRA：收回 {1} CRC、{2} SPARK（{3}）。
+predict.clue.subsidy,储备余量 {0}%，归零必预警
+air.noapprove,无需代币额度
+tab.gray,灰网
+wallets.sub.list,钱包列表
+entry.web3.l1,去中心化交易与质押
+entry.mining.l1,矿机状态与夜间收益
+entry.gray.l1,混币器与商店
+entry.wallets.l1,硬件钱包与浏览器
+entry.wallets.l2,钱包 {0} / {1}
+black.sell.add,上架更多
+black.sell.back,返回橱窗
+black.sell.kinds,上架 {0}/{1} 种
+black.sell.have,上架 {0} 件
+black.sell.coins,收款币种
+black.sell.off,下架
+black.sell.off.n,下架 ×{0}
+black.sell.nocoin,至少接受一种币。
+black.sell.empty,暂无上架的货。
+black.sell.delisted,已下架 {0} 件，货已回到储藏区。
+black.sell.partial,已上架 {0} 件，{1} 件未能上架。
+black.sell.limit.stack,每种商品最多上架 {0} 件。
+black.sell.limit.kinds,最多同时上架 {0} 种。
+shelf.fab,货架 {0}
+delist.fab,确定下架 {0}
+black.fee.h,准备上架
+black.fee.line,{0} ×{1}　标价 {2}（{3}）
+black.fee.total,上架费 {0}
+black.fee.sum,上架费（{0} 件）
+black.sale.Sold,已成交，第 {0} 天以 {1} 放款
+explorer.col.day,天
+explorer.day,第 {0} 天
+explorer.pool,RatDigg 矿池
+explorer.desk,Ponero 兑换处
+black.fee.pay,支付平台费
+explorer.col.from,转出
+explorer.col.to,转入
+rig.st.cond,成色
+asic.st.dead,已烧毁
+perp.preview,名义价值 {0}　预估均价 {1}（滑点 {2}%）
+perp.sim.close,平仓　名义价值 {0}　预估均价 {1}（滑点 {2}%）
+perp.sim.close2,手续费 {0}　约回 {1} CRC（盈亏 {2}）
+trade.sim.buy,买入约得 {0} {1}　均价 {2}　滑点 {3}%
+trade.sim.sell,卖出约得 {0} {1}　均价 {2}　滑点 {3}%

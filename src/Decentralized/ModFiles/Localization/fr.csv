@@ -1,0 +1,958 @@
+# Probably Decentralized localization table: French (fr)
+# AI translation, not proofread. Source: en.csv. Format: key,text (text may be quoted; \n is a line break).
+upgrade.tab,Web3
+upgrade.title,Communauté de gouvernance Web3
+upgrade.desc,"Les membres reçoivent un terminal de trading, un portefeuille matériel, une plateforme de minage, une carte graphique RTX 60 et un guide d'expertise de cartes graphiques. Le terminal intègre la banque, la bourse Poinbase ainsi que les pages Web3, Minage et Portefeuilles. D'autres cartes et plateformes sont vendues par le Pr Jackson."
+item.terminal.name,Terminal de trading
+item.terminal.desc,"Portefeuille, bourse Poinbase et rapport de minage nocturne."
+item.rig.name,Plateforme de minage
+item.rig.desc,Jusqu'à {0} cartes graphiques. Taux de hachage : {1} MH/s. Consommation : {2} kJ/j.
+rig.label.modules,Modules
+item.rig.modules,"Modules : taux de hachage {0}, consommation {1}, usure {2}."
+item.rig.next,Emplacement {0} : faire glisser {1} sur la plateforme de minage ({2}/{3}).
+mat.common_electronic,Composants électroniques courants
+mat.rare_electronic,Composants électroniques rares
+rig.label.cards,Cartes graphiques
+item.gpu.name,{0} {1}
+item.gpu.desc,Taux de hachage nominal {0} MH/s. Consommation nominale {1} kJ/j. État : {2}.
+item.gpu.burnt.name,{0} {1} grillée
+item.gpu.burnt.desc,Cette carte ne fonctionne plus.
+term.title,Terminal de trading
+tab.report,Rapport
+wallet.line,{0} : {1} (environ {2} crédits)
+wallet.empty,Le portefeuille est vide.
+wallet.total,Valeur totale : {0} crédits
+wallet.taint,Valeur contaminée : {0} crédits
+trade.amount,Montant
+trade.deposit,Déposer des crédits en CRC
+trade.withdraw,Retirer des CRC en crédits
+trade.pair,{0}/{1} ({2})
+trade.price,Prix {0}
+trade.buy,Acheter
+trade.sell,Vendre
+venue.Exchange,Poinbase
+venue.Dex,DEX
+venue.Darknet,Darknet
+msg.amount,Entrez un montant.
+msg.balance,Solde insuffisant.
+msg.trade,"Payé {0} {1}, reçu {2} {3}."
+msg.deposit,{0} crédits déposés en CRC.
+msg.cashout,{0} crédits reçus. Taxe : {1} crédits.
+msg.aml_light,Contrôle de conformité : {0} crédits de fonds contaminés ont été retenus.
+msg.aml_heavy,Contrôle de conformité : {0} crédits de fonds contaminés ont été saisis et signalés à la Sécurité.
+report.none,Aucun rapport de minage pour le moment.
+report.day,Nuit du jour {0}
+report.rigs,Plateformes alimentées : {0} sur {1}
+report.hash,Taux de hachage : {0} MH/s (réseau {1} MH/s)
+report.mined,Miné : {0} PSC (environ {1} crédits)
+report.energy,Énergie consommée : {0} kJ
+report.burnt,Cartes grillées : {0}
+report.price,Prix du PSC : {0} crédits
+nightlog.mined,Les plateformes de minage ont produit {0} PSC.
+nightlog.burnt,Une {0} a grillé.
+coinpay.line,Marché conclu. {0} {1}.
+nightlog.coinpay,Les paiements en pièces ont réglé {0} crédits ; les pièces ont été transférées sur le portefeuille chaud.
+nightlog.unpowered,Plateformes de minage ou mineurs non alimentés : {0}.
+news.open.title,Poinbase liste le PSC
+news.open.desc,La bourse Poinbase du Niveau supérieur liste désormais le PSC contre le CRC. Les cartes graphiques sont très demandées dans toute la station.
+news.halving.title,Récompense de bloc du PSC divisée par deux
+news.halving.desc,Les mineurs reçoivent désormais moitié moins de pièces par nuit.
+appraisal.gpu,Carte graphique
+dealer.name,Dealeur de matériel d'occasion
+dealer.line1.1,Cartes de déstockage d'une ferme de minage. L'état est noté à côté du nom.
+dealer.line1.2,"Quelques cartes qui ont miné, pas cher."
+dealer.line1.3,Récupérées en chemin. Prix direct.
+dealer.line2.1,"Regarde par toi-même, retourne-les pour vérifier le dos."
+dealer.line2.2,Pas de garantie. Vérifie bien avant de prendre.
+dealer.line2.3,"Si ça t'intéresse, le prix est négociable."
+inspect.flip.back,Retourner
+inspect.flip.front,Face avant
+item.gpu.grade.1,comme neuf
+item.gpu.grade.2,correct
+item.gpu.grade.3,nettement usé
+item.gpu.grade.4,très usé
+point.none.1,Elle n'a aucun problème. Tu as dû mal voir.
+point.none.2,Où ça ? N'invente rien si tu n'achètes pas.
+point.worn.1,"... Bon, d'accord, elle a ce défaut. Je te fais un rabais."
+point.worn.2,"Tu as l'œil. D'accord, va pour ce prix."
+point.fake.1,... Tu m'as eu. Elle a été reflashée. Je te la fais à sa vraie valeur.
+point.fake.2,"Tss, c'est pas la puce d'origine. Bon, au prix de la vraie puce, alors."
+lbl.fan.0,Pales propres
+lbl.fan.1,Pales poussiéreuses
+lbl.fan.2,Pale ébréchée
+lbl.fingers.0,Brillants
+lbl.fingers.1,Ternes
+lbl.fingers.2,Oxydés
+lbl.print.0,Conforme au modèle
+lbl.print.1,Autre modèle imprimé
+lbl.print.2,"Réimprimé, de travers"
+lbl.said," (selon le vendeur : {0})"
+lbl.point,Signaler
+lbl.edit,Modifier
+cust.fake.1,Ce n'est pas ce qu'indique l'étiquette. Tu essaies de me refourguer un faux ?
+cust.fake.2,Le modèle ne correspond pas. Ce n'est pas la puce annoncée.
+cust.worn.1,Ce n'est pas ce que tu as écrit. Tu n'as pas mentionné les défauts.
+cust.worn.2,L'état sur l'étiquette est faux. Pas à ce prix-là.
+lbl.row.fan,Pales
+lbl.row.fingers,Contacts
+lbl.row.bracket,Équerre
+lbl.row.print,Sérigraphie dos
+lbl.row.serial,N° de série
+lbl.row.seal,Scellé
+lbl.bracket.0,Intacte
+lbl.bracket.1,Rayée
+lbl.serial.0,Valide
+lbl.serial.1,Code usine ou longueur incorrects
+lbl.serial.2,Code de modèle non correspondant
+lbl.seal.0,Intact
+lbl.seal.2,Manquant
+item.guide.name,Guide d'expertise de cartes graphiques
+item.guide.desc,Un guide pour reconnaître les contrefaçons de cartes graphiques et en déterminer la valeur.
+lbl.row.spec,Modèle
+news.prehalving.title,Halving du PSC imminent
+news.prehalving.desc,"Dans trois jours, les mineurs recevront moitié moins de jetons par nuit. Les détenteurs s'attendent à une hausse du cours."
+tab.home,Accueil
+tab.bank,Banque
+tab.poinbase,Poinbase
+tab.web3,Web3
+home.enter,Entrer
+home.open,Ouvrir
+home.summary,Crédits {0}   |   Actifs on-chain environ {1} crédits
+home.lastnight,"Nuit du jour {0} : {1} PSC minés, {2} / {3} plateformes alimentées"
+entry.bank,Banque
+entry.bank.l1,"Dépôts, retraits, loyer"
+entry.bank.l2,Crédits {0}
+entry.poinbase,Poinbase
+entry.poinbase.l1,Bourse conforme
+entry.poinbase.l2,PSC {0} crédits
+entry.web3,Web3
+entry.web3.l2,Environ {0} crédits
+entry.help,Aide
+entry.help.l1,Manuel Web3
+bank.cash,Crédits : {0}
+bank.rent,"Loyer : {0} crédits, échéance dans {1} jour(s)"
+bank.crc,Compte Poinbase (CRC) : {0}
+poin.account,"Compte Poinbase : CRC {0}, PSC {1}"
+avg.line,Prix d'achat moyen de {0} : {1} crédits
+avg.short,achat moy. {0}
+avg.none,—
+col.asset,Actif
+col.amount,Montant
+col.value,Valeur
+col.avg,Achat moy.
+bank.cash.k,Crédits
+bank.rent.k,Loyer
+bank.rent.v,"{0}, échéance dans {1} jour(s)"
+bank.crc.k,Compte Poinbase (CRC)
+poin.account.h,Compte Poinbase
+trade.h,Trading
+web3.wallet.h,Portefeuille on-chain
+stable.ok,Arrimé
+stable.depeg,Désarrimé
+stable.warn,Attention : couverture de réserve du staking au plus bas
+stable.spiral,Effondrement en cours
+aml.taint,Part de contamination du compte : {0} %
+mixer.h,Mixeur
+mixer.ok,Statut : fonctionnement normal
+mixer.sanctioned,Statut : sanctionné (encore {0} jour(s)). Les pièces retirées pendant cette période sont signalées.
+mixer.pending,Dépôts en attente
+mixer.none,Aucun dépôt en attente.
+mixer.col.taint,Contamination
+mixer.col.ready,Échéance
+mixer.day,Jour {0}
+mixer.deposit,Dépôt
+mixer.balance,Solde : {1} {0}
+mixer.rounds,Tours
+mixer.preview,"Retour estimé : {0} {1}, contamination réduite d'environ {2} %, disponible au jour {3}."
+mixer.go,Déposer au mixeur
+mixer.min,Les dépôts doivent valoir au moins {0} crédits.
+mixer.done,{0} {1} déposés ; retour au jour {2}.
+mixer.upgrade.title,Mixeur
+mixer.upgrade.desc,"Débloque le mixeur sur la page Réseau gris du terminal : déposez des pièces contaminées pour les récupérer quelques jours plus tard avec une contamination réduite. Les retraits de pièces fraîchement mixées font l'objet d'un contrôle plus strict ; en période de répression, le mixeur peut être sanctionné et les pièces retirées pendant cette période sont signalées."
+news.sanction.title,Mixeur placé sur la liste des sanctions
+news.sanction.desc,La Sécurité a sanctionné plusieurs services de mixage. Les fonds retirés des mixeurs au cours des prochains jours seront considérés comme suspects.
+nightlog.mixer,Le mixeur a restitué {0} {1} ; contamination {2} -> {3}.
+nightlog.mixer_flag," (retiré pendant les sanctions ; adresse signalée)"
+nightlog.mixer_rug,L'opérateur du mixeur a pris la fuite : {0} {1} ne sont jamais revenus.
+web3.sub.trade,Trading
+gray.sub.mixer,Mixeur
+msg.frozen,Ces pièces sont gelées jusqu'à leur dégel.
+wallet.frozen,"{0} : {1} gelés, dégel au jour {2}"
+nightlog.crt_freeze,Le Marché noir a transmis des adresses pendant la répression : {0} de vos CRT sont gelés jusqu'au jour {1}.
+nightlog.thaw,Les {0} {1} gelés ont été dégelés.
+news.crtfreeze.title,Le Marché noir gèle des adresses CRT face à la répression
+news.crtfreeze.desc,"D'après les rumeurs, le Marché noir a fourni une liste d'adresses CRT à la Sécurité en échange de sa tranquillité. Les détenteurs à faible réputation ont plus de risques d'être gelés."
+black.upgrade.title,Boutique Web3
+black.upgrade.desc,"Débloque la boutique sur la page Réseau gris du terminal : la branche on-chain de la faction du Marché noir. Réapprovisionnement hebdomadaire en contrebande, parfois en objets high-tech et cartes graphiques (à prix majoré) ; achetez au comptant ou commandez et attendez un livreur. Cryptos uniquement (PSC, CRT, CRA, Ponero), pièces contaminées acceptées. Requiert de la réputation au Marché noir ; hors ligne pendant les répressions."
+black.offline,L'accès on-chain de la boutique est hors ligne pendant la répression.
+black.closed,Une réputation de {0} au Marché noir est requise pour entrer dans la boutique (actuellement {1}).
+black.sub.buy,Achats
+black.shop.h,Comptoir spot
+black.rep,Réputation au Marché noir : {0}
+black.empty,Épuisé pour cette semaine.
+black.offer,{0} x{1}   {2} crédits
+black.buy,Acheter
+black.bought,Transaction conclue : {0} est dans la réserve.
+black.pay.h,Paiement
+black.desk.h,Comptoir Ponero
+black.desk.left,Restant aujourd'hui : {0} (limite {1})
+black.desk.price,Prix du Ponero : {0}
+black.desk.swap,Échange
+black.desk.in,Vers Ponero
+black.desk.out,Depuis Ponero
+black.desk.go,Échanger
+black.desk.fail,"Échec de l'échange : solde, limite ou montant incorrect."
+black.sub.orders,Commandes
+black.rugged,La plateforme est fermée ; personne ne rouvrira avant {0} jour(s).
+black.seller,"Transactions : {1}, {2} % d'avis positifs"
+black.orders.h,Catalogue des commandes
+black.order,Commander
+black.mode.Escrow,Tiers de confiance
+black.mode.Advance,Déblocage anticipé
+black.ordered,"Commandé : {0}, livraison au jour {1}."
+black.mine.h,Mes commandes
+black.mine.none,Aucune commande pour le moment.
+black.mine.line,"{0} ({1}, {2}) : {3}, jour {4}"
+black.state.Pending,en transit
+black.state.Ready,arrivé
+black.state.Done,récupéré
+black.state.Refunded.scam,"vendeur enfui, remboursé"
+black.state.Lost.scam,"vendeur enfui, fonds perdus"
+black.state.Lost.rug,"rug pull de la plateforme, fonds perdus"
+black.state.Lost.intercept,intercepté
+black.forum.h,Infos secrètes du forum
+black.forum.quiet,Calme ces derniers temps.
+black.forum.scam,Quelqu'un affirme que {0} empoche l'argent et ne livre jamais.
+black.forum.rug,"Les retraits sont lents ces derniers temps, le site propose des promos et de nombreux fils de plainte ont été supprimés."
+nightlog.bm.scam_refund,Marché noir : le vendeur {0} a fui ; les fonds sous tiers de confiance pour {1} ont été remboursés.
+nightlog.bm.scam_loss,Marché noir : le vendeur {0} a encaissé les fonds du déblocage anticipé et a fui ; {1} est perdu ({2} crédits).
+nightlog.bm.intercept,Marché noir : le colis contenant {0} a été intercepté ; le paiement de {1} crédits est perdu.
+nightlog.bm.rug,Marché noir : la plateforme a fait un rug pull ; les fonds en transit pour {0} ({1}) sont perdus.
+nightlog.bm.reopen,Marché noir : quelqu'un a rouvert à l'ancien endroit.
+news.bmrug.title,Rug pull de la plateforme du Marché noir
+news.bmrug.desc,"L'accès on-chain du Marché noir a disparu du jour au lendemain, anéantissant tous les fonds sous tiers de confiance et en déblocage anticipé. Un nouvel accès apparaîtra dans quelques jours."
+courier.name,Livreur
+courier.line1.1,La livraison est là.
+courier.line1.2,Un colis pour vous.
+courier.line2.1,Ne me dites pas ce qu'il y a dedans. Je ne veux pas savoir.
+courier.line2.2,Je pose ça là. Je file.
+gray.sub.black,Boutique
+black.stock,Restant : {0}
+black.price,{0} crédits
+black.noadvance,Pas de déblocage anticipé
+black.kind.gpu,GPU  état {0} %
+black.kind.Contraband.1,Contrebande (faible)
+black.kind.Contraband.2,Contrebande (moyenne)
+black.kind.Contraband.3,Contrebande (élevée)
+black.kind.Tech,High-tech (majoration)
+nightlog.bm.ready,Marché noir : {0} est arrivé ; un livreur passera dès l'ouverture.
+guide.web3.title,Manuel Web3
+guide.web3.text,"Banque et trading : la page Banque est en lecture seule et affiche les espèces, le loyer et les CRC du compte Poinbase. La page Fonds de Poinbase gère dépôts et retraits ; on choisit d'abord la pièce : le CRC passe par le compte bancaire ou le portefeuille, les autres pièces uniquement par le portefeuille. Le dépôt depuis la banque convertit les crédits en CRC sur votre compte Poinbase ; le retrait vers la banque reconvertit les CRC en crédits et passe par un contrôle de conformité, qui évalue la contamination du compte Poinbase. Un retrait vers un portefeuille demande l'adresse du destinataire et plusieurs confirmations avant d'arriver ; les frais de gas sont fixés au niveau normal et prélevés sur la pièce envoyée. Un format d'adresse ou un chiffre de contrôle incorrect est refusé ; une adresse au format valide mais que personne n'utilise fait perdre les pièces envoyées.¶Trading : PSC signifie Probably Stolen Coin, la pièce minée par les cartes graphiques et les mineurs (machines). Les achats sont payés dans la monnaie de cotation, les ventes dans la monnaie échangée.¶La page de trading Web3 permet d'échanger deux pièces au choix, toujours via le CRC : si le CRC est d'un côté, un seul pool est utilisé, sinon deux pools, avec deux frais et un glissement cumulé ; l'aperçu indique le montant obtenu, le nombre de pools traversés et la perte.§Portefeuilles matériels : les pièces sur la blockchain sont conservées dans des portefeuilles matériels PLEDGER, chacun avec ses propres soldes et sa contamination. Un portefeuille est un objet : glissez-le sur le terminal de trading pour le charger. Ouvrez-le sur la page Portefeuilles du terminal ; connectez et déconnectez-le en haut à droite du terminal. Le trading de la page Web3, la boutique et le mixeur de la page Réseau gris utilisent le portefeuille connecté ; sans portefeuille ou sans connexion, ils sont en lecture seule et tous les soldes affichent 0. Les clients qui paient en pièces paient sur le portefeuille connecté.¶Les paiements (boutique, mixeur, comptoir Ponero, frais de mise en vente) débutent par une facture sur le terminal ; saisissez l'adresse du destinataire sur le portefeuille et maintenez ✓ pour signer. Les deux derniers caractères d'une adresse sont une somme de contrôle, de sorte qu'une faute de frappe d'un caractère est généralement interceptée ; il arrive parfois qu'elle soit valide par hasard et les pièces partent alors vers une adresse inutilisée. Les échanges sur le DEX nécessitent également une signature sur le portefeuille.¶Poinbase est un compte dépositaire ; le dépôt s'effectue depuis le portefeuille vers l'adresse de dépôt de Poinbase (PSC, CRC, CRT, CRA et SPARK sont acceptés), le retrait se lance depuis la page Fonds de Poinbase. L'Explorateur de la page Portefeuilles permet de consulter les transferts par adresse, en n'affichant que les transferts réellement effectués (vos portefeuilles, retraits, gains des mineurs). D'autres portefeuilles matériels sont vendus par le Pr Jackson ; glissez-en un sur le terminal de trading pour l'ajouter, jusqu'à {WalletMax} au total. La boutique en propose des moins chers. Un portefeuille devenu inutile peut être détruit sur la page Portefeuilles ; ses pièces sont perdues définitivement, et tout ce qui est envoyé ensuite à son adresse l'est aussi.¶Les transferts sont soumis à des frais de gas : lent, normal ou rapide, et le prix du gas monte et descend sur environ une semaine ; lorsque le réseau est saturé, les frais de gas augmentent et les transactions lentes peuvent être évincées de la mempool. Vérifiez l'adresse complète avant d'envoyer.§Staking : le CRA staké dans le pool de la Révolution rapporte un taux quotidien capitalisé dans le montant staké ; retirer nécessite d'en faire la demande préalable et d'attendre quatre jours, sans intérêt durant cette période ni moyen de récupérer les fonds plus tôt. Le CRA est partiellement collatéralisé : chaque CRA est soutenu par la réserve de CRC détenue par la Révolution et par le jeton d'équilibre SPARK ; le taux de couverture de la réserve et le taux de collatéralisation figurent sur la page de staking. Les intérêts sont versés en nouveaux CRA non collatéralisés, ce qui dilue la couverture de la réserve, d'autant plus vite que le staking est important ; si la couverture est trop faible, la Révolution réduit le taux. La Révolution détourne parfois la réserve, précédée de rumeurs : c'est le présage. Si la couverture tombe ensuite sous {CraCrashRatio:%}, c'est l'effondrement : le CRA perd toute valeur en trois jours et quatre jours de déverrouillage arrivent trop tard ; au-dessus, il y a seulement une décote, et l'argent des pillages de la haute société reconstitue peu à peu la réserve.¶Frappe officielle : déposer du CRC et du SPARK (proportion selon le taux de collatéralisation actuel, l'aperçu indique les montants requis) pour frapper du CRA, avec une file d'attente de {CraMintDaysMin} à {CraMintDaysMax} jours ; le CRA frappé entre directement en staking. La destruction reconvertit le CRA en CRC et SPARK, avec une attente aussi longue que le déverrouillage ; si la réserve est insuffisante, la part de CRC est réduite selon la couverture. Les frappes et destructions en attente peuvent ne jamais être honorées par la Révolution : la probabilité nocturne est l'écart du cours du CRA sous 1 multiplié par {CraRugPerDepeg} ; si le cours n'est pas sous 1, elle est nulle.¶Le staking accepte CRA, CRC, CRT et SPARK : les trois derniers sont d'abord convertis en CRA sur le marché secondaire au cours du marché (via le CRC, avec frais et glissement). Le cours du SPARK oscille fortement et s'effondre lors du krach. Le staking, la frappe et la destruction sont des appels de contrat nécessitant une signature sur le portefeuille.§Mineurs (machines) : les mineurs RatDigg (M1 / M2 / M3) sont des machines autonomes dont le taux de hachage dépasse de loin celui d'une carte, pour une consommation électrique par unité de hachage plus faible ; ils nécessitent une batterie, accueillent des modules et n'occupent aucun emplacement de plateforme de minage. Seuls les dealeurs de mineurs (machines) de la boutique en vendent, selon votre réputation au Marché noir (M1 {AsicRepM1}, M2 {AsicRepM2}, M3 {AsicRepM3}), parfois d'occasion. Lorsqu'un mineur est grillé, réparez-le en glissant dessus, dans l'ordre, des composants électroniques ; il revient avec {AsicRepairHealthCut} de santé en moins. Entre le jour {EraMin} et le jour {EraMax}, une « ère des mineurs » survient, annoncée dans le journal quelques jours plus tôt : les grandes fermes réduisent de moitié leurs coûts d'électricité, le taux de hachage du réseau grimpe, les gains des mineurs sur carte graphique sont dilués et les cartes d'entrée de gamme ne rapportent presque plus rien, tandis que les mineurs (machines) continuent de bien s'en sortir.¶Adresse de versement : chaque mineur (plateformes et mineurs ASIC) a une adresse de versement définie dans sa propre fenêtre ; sa production de minage y est envoyée chaque nuit au prorata de la puissance de calcul, deux mineurs peuvent donc verser à deux adresses différentes. Elle n'est pas définie au départ ; sans adresse, ou si le portefeuille a été détruit, cette part est perdue, pensez donc à changer l'adresse en changeant de portefeuille.§Contrats perpétuels : l'onglet Perps de Poinbase utilise le CRC de votre compte comme marge, jusqu'à {PerpPscLev}× sur le PSC et {PerpSparkLev}× sur le SPARK, en marge isolée uniquement, une seule position à la fois (jamais longue et courte à la fois) ; pour l'augmenter, ajoutez de la marge. Le prix d'exécution est moins avantageux que la cotation (d'autant plus pour les ordres importants, comme sur le pool au comptant) et l'ouverture comme la clôture entraînent des frais. La liquidation n'est vérifiée que pendant la nuit selon le prix moyen de la journée : une valeur nette inférieure à {PerpMaint:%} du montant notionnel anéantit la marge. Un financement a également lieu chaque nuit ; lorsque le prix est supérieur à sa moyenne sur 7 jours, les positions longues paient les positions courtes.¶Si une liquidation engendre des pertes supérieures à la marge, le fonds d'assurance comble le déficit ; lorsqu'il est à sec (l'effondrement de SPARK peut provoquer cela), les positions gagnantes subissent un désendettement auto et abandonnent la moitié de leurs gains ; tout déficit restant devient votre dette. La dette augmente de {PerpDebtInterest:%} par jour, est remboursée en priorité chaque nuit par le CRC présent sur le compte, bloque l'ouverture de nouvelles positions et les retraits, et après {PerpDebtDays} jours, les articles de votre boutique sont saisis pour la rembourser ; tout solde restant impayé est effacé et le compte de contrats perpétuels est banni pendant {PerpBanDays} jours.§Boutique : pièces uniquement, pas de CRC, {BmPremium:%} de plus que les circuits normaux, avec une majoration supplémentaire sur les articles high-tech et les cartes graphiques ; les pièces que vous dépensez transmettent leur part de contamination au vendeur et les marchandises ne portent aucune mention de vol ; les cartes graphiques peuvent être contrefaites, inspectez-les vous-même.¶Achats en boutique : choisissez un vendeur sur la gauche, le rayon se trouve sur la droite, et après « Acheter », le panneau de paiement permet de définir la quantité, le mode de paiement et la monnaie. Chaque catégorie de vendeur accepte des devises différentes : le matériel et la technologie acceptent le PSC et le CRT ; les vendeurs d'armes, de drogues, de produits chimiques, de documents, de luxe et particuliers acceptent le CRT et la monnaie de confidentialité ; l'agriculture, l'élevage, l'eau et la brasserie acceptent le PSC et le CRA ; le marché au comptant de la plateforme accepte le PSC, le CRT et le CRA. S'il vous manque une monnaie acceptée par le vendeur, vous pouvez utiliser la conversion automatique intégrée : elle échange une autre monnaie du portefeuille avec un glissement de {BmAutoSwapSlip:%} et une seule signature ; ou bien effectuez d'abord vous-même l'échange sur le DEX, avec bien moins de glissement mais une étape supplémentaire. Le choix de la monnaie pour les frais de mise en vente s'effectue également au moment du paiement.¶Panier de la boutique : cliquer sur « Acheter » dans un rayon ajoute au panier ; le panier flottant en bas à droite affiche le nombre d'articles et ouvre la caisse. La caisse affiche le panier sur la gauche (regroupé par vendeur, quantités ajustables, articles supprimables, tiers de confiance ou déblocage anticipé pour les vendeurs qui l'autorisent) et le paiement sur la droite : chaque vendeur ayant une adresse de paiement distincte, vous réglez vendeur par vendeur — choisissez une monnaie acceptée par ce vendeur, générez une facture et transférez depuis le portefeuille ; ou convertissez automatiquement depuis une autre monnaie du portefeuille ({BmAutoSwapSlip:%} de glissement supplémentaire) et signez une seule fois pour ce vendeur.§Commandes et vente : les commandes sont moins chères qu'au comptant, mais prennent plusieurs jours et peuvent être interceptées ; les marchands vendent par type selon leur propre coefficient de prix, {BmBulk1Count}+ articles bénéficient de {BmBulk1Discount:%} de réduction et {BmBulk2Count}+ articles de {BmBulk2Discount:%} de réduction, et un marchand de gros apparaît au hasard avec les prix les plus bas mais {BmBulkDays} jours d'attente ; le tiers de confiance coûte {BmEscrowFee:%}, est débloqué à la livraison et remboursé si le vendeur s'enfuit ; le déblocage anticipé accorde {BmAdvanceDiscount:%} de réduction supplémentaire, mais un arnaqueur garde l'argent et seuls les vendeurs ayant au moins {BmAdvanceMinTrades} transactions l'acceptent ; la plateforme elle-même peut faire un rug pull, être reprise par les forces de l'ordre, ou un vendeur peut être arrêté, après quoi vos commandes sont tracées et un crime est enregistré ; les rumeurs sur le forum peuvent servir d'avertissement. Un colis intercepté se traduit parfois par la Sécurité à votre porte : signer enregistre le crime sur place et saisit les marchandises, refuser ne fait perdre que le paiement.¶Vente : dans l'onglet Vente de la boutique, mettez en vente la contrebande, les objets de haute technologie et les cartes graphiques du stockage entre {BmSellMin}x et {BmSellMax}x le prix de référence. Plus le multiplicateur est élevé, plus la vente est lente (sous {BmSellFastMult}x env. {BmSellDaysFast} jour, à {BmSellDay1Mult}x env. {BmSellDays1} jours, à {BmSellMax}x env. {BmSellDaysMax} jours), et plus la contamination du paiement est probable et importante ; elle augmente aussi avec le volume que vous avez vendu sur les 7 derniers jours ; l'onglet Vente s'ouvre sur votre vitrine des articles en vente, et « Ajouter des articles » en prépare d'autres : les articles identiques sont regroupés, les touches − et + règlent la quantité, le multiplicateur se choisit à gauche, et l'article n'est mis en vente qu'après paiement des frais de mise en vente via le bouton Étagère ; toutes les unités d'un même article partagent un multiplicateur, il faut donc tout retirer pour le changer ; au maximum {BmMaxKinds} types à la fois et {BmMaxStack} unités par type, frais de mise en vente de {BmListFee:%} par unité ; on peut retirer des articles depuis la vitrine, ils retournent au stockage sans remboursement des frais ; « Cryptos acceptées » sur la vitrine choisit les cryptos que vous prenez : chaque crypto de plus ajoute chaque nuit un tirage de vente (dans un ordre aléatoire, avec plus ou moins d'acheteurs selon la crypto), donc plus vous en acceptez, plus vous vendez vite, et le paiement arrive dans la crypto du tirage gagnant ; commission de {BmCommission:%}, paiement retenu {BmSaleHold} jours avant d'arriver dans votre portefeuille ; une fausse carte peut être repérée et renvoyée, nuisant à votre évaluation ; si la plateforme fait un rug pull, les biens en vente et les paiements non débloqués sont perdus.§Marchés de prédiction (page Prédictions de Web3, à partir du jour {PredictUnlockDay}) : chaque marché est une question oui/non portant sur des événements tirés au sort ou planifiés par le jeu lui-même : apparition d'une actualité, lancement d'une opération de faction, pureté de l'eau de demain, cours du PSC. Un marché reste ouvert jusqu'au début de sa fenêtre et fait l'objet d'un règlement la nuit du dernier jour de celle-ci. Achetez Oui ou Non avec des CRC depuis votre portefeuille on-chain (appel de contrat : signez sur le portefeuille ; la position appartient au portefeuille signataire) ; le cours correspond à la probabilité implicite du marché et augmente au fil de vos achats ; chaque part gagnante rapporte 1 crédit ; frais de {PredictFee:%} sur chaque transaction ; chaque marché a une limite de position. Les gains héritent du taux de contamination de la mise.¶Les billets de rumeur et les avantages de faction peuvent vous révéler à l'avance qu'un événement va se produire ; parier Oui sur un tel marché constitue un pari d'initié. Une position d'initié volumineuse a {PredictInsiderCatch:%} de chances d'être repérée lors du règlement ou lors d'une revente avec profit : la mise et les bénéfices sont confisqués, et la moitié des bénéfices est enregistrée comme fraude. S'il manque des données de jeu pour la fenêtre (par exemple si vous avez sauté le règlement nocturne), le marché est annulé et la mise est remboursée.§Réaction aux nouvelles : chaque nuit, chaque marché ouvert se rapproche de moitié de la juste probabilité selon les informations publiques, plus un peu de bruit aléatoire ; ainsi, quiconque lit en premier le journal, un billet de rumeur ou un avantage de faction peut acheter en amont et revendre après l'ajustement sans attendre le règlement. La liste d'indices du panneau de marché affiche ce que vous savez à son sujet : plannings, temps de recharge, date du halving, valeurs récentes du gas, niveau de la réserve du CRA, annonces de l'ère ASIC.¶Tendances à déduire : les opérations de faction sont déclenchées par des seuils de puissance cachés (par exemple, une répression nécessite Sécurité >= 20 et Marché noir >= 40, et réduit la Sécurité de 20) ; le gas suit un cycle de sept jours ; le point d'ancrage du cours monte la semaine précédant un halving ; les répressions et coupures de courant planifiées déplacent l'ancre mais le cours du marché ne l'anticipe pas ; plus la réserve s'épuise vite (plus il y a de staking), plus le CRA prévient tôt ; le marché du cours du PSC peut être influencé par vos propres ordres massifs. Le courtier en infos secrètes (nécessite assez de réputation au Marché noir) vend un point de situation (les cinq valeurs de puissance et ce que chaque faction peut lancer actuellement, en CRT) ainsi que trois niveaux de tuyaux d'initié (uniquement pour les opérations de faction et l'ère ASIC, déjà décidées ; la précision augmente à chaque niveau ; tarif selon la taille du marché ; certains tuyaux sont faux et annoncent l'inverse de la vérité) ; parier sur le côté recommandé compte comme un pari d'initié. La taille du marché grandit au fil des jours et un mauvais pari fait perdre toute la mise, ne misez donc pas tout sur un seul marché.§Contrôles de manipulation de marché : vos ordres massifs au comptant sur Poinbase dévient le cours de son niveau naturel (cette poussée s'atténue chaque nuit avec le retour à la moyenne ; l'indice du marché l'indique). Dès que la poussée dépasse {ManipFree:%}, si vous profitez du cours (un marché du cours du PSC remporté dans la direction où vous avez poussé, ou un contrat perpétuel clôturé avec profit dans cette même direction), vous risquez d'être repéré : plus la poussée est forte, plus le risque augmente (plafonné à {ManipMax:%}). En cas de détection, la mise et les gains de prédiction sont entièrement confisqués, les profits des contrats perpétuels sont saisis, la moitié des profits est enregistrée comme fraude, le compte de contrats perpétuels est gelé pendant {ManipFreezeDays} jours et le journal relate l'enquête. Vendre à découvert puis provoquer un krach n'est pas un gain garanti : le glissement des deux côtés sur les contrats perpétuels et l'aller-retour au comptant coûtent souvent plus cher que les gains de la vente à découvert.§Système de Ponzi (page Rendement, Lancer un Ponzi ; à partir du jour {PonziMinDay}, un seul par sauvegarde) : choisissez un taux quotidien ({PonziRates[0]:%}-{PonziRates[4]:%}), payez les frais marketing pour vous lancer (lancer le projet et faire un rug pull sont des appels de contrat signés sur le portefeuille), et les habitants du Niveau inférieur déposent des CRC selon le taux et votre réputation au Niveau inférieur ; plus le taux est élevé, plus ils affluent vite. Chaque nuit, les intérêts sont payés d'abord avec les nouveaux dépôts, puis depuis le portefeuille de l'émetteur ; si vous ne pouvez pas les couvrir, une panique bancaire se produit et le système s'effondre ; {PonziWithdraw:%} du pool est retiré chaque nuit, et plus le pool est volumineux et le taux élevé, plus un signalement est probable, ce qui provoque aussi son effondrement. En cas d'effondrement, le pool est confisqué. Vous pouvez faire un rug pull sur le pool à tout moment (cliquez deux fois pour confirmer) : il rejoint le portefeuille de l'émetteur avec des fonds entièrement contaminés (blanchissez-les avant tout retrait). Le rug pull et l'effondrement enregistrent tous deux une fraude et réinitialisent votre réputation au Niveau inférieur. La ligne des rumeurs de la rue indique le risque de signalement.§Arnaques : mèches – certains matins à l'ouverture, le cours est propulsé ou écrasé de {WickMin:%}-{WickMax:%} ; la majeure partie se résorbe le soir même, mais certaines variations sont réelles ; le prix repère des contrats perpétuels n'en prend en compte que la moitié, ne cédez donc pas à la panique en vendant sur une mèche.¶Airdrops (page Airdrops de Web3) – chaque airdrop exige d'abord d'autoriser le portefeuille (un contrat d'autorisation signé), puis de signer la réclamation ; vérifiez la portée de l'approbation avant d'autoriser : les vrais airdrops n'exigent aucune approbation ou une minime de quelques dizaines ; une approbation illimitée ou bien supérieure à la récompense est du phishing, souvent sous un nom trompeur (0 pour o, 1 pour l), et une ou deux nuits plus tard, cette pièce est retirée du portefeuille. Les approbations sont listées à droite de la page Airdrops et peuvent être révoquées en signant, après quoi rien ne peut être prélevé.¶Pools de rendement tiers (page Rendement, Dépôt) – {YieldRates[0]:%}-{YieldRates[2]:%} par jour ; la réserve, la présence d'un verrouillage temporel et d'un audit sont visibles, mais pas s'il s'agit d'une arnaque : plus le taux est élevé, plus le rug pull est probable, un verrouillage temporel et un audit réduisant ce risque ; un pool honnête ferme et restitue le capital quand sa réserve ne peut plus payer les intérêts, alors qu'un pool frauduleux peut disparaître n'importe quelle nuit. Le retrait des pools avec verrouillage temporel prend {YieldLockDays} jours.¶Faux support – quelqu'un au comptoir prétendant appartenir au support de Poinbase vous demande de transférer des CRC vers une « adresse sécurisée » : Poinbase ne se déplace jamais et ne demande jamais de virement. Faux virements – un client payant en pièces qui débute par « déjà envoyé, voici la capture d'écran, donnez l'article » ne paie jamais ; les honnêtes précisent que la confirmation sur la chaîne prend un moment.§Graphiques : la page spot de Poinbase et la page Trading de Web3 permettent d'alterner entre les bougies journalières de chaque pièce (la page des contrats perpétuels affiche le produit en cours, les prédictions affichent le PSC), vert à la hausse et rouge à la baisse ; la ligne jaune est la moyenne sur 7 jours (utilisée pour le financement des contrats perpétuels) ; les barres en bas représentent le volume (gris pour le marché, cyan pour vous : spot, DEX, frappe/brûlage, échanges Ponero et ouvertures/fermetures de contrats perpétuels comptent tous). Plus la variation est forte, plus les volumes échangés sont importants ; les mèches laissent de longues ombres.§Liaisons scénaristiques : les choix dans les intrigues du jeu modifient ce marché ; le journal les rapporte le lendemain et le marché met quelques jours à réagir. Preuves de Serpico à la Révolution : la réserve du CRA est renflouée, la probabilité d'effondrement est divisée par deux pendant {StorySecDays} jours et SPARK monte de {StorySerpicoSpark:+%} sur {StorySparkNights} nuits ; au Marché noir : les probabilités de désarrimage du CRT et de trahison sont divisées par deux ; à la Sécurité : pendant {StorySecDays} jours, le contrôle de conformité des retraits, les sanctions contre le mixeur et les contrôles sur la manipulation de marché et le délit d'initié sont renforcés. Eleanor divulgue le disque de données : le risque de dépréciation de la banque dépositaire de CRC double et SPARK monte de {StoryLeakSpark:+%} ; elle le restitue : le risque de désarrimage du CRC diminue de moitié. Arrestation de l'Agent Lun : contrôles renforcés sur les retraits, la manipulation de marché et le délit d'initié pendant {StoryLunDays} jours.¶Opérateur du mixeur Tumbler (après déverrouillage du mixeur, dès le jour {TumblerMinDay}) : il passe vous voir à plusieurs reprises et finit par demander de cacher un disque de clés. Cachez-le et rendez-le-lui : les frais de mixeur sont divisés par deux, l'ensemble d'anonymat grandit, en plus d'un cadeau ; mais le disque est de la contrebande et sera inscrit à votre dossier si une fouille le découvre entre-temps. Dénoncez-le : prime et réputation auprès de la Sécurité, et le mixeur ferme définitivement (les pièces engagées sont restituées). Vendez-le au Marché noir : une somme en CRT (dont la moitié de fonds contaminés) et réputation au Marché noir, après quoi les frais du mixeur augmentent et la probabilité d'un rug pull grimpe.§Mixeur et monnaie de confidentialité : choisissez une pièce, un montant et le nombre de tours ; chaque tour prélève des frais et réduit la contamination, les tours équivalent aux jours d'attente et les pièces reviennent à la même adresse ; plus le dépôt est élevé, moins le nettoyage est efficace.¶Échange de monnaies de confidentialité (page de trading Web3, requiert de la réputation au Marché noir) : Ponero est une monnaie de confidentialité et la conversion vers celle-ci efface la contamination sur cette valeur ; {PoneroFee:%} de frais dans chaque sens avec une limite quotidienne ; les pièces converties depuis Ponero n'ont aucune origine et le contrôle des retraits devient plus strict.§Contrôle de conformité des retraits (l'écran n'indique ni quota ni probabilité de contrôle ; voici les règles) : retirer des CRC de Poinbase contre des crédits est évalué par rapport au loyer actuel – un retrait unique supérieur à {AmlBigRents}x le loyer, ou un cumul supérieur à {AmlCumRents}x le loyer sur {AmlWindowDays} jours, augmente la probabilité d'un contrôle proportionnellement à l'excédent ; dès lors que la contamination atteint au moins {AmlTaintRatio:%} du montant, la probabilité s'accroît de « ratio x {AmlTaintMult} » ; les pièces récemment restituées par le mixeur ou provenant d'un portefeuille signalé ajoutent {AmlMixerBonus:%} ; la probabilité est plafonnée à {AmlMaxChance:%}. En cas de contrôle : une contamination sous {AmlHeavyRatio:%} est légère – la part contaminée est confisquée sans enregistrer d'infraction ; à partir de {AmlHeavyRatio:%}, c'est grave – la part contaminée est confisquée et le montant contaminé est inscrit comme recel. Sans contrôle, le montant intégral arrive. Les retraits coûtent {ExchangeFee:%} et les gains au-delà du coût sont taxés à {TaxRate:%}. Fractionner en petits montants, étaler sur plusieurs jours et blanchir d'abord diminuent la probabilité, mais rien n'indique le quota ni les chances ; estimez-les vous-même.¶Avant de détruire un portefeuille, transférez vous-même les pièces, et retirez positions et dépôts au préalable : tout ce qui reste disparaît avec le portefeuille."
+courier.odd1,...Le colis est là.
+courier.odd2,(Sa main reste dans sa poche.) Signez ici.
+courier.sign,Signer
+courier.refuse,Refuser
+courier.signed,"Bien. Ne bougez plus, Sécurité."
+courier.refused,"...Bon, laissez tomber."
+black.state.Lost.seized,saisi
+black.state.Lost.refused,refusé
+black.forum.easy,"Trop fluide ces derniers temps : les vendeurs expédient plus vite que jamais, et il y a de nouveaux comptes jamais vus."
+black.forum.busted,"Il paraît que {0} a été arrêté, et l'historique des commandes traîne toujours."
+nightlog.bm.trap.honeypot,"Marché noir : la plateforme a été reprise par les forces de l'ordre ; votre {0} a été tracé, infraction enregistrée : {1}."
+nightlog.bm.trap.seller,"Marché noir : un vendeur a été arrêté et l'historique des commandes vous implique : {0}, infraction enregistrée : {1}."
+tab.mining,Minage
+courier.sign.say,Je signe.
+courier.refuse.say,Pas question. Renvoyez-le.
+black.forum.busted_buyer,"Il paraît qu'une vague d'acheteurs a été arrêtée, et les registres de vente sont encore sur la plateforme."
+nightlog.bm.sale_sold,Marché noir : votre {0} s'est vendu pour {1} ; paiement au jour {2}.
+nightlog.bm.sale_paid,"Marché noir : le paiement de {1} pour {0} est arrivé (CRT), dont contamination {2}."
+nightlog.bm.sale_fake,Marché noir : l'acheteur a vu que {0} était une contrefaçon et l'a renvoyé ; votre évaluation a baissé.
+nightlog.bm.sale_rug,Marché noir : la plateforme a fait un rug pull ; votre {0} et le paiement ({1}) ont disparu.
+black.sub.sell,Vente
+black.sell.h,Vente
+black.sell.mult,Multiplicateur de prix
+black.sell.none,Rien de vendable en stockage.
+black.sell.rating,Évaluation {0} %
+black.mine.sale,{0}  réf. {1}  prix {2} (x{3}) : {4}
+black.sale.Listed,en vente
+black.sale.Paid,payé
+black.sale.Lost,"rug pull de la plateforme, perdu"
+black.sale.Delisted,retiré
+black.sale.Delisted.fake,l'acheteur a repéré la contrefaçon et l'a renvoyé
+black.kind.gpunew,GPU  neuf
+merchant.GpuNew,Cartes graphiques neuves
+merchant.GpuUsed,Cartes graphiques d'occasion
+merchant.Arms,Armes
+merchant.Docs,Cartes d'accès et puces
+merchant.Pharma,Pharma
+merchant.Bulk,En gros
+black.days,Livraison : {0} j
+black.sell.listedall,Objets mis en vente : {0}.
+merchant.Rigs,Plateformes et énergie
+merchant.Modules,Modules
+merchant.GunMods,Pièces d'armurerie
+merchant.Chem,Produits chimiques
+merchant.Brewer,Brasserie
+merchant.Farm,Hydroponie
+merchant.Husbandry,Élevage
+merchant.Miner,Matériel minier
+merchant.Water,Eau
+merchant.Storage,Stockage
+merchant.Tools,Outils
+merchant.Luxury,Luxe
+black.kind.Goods,Marchandises
+merchant.Elite,Boutique d'élite
+merchant.Personal,Vendeur particulier
+black.pay.confirm,Facture
+black.pay.to,Adresse bénéficiaire : {0}
+black.pay.cancel,Annuler
+pay.mix,Mixeur {0} {1}
+pay.swap,Comptoir Ponero {0} {1}
+black.edit.cancel,Annuler
+merchant.Platform,Plateforme
+black.platform.line,Spot plateforme  livraison immédiate
+black.orders.in,Achats
+black.orders.out,Ventes
+black.desk.pair,PONERO [monnaie de confidentialité]  prix {0}
+black.pay.amount,Montant : {0} {1} (environ {2} crédits)
+black.pay.wallet,Payer depuis le portefeuille
+hw.total,Total ≈ {0} crédits
+hw.pending.bill,À payer : {0}
+hw.pending.sign,À signer : {0}
+hw.send,Envoyer
+hw.review,Demande de signature
+hw.to,Adresse bénéficiaire
+hw.avail,Disponible {1} {0}
+hw.amount,Montant
+hw.bill,Facture : {0}  {1} {2}
+hw.fill,Remplir selon facture
+hw.next,✓ Suivant  × Retour
+hw.err.format,Format d'adresse invalide.
+hw.err.checksum,Échec de la somme de contrôle de l'adresse.
+hw.err.self,Il s'agit de l'adresse de ce portefeuille.
+hw.err.asset,La facture requiert {0}.
+hw.err.short,Inférieur à la facture : {0} {1}.
+hw.err.nobill,Aucune facture impayée pour ce bénéficiaire.
+hw.review.h,Vérification
+hw.contract,Appel de contrat
+hw.review.to,Adresse bénéficiaire
+hw.review.amount,{0} {1} (environ {2} crédits)
+hw.review.bill,Facture : {0}
+hw.review.unknown,Aucun historique de transaction à cette adresse.
+hw.review.over,Paiement excédentaire de {0} {1} ; non remboursé.
+hw.hold,Maintenir ✓ pour signer  × Rejeter
+hw.tx.h,Transaction
+hw.tx.signing,Signature en cours…
+hw.tx.mempool,Diffusée ; en attente dans la mempool…
+hw.tx.packed,Incluse dans le bloc #{0}
+hw.tx.confirm,Bloc #{0}  confirmation {1}/{2}
+hw.skip,Passer
+hw.done.h,Confirmé
+hw.done.block,Bloc #{0}
+hw.done.sent,{0} {1} → {2}
+hw.done.void,Personne n'utilise cette adresse. Les pièces sont perdus.
+hw.back,Retour
+hw.rejected,Signature rejetée sur le portefeuille.
+hw.wait,Confirmez sur le portefeuille.
+hw.swap,Échanger {0} {1} → environ {2} {3}
+tab.wallets,Portefeuilles
+hw.wallet.n,Portefeuille {0}
+hw.review.own,Portefeuille personnel : {0}
+hw.review.poinbase,Adresse de dépôt Poinbase
+poin.deposit,Adresse de dépôt : {0}
+wallets.count,Portefeuilles {0}/{1}
+wallets.col.name,Nom
+wallets.col.addr,Adresse
+wallets.col.taint,Contamination
+wallets.open,Ouvrir
+wallets.use,Connecter
+wallets.current,Connecté
+wallets.added,{0} ajouté : {1}
+nightlog.drained,"Les pièces de {0} ont été transférées, soit environ {1} crédits."
+item.hwwallet.name,Portefeuille matériel PLEDGER
+item.hwwallet.desc,Portefeuille matériel à grand écran. Glissez-le sur le terminal de trading pour ajouter un portefeuille (jusqu'à 5).
+poin.empty,Le compte est vide.
+hw.copy,Copier
+hw.paste,Coller
+hw.copied,Adresse copiée.
+hw.copied.addr,{0} copié
+hw.balance.frozen," (gelé {0})"
+wallets.destroy,Détruire
+wallets.destroy.sure,Confirmer
+wallets.destroyed,{0} détruit : {1}
+wallets.destroy.warn,Détruire {0} fait perdre définitivement ses pièces. Appuyez à nouveau pour confirmer.
+payout.label,Versement
+payout.unset,Non défini
+payout.set,Définir l'adresse
+payout.h,Adresse de versement
+payout.cur,Actuelle : {0}
+payout.pick,Portefeuilles personnels :
+payout.manual,Ou saisissez une adresse :
+payout.clear,Effacer
+payout.err,Adresse invalide.
+nightlog.mined.lost,"{0} PSC minés perdus : aucune adresse de versement définie, ou son portefeuille a été détruit."
+wallets.none,Aucun portefeuille chargé. Glissez un portefeuille matériel sur le terminal.
+web3.err.noconn,Aucun portefeuille connecté.
+web3.connect,Connecter le portefeuille
+web3.disconnect,Déconnecter
+web3.conn,{0}  {1}
+hw.balance.value,≈ {0}
+wallets.rename,Renommer
+wallets.rename.h,Nouveau nom pour {0}
+wallets.rename.ok,OK
+hw.fee.slow,Lent
+hw.fee.normal,Normal
+hw.fee.fast,Rapide
+hw.fee,Frais de gas {0} {1} (environ {2} crédits)
+hw.confs,{0} confirmations requises
+hw.congested,Réseau saturé
+hw.congested.slow,Réseau saturé : les frais lents risquent d'être évincés de la mempool
+hw.recent,Récent
+hw.recent.out,→ {0}  {1} {2}
+hw.recent.in,← {0}  {1} {2}
+hw.review.history,Adresse dans votre historique
+hw.tx.stuck,En attente dans la mempool…
+hw.tx.dropped,Retirée de la mempool. Rien n'a été envoyé ; les frais de gas sont débités.
+hw.dropped.h,Non envoyé
+hw.err.fee,Solde insuffisant pour payer les frais de gas.
+news.congest.title,Congestion de la chaîne
+news.congest.desc,Une ruée sur un airdrop a saturé la chaîne. Les frais de gas ont explosé et les transactions à faibles frais risquent d'être évincées de la mempool.
+news.phish.title,Avis Poinbase : migration de l'adresse de dépôt
+news.phish.desc,Poinbase a mis à niveau son système de portefeuilles. L'ancienne adresse de dépôt sera désactivée ; veuillez envoyer vos actifs à la nouvelle adresse {0}.
+black.forum.phish,"Quelqu'un a publié la nouvelle adresse du mixeur : {0}, affirmant que l'ancienne est sous surveillance."
+hw.gas,Gas ×{0}
+web3.sub.stake,Staking
+stake.h,Pool de staking de la Révolution
+stake.rate,Taux quotidien {0}% ; attente de retrait : {1} jours sans intérêt
+stake.low,Couverture de réserve faible ; taux réduit
+stake.cra,Prix CRA {0}  {1}
+stake.none,Aucun staking.
+stake.col.wallet,Portefeuille
+stake.col.amount,Staké
+stake.col.queue,Déverrouillage
+stake.day," (jour {0})"
+spark.price,Jeton d'équilibre SPARK  {0} crédits
+stake.ops,{0}
+stake.avail,CRA {0}  Staké {1}
+stake.do,Staker
+stake.undo,Demander un retrait
+stake.sum.in,Staker {0} CRA
+stake.sum.out,Demander le retrait de {0} CRA (disponible dans {1} jours)
+stake.done.in,{0} CRA stakés.
+stake.done.out,Retrait de {0} CRA demandé ; retour au portefeuille le jour {1}.
+nightlog.stakeint,Intérêts de staking +{0} CRA.
+nightlog.unstaked,Les {0} CRA retirés du staking sont revenus sur {1}.
+news.crawarn.title,Troubles au pool de staking de la Révolution
+news.cralow.title,La Révolution réduit le taux de staking
+stake.avail2,SPARK {0}
+poin.sub.spot,Spot
+poin.sub.perp,Perps
+perp.h,Contrats perpétuels
+perp.acct,Compte sur marge CRC {0}
+perp.debt,Dette {0} ; saisie des objets dans {1} jour(s). Nouvelles positions et retraits bloqués jusqu'au remboursement.
+perp.banned,Compte perpétuel banni : encore {0} jour(s).
+perp.none,Aucune position.
+perp.col.pos,Position
+perp.col.notional,Valeur notionnelle
+perp.col.price,Entrée → prix
+perp.col.pnl,PnL
+perp.col.liq,Prix liq.
+perp.long,Long
+perp.short,Short
+perp.rate,{0}  prix {1}  financement {2} %/nuit
+perp.fund,Fonds d'assurance {0}
+perp.open,Ouvrir
+perp.margin,Montant de la marge (CRC)
+perp.do.open,Ouvrir
+perp.do.add,+ Marge
+perp.do.close,Fermer
+perp.opened,"Position {0} {1} ouverte : marge {2} CRC, {3}×."
+perp.added,{0} CRC de marge ajoutés.
+perp.closed,Fermée ; {0} CRC reversés sur le compte (PnL {1}).
+perp.deficit,"Déficit de capital de {0}, couvert par le fonds d'assurance et la dette."
+perp.err.Banned,Le compte perpétuel est banni.
+perp.err.Debt,Vous avez une dette ; ouverture de position interdite.
+perp.err.Leverage,Le levier dépasse la limite de ce produit.
+perp.err.Size,Plafond de position dépassé pour ce produit.
+perp.err.Funds,Solde CRC insuffisant sur le compte (frais inclus).
+perp.err.Opposite,Impossible d'être long et short sur le même produit ; fermez d'abord.
+perp.err.NoPosition,Aucune position.
+perp.err.Margin,Saisissez un montant de marge.
+perp.debt.block,Dette envers le comptoir des perpétuels ; retraits bloqués.
+nightlog.perp.liq,{0} a été liquidé ; la marge de {1} est perdue.
+nightlog.perp.adl,Fonds d'assurance épuisé ; {0} a subi un désendettement auto et cédé {1} de profit.
+nightlog.perp.interest,Intérêts courus sur la dette de contrats perpétuels ; vous devez désormais {0}.
+nightlog.perp.seize,Dette de contrats perpétuels en souffrance : les objets saisis ont couvert {0}.
+nightlog.perp.writeoff," {0} passés en perte ; le compte de contrats perpétuels est banni pour {1} jours."
+perp.slip.title,Bordereau de saisie de dette perpétuelle
+perp.preview2,Frais {0}  liq. {1}
+nightlog.perp.repaid,Déficit de contrats perpétuels : {0} CRC ont été prélevés sur le compte Poinbase pour le remboursement.
+perp.err.Thin,Le glissement sur cet ordre est si élevé qu'il entraînerait une liquidation immédiate. Réduisez le montant ou le levier.
+perp.err.Single,Une seule position à la fois ; ajoutez de la marge.
+mat.hypertech_electronic,Composant électronique hypertech
+item.asic.name,Mineur (machine) RatDigg {0}
+item.asic.dead.name,Mineur (machine) RatDigg {0} grillé
+item.asic.desc,"Taux de hachage nominal {0} GH/s. Consommation nominale {1} kJ/j. État {2}. Mineur (machine) autonome : nécessite une batterie pour fonctionner, accepte des modules."
+item.asic.dead.desc,Grillé. Glissez des composants électroniques dessus pour le réparer : actuellement {0} × {1}. Santé −20 une fois réparé.
+item.asic.dead.fixed,Déjà réparé.
+merchant.Asic,Dealeur de mineurs (machine)
+black.kind.asic,Mineur (machine)  état {0} %
+black.kind.asicnew,Mineur (machine)  neuf
+news.erawarn.title,RatDigg s'apprête à lancer une nouvelle génération de mineurs (machine)
+news.erawarn.desc,"Le fabricant de mineurs dédiés a annoncé un nouveau matériel, et le secteur s'attend à ce que les grandes fermes renouvellent leur parc sous peu. Certains disent que les beaux jours du minage par carte graphique sont comptés."
+news.era.title,L'ère des mineurs (machine)
+news.era.desc,Une nouvelle génération de mineurs dédiés est produite en masse et les grandes fermes ont réduit leurs coûts d'électricité de moitié. Le taux de hachage du réseau va grimper et les gains des mineurs sur carte graphique seront dilués.
+web3.sub.predict,Prédictions
+predict.h,Marchés de prédiction
+predict.acct,{0} : CRC {1}
+predict.none,Aucun marché ouvert aujourd'hui.
+predict.closed,fermé
+predict.row,Oui {0}  Non {1}
+predict.held,"détient {0} x{1}, coût {2}"
+predict.yes,Oui
+predict.no,Non
+predict.void,annulé
+predict.result,Jour {0}  {1}  résultat : {2}  {3}
+predict.pick,Trader
+predict.price,Prix par part : Oui {0}  Non {1}
+predict.pos,{0} : {1} x{2}
+predict.pos2,Coût {0}  gain {1}
+predict.sum.buy,Achat de {1} pour {2} CRC : {0}
+predict.sum.sell,Vente de position de prédiction : {0}
+predict.closed.note,"Fermé, en attente de règlement."
+predict.preview,"Acheter {0} : env. {1} parts (moy. {2}), net {3} si correct"
+predict.buy.yes,Acheter Oui
+predict.buy.no,Acheter Non
+predict.sell,Tout vendre
+predict.bought,"Achat de {0} pour {2}, rapporte {1} si correct."
+predict.sold,"Vendu, reçu {0}."
+predict.err.Closed,Ce marché est fermé.
+predict.err.Amount,Montant non valide.
+predict.err.Funds,Pas assez de CRC dans le portefeuille.
+predict.err.Cap,Limite de position dépassée pour ce marché.
+predict.err.Opposite,Vous détenez la position inverse ; vendez-la d'abord.
+predict.err.NoPosition,Aucune position sur ce marché.
+predict.win.one,Jour {0}
+predict.win.range,Jours {0}-{1}
+predict.q.event,"{0} : ""{1}"" se produit"
+predict.q.faction,{0} : {1} lance une opération
+predict.q.purity,{0} : pureté de {1} >= {2}
+predict.q.price,{0} : prix de {1} >= {2}
+predict.faction.FACTION_SECURITY,Sécurité
+predict.faction.FACTION_REVOLUTION,Révolution
+predict.faction.FACTION_LOWER_LEVEL,Niveau inférieur
+predict.faction.FACTION_UPPER_LEVEL,Niveau supérieur
+predict.faction.FACTION_BLACK_MARKET,Marché noir
+predict.purity.gutter,Eau du niveau inférieur
+predict.purity.rust,Eau du niveau supérieur
+nightlog.predict.win,"Prédiction correcte : ""{0}"", {1} versés."
+nightlog.predict.lose,"Prédiction incorrecte : ""{0}"", mise de {1} perdue."
+nightlog.predict.void,"Prédiction annulée : ""{0}"", mise de {1} remboursée."
+nightlog.predict.caught,"Pari d'initié détecté : ""{0}"", mise et gains de {1} confisqués, fraude inscrite au dossier."
+predict.tab.markets,Marchés
+predict.tab.intel,Infos secrètes
+predict.acct.crt,{0} : CRT {1}
+predict.tier.0,bas
+predict.tier.1,moyen
+predict.tier.2,élevé
+predict.clue.tip,Tuyau ({0}) : indique {1}
+predict.clue.queued,Programmé : débute jour {0}
+predict.clue.queued2,"Programmé : jour {0} ""{1}"""
+predict.clue.cool,Événement en cours ou en recharge
+predict.clue.busy,Opération de faction en cours ; pas de nouvelle avant un moment
+predict.clue.halving,Halving au jour {0} ; l'ancrage monte la semaine précédente
+predict.clue.anchor,Prix d'ancrage actuel : {0}
+predict.clue.gas,Gas récent : {0}
+predict.clue.drain,Consommation par nuit : {0}
+predict.clue.era,"Aléatoire entre les jours {0}-{1}, annoncé d'avance"
+predict.clue.era.warned,Annoncé : débute aux jours {0}-{1}
+predict.q.gas,{0} : indice de gas >= {1}
+predict.q.cra,{0} : alerte CRA émise
+predict.q.era,{0} : début de l'ère ASIC
+predict.era,Ère ASIC
+predict.pos3,Moy. {0}  actuel {1}
+predict.pos4,Vendre maintenant rapporte {0}
+intel.h,Courtier en infos secrètes
+intel.locked,Nécessite la boutique Web3 et une réputation au Marché noir de {0}.
+intel.brief.buy,Acheter le point de situation ({0} CRT)
+intel.brief.none,Aucun point de situation acheté pour le moment.
+intel.brief.day,Point de situation du jour {0}
+intel.tips.h,Tuyaux d'initié
+intel.tips.none,Rien à demander (uniquement opérations de faction et ère ASIC).
+intel.tip.buy,Précision env. {0} %  {1} CRT
+intel.err.funds,"Pas assez de CRT dans le portefeuille, ou le marché n'est plus disponible à l'achat."
+intel.brief.sum,"Point de situation, {0} CRT"
+intel.tip.sum,Tuyau d'initié {0} CRT : {1}
+intel.brief.done,Point de situation obtenu.
+intel.tip.done,On raconte : {0}.
+predict.brief.levels,Sécurité {0}  Rév {1}  Marché noir {2}  Troubles {3}  Niveau sup. {4}
+predict.brief.busy,{0} : opération en cours
+predict.brief.queued,{0} : opération programmée
+predict.brief.none,{0} : rien à lancer
+predict.brief.can,{0} : peut lancer {1}
+predict.clue.push,Vous avez fait bouger le prix de {0} % : risqué
+nightlog.predict.manip,"Prédiction jugée comme manipulation de marché : ""{0}"", mise de {1} confisquée, fraude inscrite au dossier."
+news.manip.title,La bourse enquête sur des transactions inhabituelles
+news.manip.desc,Les régulateurs signalent que des ordres au comptant massifs ont servi à faire bouger les prix pour tirer profit des dérivés et des prédictions ; les fonds ont été saisis.
+perp.manip,Le profit de clôture de {0} a été jugé comme manipulation de marché et confisqué ; compte de contrats perpétuels gelé pour {1} jours.
+web3.sub.ponzi,Rendement
+ponzi.h,Système de Ponzi
+ponzi.acct,Portefeuille émetteur {0} : CRC {1}
+ponzi.rate,Taux quotidien {0} %
+ponzi.pool,Pool {0} / plafond {1}
+ponzi.inflow,Nouveaux dépôts hier soir : {0}
+ponzi.interest,Intérêts dus ce soir : {0}
+ponzi.own,Intérêts payés de votre poche : {0}
+ponzi.wind,Risque de dénonciation : {0}
+ponzi.wind.low,faible
+ponzi.wind.mid,moyen
+ponzi.wind.high,élevé
+ponzi.idle,Aucun système de Ponzi émis.
+ponzi.done,Le système est fermé ; un seul par sauvegarde.
+ponzi.ops,Actions
+ponzi.rug,Rug pull du pool ({0})
+ponzi.rug.confirm,Cliquez à nouveau pour confirmer le rug pull de {0}
+ponzi.rugged,"{0} emportés, totalement contaminés."
+ponzi.open,Lancer un système de Ponzi
+ponzi.ad,Frais marketing de {0} CRC prélevés sur le portefeuille actuel ; signature requise.
+ponzi.start,Lancer
+ponzi.started,Lancé.
+ponzi.err,Pas assez de CRC dans le portefeuille pour les frais marketing.
+nightlog.ponzi.collapse,"Le système n'a pas pu verser les intérêts ; ruée sur le pool, pool de {0} confisqué, fraude inscrite au dossier, réputation au Niveau inférieur réinitialisée."
+nightlog.ponzi.reported,"Le système a été dénoncé ; pool de {0} confisqué, fraude inscrite au dossier, réputation au Niveau inférieur réinitialisée."
+news.ponzi.title,Effondrement d'un système de Ponzi
+news.ponzi.desc,Un système de Ponzi géré dans le Niveau inférieur a été dénoncé ; les investisseurs ont afflué et les régulateurs ont gelé les fonds.
+news.ponzi.rug.title,Arnaque à l'investissement
+news.ponzi.rug.desc,L'opérateur d'un système de Ponzi s'est enfui avec tous les fonds ; les investisseurs du Niveau inférieur ont tout perdu.
+ponzi.start.sum,"Lancer un système de Ponzi, taux quotidien {0} %, marketing {1} CRC"
+ponzi.rug.sum,Rug pull du pool {0}
+ponzi.err.wallet,Signer avec le portefeuille émetteur.
+predict.clue.counter,"Infos secrètes : planifié (informateur du comptoir, mot de rumeur)"
+web3.sub.airdrop,Airdrops
+air.h,Airdrops
+air.none,Aucun airdrop à réclamer pour le moment.
+air.row,{0}  récompense {1} CRC  {2}  jusqu'au jour {3}
+air.claim,Réclamer
+air.unlimited,approuver {0} sans limite
+air.limited,approuver {0} {1}
+air.approvals,Approbations de {0}
+air.approvals.none,Aucune approbation.
+air.approval,{0} : {1}
+air.revoke,Révoquer
+air.sum,Réclamer l'airdrop {0} ({1})
+air.claimed,Reçu {0} CRC.
+air.auth,Autoriser le portefeuille
+air.unauth,Non autorisé
+air.authed,Autorisé : {0}
+air.authed.msg,Portefeuille autorisé pour {0}.
+air.auth.sum,Autoriser {0} à agir pour ce portefeuille. Portée : {1}.
+air.err.unauth,Autorisez d'abord le portefeuille pour cet airdrop.
+air.revoke.sum,Révoquer l'approbation {1} de {0}
+air.revoked,Approbation révoquée.
+air.err.wallet,Signer avec le portefeuille ayant approuvé.
+pool.h,Pools de rendement tiers (CRC)
+pool.none,Aucun pour le moment.
+pool.col.name,Pool
+pool.col.rate,Taux/j
+pool.col.reserve,Réserve
+pool.col.lock,Blocage
+pool.col.audit,Audit
+pool.col.mine,Mon dépôt
+pool.yes,oui
+pool.no,non
+pool.pending,retrait en cours
+pool.closed,(fermé)
+pool.deposit,Dépôt
+pool.withdraw,Retrait
+pool.withdraw.lock,Demander le retrait ({0} j)
+pool.err.cap,Plafond du pool dépassé ; {0} restant.
+pool.err.none,Aucun dépôt.
+pool.sum.in,Dépôt sur {0} : {1} CRC
+pool.sum.out,Retirer {1} CRC de {0}
+pool.done.in,{0} CRC déposés sur {1}.
+pool.done.out,{0} CRC retirés.
+pool.done.lock,"Retrait de {0} CRC demandé, arrivée au jour {1}."
+nightlog.scam.drain,"{1} {2} de {0} ont été siphonnés par ""{3}"" via une approbation."
+nightlog.scam.rug,"Le pool de rendement ""{0}"" a fait un rug pull ; les {1} CRC de {2} ont disparu."
+nightlog.scam.dry,"Le pool de rendement ""{0}"" a épuisé ses réserves et a fermé ; {1} CRC restitués à {2}."
+nightlog.scam.paid,"Le retrait de ""{0}"" est arrivé : {2} a reçu {1} CRC."
+nightlog.scam.fakepay,Virement falsifié : {0}
+nightlog.scam.sent,"Les {0} {1} envoyés à l'adresse sécurisée du ""support"" ont fini chez un escroc."
+coinpay.intro,Je paie en {0} ; la confirmation sur la chaîne prend un moment.
+coinpay.intro.fake,"J'ai déjà envoyé les {0}, voici la capture d'écran. Donne la marchandise, je suis pressé."
+coinpay.fake.entry,{0} a pris {1} en affirmant avoir payé {2} crédits en pièces ; aucune transaction sur la chaîne.
+scam.support.name,Support Poinbase
+scam.support.1,"Bonjour, ici le support Poinbase. Nous avons détecté une connexion anormale sur votre compte et celui-ci a été signalé."
+scam.support.2,Veuillez envoyer aujourd'hui {0} CRC à l'adresse sécurisée {1} pour vérification ; ils seront restitués immédiatement après.
+scam.support.3,"Sinon, le compte sera gelé définitivement. Je dois filer, n'oubliez pas d'effectuer l'envoi."
+predict.sold.caught,"Délit d'initié détecté lors de la vente : mise et profits confisqués, fraude inscrite au dossier."
+predict.row.move," (la nuit dernière {0} {1})"
+predict.stats.h,Historique (prix ouv. moy. / taux réel)
+predict.stats.row,"{0} : {1} marchés, ouv. moy. {2}, survenu {3} %"
+predict.kind.Event,Événements d'actualité
+predict.kind.Faction,Opérations de faction
+predict.kind.Purity,Pureté de l'eau
+predict.kind.Price,Prix du PSC
+predict.kind.Gas,Gas
+predict.kind.Cra,Alerte CRA
+predict.kind.Era,Ère ASIC
+nightlog.predict.move,"Prédiction ""{0}"" : {1} -> {2}"
+nightlog.predict.why," ({0})"
+chart.empty,Graphique journalier {0} : aucun historique ; enregistrement à partir d'aujourd'hui.
+chart.caption,{0} journalier  H {2}  B {3}  C {4} ({5} %)
+chart.legend,"<size=80%>vert hausse, rouge baisse ; jaune MM 7j ; barres : gris marché / cyan vous</size>"
+chart.legend.thr,"<size=80%>vert hausse, rouge baisse ; jaune MM 7j ; tirets bleus seuil</size>"
+news.story.serpico_rev.title,La Révolution détient des dossiers sur la Sécurité
+news.story.serpico_rev.desc,"La Révolution aurait obtenu des preuves de corruption au sein de la Sécurité. Selon le pool de staking : une forte somme a été injectée dans la réserve de la Révolution, et le SPARK se raffermit."
+news.story.serpico_bm.title,Le Marché noir conclut un accord discret
+news.story.serpico_bm.desc,"Un document interne de la Sécurité a changé de mains sur le Marché noir. Les règlements sur le Darknet sont nettement plus stables depuis, et les remboursements en CRT n'ont pas failli une seule fois."
+news.story.serpico_sec.title,La Sécurité lance une purge interne
+news.story.serpico_sec.desc,La Sécurité a annoncé une enquête approfondie sur la corruption interne et une surveillance accrue des flux financiers. Poinbase durcit l'examen des retraits et les services de mixeur ont été ciblés.
+news.story.eleanor_leak.title,Fuite des données de sélection de Nutrifruit
+news.story.eleanor_leak.desc,"Le journal du Niveau inférieur a publié des recherches permettant au Nutrifruit de donner à nouveau des graines ; l'action Pastelle s'est effondrée. La banque dépositaire des fonds du Niveau supérieur signale des créances douteuses, et la Révolution gagne du terrain."
+news.story.eleanor_return.title,Pastelle récupère les données dérobées
+news.story.eleanor_return.desc,"Pastelle a confirmé la récupération des données de recherche dérobées. Le capital du Niveau supérieur pousse un soupir de soulagement, et la notation de la banque dépositaire de CRC a été rehaussée."
+news.story.lun_arrested.title,L'Agent Lun arrêté pour abus de pouvoir
+news.story.lun_arrested.desc,La Sécurité a arrêté l'Agent Lun sur-le-champ pour abus de pouvoir et promis une répression stricte des échanges illégaux pendant les deux prochaines semaines.
+tumbler.name,Tumbler
+tumbler.v1.1,Salut. J'ai entendu dire que le terminal ici est relié à mon mixeur.
+tumbler.v1.2,C'est moi qui ai codé ce truc. On m'appelle Tumbler.
+tumbler.v1.3,Il ne touche pas à ta marchandise et ne tient pas tes comptes. Il brasse juste les pièces.
+tumbler.v1.4,Je passais par là. Je voulais voir à quoi ressemblent mes utilisateurs.
+tumbler.v2.1,Ça commence à chauffer. La Sécurité s'en prend aux services de mixeur sur la chaîne.
+tumbler.v2.2,Ils ont signalé plusieurs grosses adresses et sont remontés jusqu'à mon nœud.
+tumbler.v2.3,"Si le mixeur s'arrête quelques jours, pas de panique. Les pièces bloquées dedans ne seront pas perdues."
+tumbler.v3.1,"Ils ont coupé mon nœud. Tôt ou tard, ils trouveront où j'habite."
+tumbler.v3.2,J'ai un disque de clés contenant les clés de signature du mixeur.
+tumbler.v3.3,"Si la Sécurité met la main dessus, ils pourront reconstituer l'historique de chaque utilisateur. Le tien aussi."
+tumbler.v3.ask,Tu peux me le cacher pendant quelques jours ?
+tumbler.v3.choice.hide,[Prendre le disque et le cacher]
+tumbler.v3.choice.report,"[Accepter, puis prévenir la Sécurité]"
+tumbler.v3.choice.sell,[Prendre le disque et le vendre au Marché noir]
+tumbler.v3.thanks1,Merci. Je repasserai le chercher dans quelques jours.
+tumbler.v3.thanks2,"Ne le laisse pas traîner. S'ils tombent dessus pendant une fouille, on est tous les deux foutus."
+tumbler.v3.report1,... D'accord. Je repasserai plus tard.
+tumbler.v4.back.1,Je viens récupérer le disque.
+tumbler.v4.back.2,Le nœud a été déplacé. La Sécurité ne le trouvera pas de sitôt.
+tumbler.v4.back.3,"Voilà pour le dérangement. Désormais, les frais de mixeur sont à moitié prix pour toi."
+tumbler.v4.lost.1,Où est le disque ?
+tumbler.v4.lost.2,... Tu l'as perdu ?
+tumbler.v4.lost.3,Laisse tomber. Je vais trouver une solution.
+tumbler.v4.sold.1,"Tu as vendu le disque au Marché noir, pas vrai ?"
+tumbler.v4.sold.2,"C'est eux qui gèrent le mixeur maintenant. Les frais ont doublé, et l'argent des utilisateurs peut disparaître à tout moment."
+tumbler.v4.sold.3,Je ne l'oublierai pas.
+tumbler.v4.none.1,Tant pis. Fais comme si je n'étais jamais venu.
+item.keydrive.name,Disque de clés
+item.keydrive.desc,"Un support de données laissé par Tumbler, contenant les clés de signature du mixeur. Contrebande : s'il est découvert lors d'une fouille, il sera inscrit au dossier."
+mixer.closed,Le mixeur a été arrêté et n'accepte plus de nouveaux dépôts. Les pièces déjà à l'intérieur sont restituées normalement.
+news.tumbler.sanction.title,La Sécurité saisit un nœud de mixeur
+news.tumbler.sanction.desc,"La Sécurité a annoncé la saisie d'un nœud d'un service de mixeur sur la chaîne, affirmant qu'il facilitait le blanchiment d'argent. Le service est temporairement interrompu."
+news.tumbler.caught.title,Arrestation de l'opérateur du mixeur
+news.tumbler.caught.desc,L'opérateur du mixeur connu sous le nom de Tumbler a été arrêté dans le Niveau inférieur. La Sécurité indique que le service de mixeur a été définitivement fermé.
+news.tumbler.sold.title,Le service de mixeur change de mains
+news.tumbler.sold.desc,"Selon certaines sources, les clés de signature d'un service de mixeur du Niveau inférieur sont tombées aux mains du Marché noir, et les frais ont aussitôt augmenté. Les utilisateurs craignent pour leurs fonds."
+nightlog.tumbler.gift,Tumbler a récupéré le disque de clés et a laissé {0} CRT en remerciement (envoyés à {1}) ; frais du mixeur réduits de moitié.
+mixer.status.closed,Statut : arrêté
+yield.sub.pools,Pools de rendement
+yield.sub.mine,Lancer un Ponzi
+pool.side.h,Dépôt
+ponzi.early,Les systèmes de Ponzi peuvent être lancés dès le jour {0}.
+bpay.h,Paiement
+bpay.qty,Quantité
+bpay.total,Total : {0} crédits
+bpay.need,Payer {0} {1}  solde du portefeuille : {2}
+bpay.invoice,Créer une facture
+bpay.swap.h,Conversion auto en {0}
+bpay.swap.none,Aucune autre monnaie du portefeuille n'est suffisante
+bpay.swap.need,"Payer {0} {1}, inclut {2} % de glissement"
+bpay.swap.btn,Convertir et payer
+bpay.swap.sum,"{0} : conversion auto, payer {2} {1}, converti en {3} avant la commande"
+bpay.back,Retour
+cart.fab,Panier {0}
+cart.h,Panier
+cart.empty,Le panier est vide.
+cart.added,Ajouté au panier : {0}
+cart.back,Retour boutique
+cart.done,Articles payés : {0}.
+cart.partial,Articles payés : {0} ; {1} en échec (stock ou solde).
+black.info.accepts,Accepte : {0}
+black.info.advance.yes,déblocage anticipé accepté
+black.info.advance.no,pas de déblocage anticipé
+settings.section.ui,Interface
+settings.section.story,Histoire
+settings.section.difficulty,Difficulté
+settings.terminal_size,Taille du terminal de trading
+settings.terminal_size_desc,Taille de la fenêtre en unités d'interface (largeur × hauteur). Appliquée à la prochaine ouverture du terminal.
+settings.tumbler_story,Intrigue Tumbler
+settings.tumbler_story_desc,"Visites de Tumbler et mission du disque de clés. Désactivée, plus aucune nouvelle visite ; la progression acquise est conservée."
+settings.risk_scale,Multiplicateur de risque
+settings.risk_scale_desc,"Multiplie la probabilité d'arnaques, de rug pulls, d'empoisonnement de portefeuille, de détournement d'adresse et d'hameçonnage. S'applique à toutes les sauvegardes."
+settings.mining_scale,Multiplicateur de gains de minage
+settings.mining_scale_desc,Multiplie la récompense de bloc versée aux machines de minage. S'applique à toutes les sauvegardes.
+gg.header,Comité de commerce
+gg.p1.cap,Carte graphique
+gg.p1.makers,Deux fabricants courants sont présents sur la station :\n\n      - Probidia (« PB »)\n      - PMD (« MD »)
+gg.p1.note,"Quel que soit le fabricant, la valeur d'une carte dépend uniquement du prix catalogue de la puce réelle et de sa santé : à pleine santé elle égale le prix catalogue, à santé 0 il n'en reste que {CardValueFloor:%}."
+gg.fan.h,Pales
+gg.fan.0,Propres (prix inchangé)
+gg.fan.1,Poussiéreuses (-{CardFanDust:%})
+gg.fan.2,Ébréchées (-{CardFanChipped:%})
+gg.fin.h,Contacts
+gg.fin.0,Brillants (prix inchangé)
+gg.fin.1,Ternes (-{CardFingersDark:%})
+gg.fin.2,Oxydés (-{CardFingersOxidized:%})
+gg.brk.h,Équerre
+gg.brk.0,Intacte (prix inchangé)
+gg.brk.1,Rayée (-{CardBracketScratch:%})
+gg.seal.h,Scellé
+gg.seal.0,Intact (prix inchangé)
+gg.seal.2,Manquant (-{CardSealMissing:%})
+gg.wear.note,"Les pales, les contacts et l'équerre se dégradent avec l'usure de chaque nuit et ne font qu'empirer ; le scellé est une caractéristique fixe. L'état influe aussi sur le taux de hachage, l'usure et la probabilité de griller."
+gg.serial.h,N° de série
+gg.serial.cap,Dos de la carte (autocollant)
+gg.serial.pb,"Probidia (« PB »)\n      Codes usine valides : 11, 12, 21, 34, 47"
+gg.serial.md,"PMD (« MD »)\n      Codes usine valides : 13, 22, 35, 41, 58"
+gg.print.h,Sérigraphie dos
+gg.print.0,Conforme au modèle
+gg.print.1,Autre modèle (contrefaçon)
+gg.print.2,"Réimprimé, de travers (contrefaçon)"
+gg.point.h,Signaler
+gg.ex.card,"Exemple : {0}, santé {1}%"
+gg.ex.base,Valeur de base : +{0}
+gg.ex.fan,Pale ébréchée : -{0}
+gg.ex.fin,Contacts ternes : -{0}
+gg.ex.seal,Scellé manquant : -{0}
+gg.ex.total,Valeur finale : {0}
+gg.ex.note,Chaque décote est une part de la valeur de base ; elles sont additionnées puis déduites.
+gg.ex.fan1,Pales poussiéreuses : -{0}
+gg.ex.fin2,Contacts oxydés : -{0}
+gg.ex.brk,Équerre rayée : -{0}
+gg.ex.nodisc,Aucune décote : -0
+gg.ex.fake,"Annoncé {0}, puce réelle {1} : valeur de la puce réelle"
+gg.ex.claimed,Prix du modèle annoncé : {0}
+gg.ex.gap,Écart avec l'offre : {0}
+gg.ex.h2,Exemple : contrefaçon
+gg.ex.h3,Exemple : très usée
+gg.ex.h4,Exemple : peu utilisée
+gg.ex.h5,Exemple : neuve
+lbl.price,Prix affiché : {0}
+lbl.row.count,Ventilateurs
+lbl.row.pin,Alimentation
+lbl.count.1,1 ventilateur
+lbl.count.2,2 ventilateurs
+lbl.count.3,3 ventilateurs
+lbl.pin.0,6 broches
+lbl.pin.1,8 broches
+lbl.pin.2,2 × 8 broches
+gg.p1.body,"Les cartes graphiques sont l'élément central de toute plateforme de minage et la marchandise la plus souvent contrefaite sur le marché de l'occasion.\nQuatre points permettent de juger si une carte est authentique : nombre de ventilateurs, connecteur d'alimentation, sérigraphie au dos et numéro de série. Seule une carte conforme à son modèle annoncé sur les quatre points est authentique ; un seul écart suffit pour une contrefaçon.\nLa valeur d'une carte dépend du modèle de la puce réelle et de son état, et chaque trace d'usure fait baisser le prix.\n\nCe guide fournit toutes les connaissances nécessaires pour expertiser une carte graphique."
+gg.p2.h,Modèles de carte
+gg.p2.body,Le modèle détermine le nombre de ventilateurs et le connecteur d'alimentation. Une contrefaçon est une puce de modèle inférieur dans le boîtier d'un modèle supérieur ; ses performances et sa valeur sont celles de la puce réelle.
+gg.tier.0,"RTX 60 / RX 70 : 6 broches, 1 vent."
+gg.tier.1,"RTX 70 / RX 80 : 8 broches, 2 vent."
+gg.tier.2,"RTX 80 / RX 800 : 8 broches, 3 vent."
+gg.tier.3,"RTX 90 / RX 900 : 2 × 8 br., 3 vent."
+gg.count.h,Nombre de ventilateurs
+gg.count.body,"Le modèle détermine le nombre de ventilateurs : un ventilateur pour les RTX 60 et RX 70, deux pour les RTX 70 et RX 80, trois pour les RTX 80, RTX 90, RX 800 et RX 900.\nUn nombre de ventilateurs qui ne correspond pas au modèle annoncé indique une contrefaçon."
+gg.pin.h,Connecteur d'alimentation
+gg.pin.body,"Le connecteur d'alimentation est lui aussi déterminé par le modèle : 6 broches pour les RTX 60 et RX 70, 8 broches pour les RTX 70, RTX 80, RX 80 et RX 800, 2 × 8 broches pour les RTX 90 et RX 900.\nUn connecteur d'alimentation qui ne correspond pas au modèle annoncé indique une contrefaçon."
+gg.serial.body,"Le numéro de série figure sur un autocollant au dos, sous la forme : préfixe, code de modèle, tiret, code usine à deux chiffres, tiret et numéro d'ordre à quatre chiffres, par exemple PB2-21-6251."
+gg.serial.rule,"Les codes de modèle 1 à 4 correspondent à RTX 60 / RX 70, RTX 70 / RX 80, RTX 80 / RX 800 et RTX 90 / RX 900.\nUn code de modèle qui ne correspond pas au modèle (l'autocollant provient de la puce d'origine), ou un code usine ou une longueur non valides (autocollant ajouté après coup), indique une contrefaçon. Le code usine ne sert qu'à vérifier l'authenticité et n'influence pas le prix."
+gg.print.note,"Une carte n'est authentique que si le nombre de ventilateurs, le connecteur d'alimentation, la sérigraphie et le numéro de série correspondent tous au modèle. Une contrefaçon présente au moins un écart, mais peut imiter correctement les autres points ; chacun doit donc être vérifié."
+gg.point.body,"S'inspecte à la loupe. Dans la barre d'étiquettes, seule la ligne du modèle possède un bouton « Signaler le modèle » ; les quatre lignes en dessous (ventilateurs, alimentation, sérigraphie dos, n° de série) sont en lecture seule, et chacune des quatre lignes d'état — pales, contacts, équerre, scellé — a son propre « Signaler ».\nSignaler un défaut d'état dissimulé fait passer la ligne à l'état réel et le prix baisse de la différence ; signaler un point exact est rejeté par l'autre partie et la réputation en pâtit.\nSi le nombre de ventilateurs, l'alimentation, la sérigraphie dos ou le n° de série ne correspond pas au modèle annoncé, signalez le modèle : la carte est alors déclarée contrefaçon, le modèle revient à la puce réelle et le prix est recalculé pour cette puce.\n\nLes cartes apportées par les clients de la guilde d'expertise suivent la même règle : les signalements modifient l'estimation jusqu'à l'annonce de la valeur correcte."
+gg.ex.serial,N° de série : {0}
+gg.ex.h,"Exemple d'expertise : pale ébréchée, contacts ternes, scellé manquant"
+rig.label.status,Statut
+rig.st.cards,Cartes
+rig.st.power,Conso.
+rig.st.hash,Hachage
+rig.st.kj,{0} kJ/j
+lbl.point.model,Signaler le modèle
+col.crcprice,Prix en CRC
+swap.pay,Payer
+swap.get,Recevoir
+swap.preview,"Environ {0} {1}　{2} pool(s), perte {3} %"
+swap.go,Échanger
+swap.same,Les monnaies payée et reçue doivent différer.
+mint.need,Nécessite {0} CRC et {1} SPARK
+mint.reserve,Couverture {0} %  Collatéral {1} %
+mint.queue,Ordres en attente
+mint.order,"{0} {1} CRA, jour {2}"
+stake.coin,Monnaie déposée
+stake.sum.via,Échanger {0} {1} → environ {2} CRA puis staker
+nightlog.cra.lost,L'émetteur n'a pas répondu : l'ordre ({1}) de {0} CRA est perdu.
+news.crawarn.desc,Quelqu'un fait l'inventaire de la réserve de la Révolution ; les CRA stakés pourraient ne pas être remboursés en totalité. Le déblocage prend quatre jours ; certains disent qu'il est temps d'agir.
+news.cralow.desc,La couverture de la réserve s'amenuise ; la Révolution a réduit le taux de staking du CRA à une fraction.
+poin.sub.funds,Fonds
+funds.receive,Dépôt
+funds.send,Retrait
+funds.bank,Compte bancaire
+funds.wallet,Portefeuille
+funds.to,Adresse de destination
+funds.go,Envoyer
+funds.sending,Envoi de {0} {1} vers {2}
+funds.confirm,Confirmation {0}/{1}
+funds.done,{0} {1} sont arrivés dans {2}.
+funds.done.void,"{0} {1} envoyés ; l'adresse n'a pas de propriétaire, les pièces sont perdues."
+funds.err.addr,Adresse invalide.
+funds.err.self,C'est l'adresse de dépôt de Poinbase.
+funds.err.known,Cette adresse n'accepte que les paiements d'une facture.
+funds.err.fee,Le montant ne couvre pas les frais de gas.
+wallets.sub.explorer,Explorateur
+explorer.search,Adresse
+explorer.all,Récent
+explorer.none,Aucun transfert.
+explorer.col.block,Bloc
+explorer.col.amount,Montant
+explorer.mixer,Mixeur
+cra.mint,Frapper
+cra.burn,Brûler
+mint.h,Frappe officielle (CRC + SPARK)
+mint.sum.in,Frapper {0} CRA avec {1} CRC et {2} SPARK ({3}–{4} jours)
+mint.sum.out,Brûler {0} CRA contre CRC et SPARK ({1} jours)
+mint.done.in,Ordre de frappe passé ; échéance au jour {0}.
+mint.done.out,Ordre de brûlage passé ; échéance au jour {0}.
+nightlog.cra.minted,{0} CRA frappés et stakés ({1}).
+nightlog.cra.burned,"{0} CRA brûlés : +{1} CRC, +{2} SPARK ({3})."
+predict.clue.subsidy,"Réserve à {0} % ; à zéro, l'alerte est certaine"
+air.noapprove,aucune autorisation de jetons
+tab.gray,Réseau gris
+wallets.sub.list,Liste
+entry.web3.l1,Trading décentralisé et rendement
+entry.mining.l1,État des machines et gains nocturnes
+entry.gray.l1,Mixeur et boutique
+entry.wallets.l1,Portefeuilles matériels et explorateur
+entry.wallets.l2,Portefeuilles {0} / {1}
+black.sell.add,Ajouter des articles
+black.sell.back,Retour à la vitrine
+black.sell.kinds,En vente {0}/{1} types
+black.sell.have,{0} en vente
+black.sell.coins,Cryptos acceptées
+black.sell.off,Retirer
+black.sell.off.n,Retirer ×{0}
+black.sell.nocoin,Acceptez au moins une crypto.
+black.sell.empty,Rien en vente.
+black.sell.delisted,{0} retiré(s) ; la marchandise est de retour au stockage.
+black.sell.partial,"{0} mis en vente, {1} n'ont pas pu l'être."
+black.sell.limit.stack,{0} exemplaires maximum par article.
+black.sell.limit.kinds,{0} types maximum en même temps.
+shelf.fab,Étagère {0}
+delist.fab,Confirmer le retrait {0}
+black.fee.h,Prêt à mettre en vente
+black.fee.line,{0} ×{1} · prix {2} ({3})
+black.fee.total,Frais de mise en vente {0}
+black.fee.sum,Frais de mise en vente ({0} art.)
+black.sale.Sold,"vendu, paiement au jour {0} en {1}"
+explorer.col.day,Jour
+explorer.day,Jour {0}
+explorer.pool,Pool RatDigg
+explorer.desk,Comptoir Ponero
+black.fee.pay,Payer les frais de mise en vente
+explorer.col.from,De
+explorer.col.to,Vers
+rig.st.cond,État
+asic.st.dead,Grillé
+perp.preview,Valeur notionnelle {0}  prix moyen est. {1} (glissement {2}%)
+perp.sim.close,Clôture  valeur notionnelle {0}  prix moyen est. {1} (glissement {2}%)
+perp.sim.close2,Frais {0}  environ {1} CRC récupérés (P/L {2})
+trade.sim.buy,L'achat donne environ {0} {1}  moy. {2}  glissement {3}%
+trade.sim.sell,La vente donne environ {0} {1}  moy. {2}  glissement {3}%

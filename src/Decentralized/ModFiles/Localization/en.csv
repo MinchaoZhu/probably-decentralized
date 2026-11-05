@@ -1,0 +1,958 @@
+# Probably Decentralized localization table: English (en)
+# Source language and fallback. Format: key,text (text may be quoted; \n is a line break).
+upgrade.tab,Web3
+upgrade.title,Web3 Governance Community
+upgrade.desc,"Members receive a trading terminal, a hardware wallet, a mining rig, an RTX 60 graphics card and a graphics card appraisal guide. The terminal holds the bank, the Poinbase exchange, and the Web3, Mining and Wallets pages. More cards and rigs are sold by Dr. Jackson."
+item.terminal.name,Trading Terminal
+item.terminal.desc,"Wallet, the Poinbase exchange and the nightly mining report."
+item.rig.name,Mining Rig
+item.rig.desc,Holds up to {0} graphics cards. Hashrate {1} MH/s. Draws {2} kJ per day.
+rig.label.modules,Modules
+item.rig.modules,"Modules: hashrate {0}, power draw {1}, wear {2}."
+item.rig.next,"Slot {0}: drag {1} onto the rig ({2}/{3})."
+mat.common_electronic,Common electronics
+mat.rare_electronic,Rare electronics
+rig.label.cards,Graphics cards
+item.gpu.name,{0} {1}
+item.gpu.desc,Rated hashrate {0} MH/s. Rated draw {1} kJ per day. Condition: {2}.
+item.gpu.burnt.name,Burnt {0} {1}
+item.gpu.burnt.desc,This card no longer works.
+term.title,Trading Terminal
+tab.report,Report
+wallet.line,{0}: {1} (about {2} credits)
+wallet.empty,The wallet is empty.
+wallet.total,Total value: {0} credits
+wallet.taint,Tainted value: {0} credits
+trade.amount,Amount
+trade.deposit,Deposit credits as CRC
+trade.withdraw,Withdraw CRC as credits
+trade.pair,{0}/{1} ({2})
+trade.price,Price {0}
+trade.buy,Buy
+trade.sell,Sell
+venue.Exchange,Poinbase
+venue.Dex,DEX
+venue.Darknet,Darknet
+msg.amount,Enter an amount.
+msg.balance,Not enough balance.
+msg.trade,"Paid {0} {1}, received {2} {3}."
+msg.deposit,Deposited {0} credits as CRC.
+msg.cashout,Received {0} credits. Tax {1} credits.
+msg.aml_light,Compliance review: {0} credits of tainted funds were withheld.
+msg.aml_heavy,Compliance review: {0} credits of tainted funds were seized and reported to Security.
+report.none,No mining report yet.
+report.day,Night of day {0}
+report.rigs,Rigs with power: {0} of {1}
+report.hash,Hashrate: {0} MH/s (network {1} MH/s)
+report.mined,Mined: {0} PSC (about {1} credits)
+report.energy,Energy used: {0} kJ
+report.burnt,Cards burnt out: {0}
+report.price,PSC price: {0} credits
+nightlog.mined,Mining rigs produced {0} PSC.
+nightlog.burnt,A {0} burnt out.
+coinpay.line,Deal. {0} {1}.
+nightlog.coinpay,Customers paying in coin settled {0} credits; the coins went to the hot wallet.
+nightlog.unpowered,{0} mining rig(s) or miner(s) had no power.
+news.open.title,Poinbase Lists PSC
+news.open.desc,The Upper Level exchange Poinbase now lists PSC against CRC. Graphics cards are in demand across the station.
+news.halving.title,PSC Block Reward Halved
+news.halving.desc,Miners now receive half as many coins per night.
+appraisal.gpu,Graphics card
+dealer.name,Used-hardware dealer
+dealer.line1.1,Cards from a mine clearance. Condition is written next to the name.
+dealer.line1.2,"A few worked cards, going cheap."
+dealer.line1.3,Picked these up on the road. First-hand price.
+dealer.line2.1,"See for yourself, turn them over and check the back."
+dealer.line2.2,No warranty. Look before you take.
+dealer.line2.3,Price is negotiable if you want them.
+inspect.flip.back,Turn over
+inspect.flip.front,Front side
+item.gpu.grade.1,like new
+item.gpu.grade.2,decent
+item.gpu.grade.3,clearly worn
+item.gpu.grade.4,badly worn
+point.none.1,There's nothing wrong with it. You misread it.
+point.none.2,Where? Don't make things up if you're not buying.
+point.worn.1,"...Fine, it has that. I'll knock something off."
+point.worn.2,"Sharp eyes. All right, this price."
+point.fake.1,...You caught it. It's a reflashed one. I'll price it for what it is.
+point.fake.2,"Tch, not the original chip. Fine, the real chip's price."
+lbl.fan.0,Blades clean
+lbl.fan.1,Blades dusty
+lbl.fan.2,Blade chipped
+lbl.fingers.0,Bright
+lbl.fingers.1,Dull
+lbl.fingers.2,Oxidized
+lbl.print.0,Matches the model
+lbl.print.1,Another model printed
+lbl.print.2,"Reprinted, crooked"
+lbl.said," (seller said: {0})"
+lbl.point,Point out
+lbl.edit,Edit
+cust.fake.1,That's not what the label says. You trying to pass off a fake?
+cust.fake.2,The model doesn't match. That isn't the chip it claims.
+cust.worn.1,That's not what you wrote. You left out the flaws.
+cust.worn.2,The condition on the label is false. Not at this price.
+lbl.row.fan,Blades
+lbl.row.fingers,Contacts
+lbl.row.bracket,Bracket
+lbl.row.print,Back print
+lbl.row.serial,Serial
+lbl.row.seal,Seal
+lbl.bracket.0,Intact
+lbl.bracket.1,Scratched
+lbl.serial.0,Valid
+lbl.serial.1,Bad factory code or length
+lbl.serial.2,Tier code does not match
+lbl.seal.0,Intact
+lbl.seal.2,Missing
+item.guide.name,Graphics Card Appraisal Guide
+item.guide.desc,A guide for identifying counterfeit graphics cards and determining their value.
+lbl.row.spec,Model
+news.prehalving.title,PSC Halving Ahead
+news.prehalving.desc,Miners will receive half as many coins per night in three days. Holders expect the price to rise.
+tab.home,Home
+tab.bank,Bank
+tab.poinbase,Poinbase
+tab.web3,Web3
+home.enter,Enter
+home.open,Open
+home.summary,Credits {0}   |   On-chain assets about {1} credits
+home.lastnight,"Night of day {0}: mined {1} PSC, {2} / {3} rigs powered"
+entry.bank,Bank
+entry.bank.l1,"Deposits, withdrawals, rent"
+entry.bank.l2,Credits {0}
+entry.poinbase,Poinbase
+entry.poinbase.l1,Compliant exchange
+entry.poinbase.l2,PSC {0} credits
+entry.web3,Web3
+entry.web3.l2,About {0} credits
+entry.help,Help
+entry.help.l1,Web3 handbook
+bank.cash,Credits: {0}
+bank.rent,"Rent: {0} credits, due in {1} days"
+bank.crc,Poinbase account (CRC): {0}
+poin.account,"Poinbase account: CRC {0}, PSC {1}"
+avg.line,{0} average buy price: {1} credits
+avg.short,avg. buy {0}
+avg.none,—
+col.asset,Asset
+col.amount,Amount
+col.value,Value
+col.avg,Avg. buy
+bank.cash.k,Credits
+bank.rent.k,Rent
+bank.rent.v,"{0}, due in {1} days"
+bank.crc.k,Poinbase account (CRC)
+poin.account.h,Poinbase account
+trade.h,Trade
+web3.wallet.h,On-chain wallet
+stable.ok,Pegged
+stable.depeg,Depegged
+stable.warn,Warning: staking reserve coverage low
+stable.spiral,Collapsing
+aml.taint,Account taint share: {0}%
+mixer.h,Mixer
+mixer.ok,Status: operating normally
+mixer.sanctioned,Status: sanctioned ({0} more day(s)). Coins withdrawn meanwhile are flagged.
+mixer.pending,Pending deposits
+mixer.none,No pending deposits.
+mixer.col.taint,Taint
+mixer.col.ready,Ready
+mixer.day,Day {0}
+mixer.deposit,Deposit
+mixer.balance,Balance: {1} {0}
+mixer.rounds,Rounds
+mixer.preview,"Expect {0} {1} back, taint down about {2}%, ready on day {3}."
+mixer.go,Deposit to mixer
+mixer.min,Deposits must be worth at least {0} credits.
+mixer.done,Deposited {0} {1}; back on day {2}.
+mixer.upgrade.title,Mixer
+mixer.upgrade.desc,"Unlocks the mixer in the terminal's Gray Net page: deposit tainted coins, get them back days later with less taint. Cash-outs of freshly mixed coins are screened harder; during crackdowns the mixer may be sanctioned and coins withdrawn meanwhile are flagged."
+news.sanction.title,Mixer put on sanctions list
+news.sanction.desc,Security has sanctioned a batch of mixing services. Funds withdrawn from mixers in the next few days will be treated as suspicious.
+nightlog.mixer,Mixer returned {0} {1}; taint {2} -> {3}.
+nightlog.mixer_flag," (withdrawn during sanctions; address flagged)"
+nightlog.mixer_rug,The mixer's operator ran off with it: {0} {1} never came back.
+web3.sub.trade,Trade
+gray.sub.mixer,Mixer
+msg.frozen,Those coins are frozen until they thaw.
+wallet.frozen,"{0}: {1} frozen, thaws on day {2}"
+nightlog.crt_freeze,The black market handed over addresses during the crackdown: {0} of your CRT is frozen until day {1}.
+nightlog.thaw,Frozen {0} {1} thawed.
+news.crtfreeze.title,Black market freezes some CRT addresses for the crackdown
+news.crtfreeze.desc,Word is the black market gave security a list of CRT addresses in exchange for being left alone. Holders with low standing are likelier to be frozen.
+black.upgrade.title,Web3 Shop
+black.upgrade.desc,"Unlocks the shop in the terminal's Gray Net page: the black-market faction's on-chain arm. Weekly shelves of contraband, occasionally high-tech goods and GPUs (at a markup); buy spot, or order and wait for a courier. Coin only (PSC, CRT, CRA, Ponero), tainted coin accepted. Needs black-market standing; offline during crackdowns."
+black.offline,The shop's on-chain entrance is offline during the crackdown.
+black.closed,You need black-market standing of {0} to enter the shop (currently {1}).
+black.sub.buy,Buy
+black.shop.h,Spot counter
+black.rep,Black-market standing {0}
+black.empty,Sold out for this week.
+black.offer,{0} x{1}   {2} credits
+black.buy,Buy
+black.bought,Deal done: {0} is in storage.
+black.pay.h,Payment
+black.desk.h,Ponero desk
+black.desk.left,Left today: {0} (limit {1})
+black.desk.price,Ponero price: {0}
+black.desk.swap,Swap
+black.desk.in,Into Ponero
+black.desk.out,Out of Ponero
+black.desk.go,Swap
+black.desk.fail,"Swap failed: balance, limit or amount is wrong."
+black.sub.orders,Orders
+black.rugged,The platform is down; nobody will reopen for {0} more days.
+black.seller,"{1} trades, {2}% positive"
+black.orders.h,Order catalog
+black.order,Order
+black.mode.Escrow,Escrow
+black.mode.Advance,Advance release
+black.ordered,"Ordered: {0}, due day {1}."
+black.mine.h,My orders
+black.mine.none,No orders yet.
+black.mine.line,"{0} ({1}, {2}): {3}, day {4}"
+black.state.Pending,in transit
+black.state.Ready,arrived
+black.state.Done,picked up
+black.state.Refunded.scam,"seller ran, refunded"
+black.state.Lost.scam,"seller ran, money gone"
+black.state.Lost.rug,"platform rugged, money gone"
+black.state.Lost.intercept,intercepted
+black.forum.h,Forum intel
+black.forum.quiet,Quiet lately.
+black.forum.scam,Someone says {0} takes the money and never ships.
+black.forum.rug,"Withdrawals have been slow lately, the site is running promos, and a lot of complaint threads got deleted."
+nightlog.bm.scam_refund,Black market: seller {0} ran; the escrow for {1} was refunded.
+nightlog.bm.scam_loss,Black market: seller {0} took the advance and ran; {1} is gone ({2} credits).
+nightlog.bm.intercept,Black market: the parcel with {0} was intercepted; {1} credits of payment lost.
+nightlog.bm.rug,Black market: the platform rugged; the in-transit funds for {0} ({1}) are gone.
+nightlog.bm.reopen,Black market: someone reopened at the old spot.
+news.bmrug.title,Black-market platform rugged
+news.bmrug.desc,"The black market's on-chain entrance went dark overnight, wiping out all escrow and advance funds. A new entrance will appear in a few days."
+courier.name,Courier
+courier.line1.1,Delivery's here.
+courier.line1.2,Package for you.
+courier.line2.1,Don't tell me what's inside. I don't want to know.
+courier.line2.2,Dropped it here. I'm gone.
+gray.sub.black,Shop
+black.stock,{0} left
+black.price,{0} credits
+black.noadvance,No advance release
+black.kind.gpu,GPU  condition {0}%
+black.kind.Contraband.1,Contraband (low)
+black.kind.Contraband.2,Contraband (mid)
+black.kind.Contraband.3,Contraband (high)
+black.kind.Tech,High-tech (markup)
+nightlog.bm.ready,Black market: {0} arrived; a courier will come by once you open.
+guide.web3.title,Web3 Handbook
+guide.web3.text,"Bank and trading: the Bank page is read-only and shows cash, rent and the CRC in your Poinbase account. Poinbase's Funds page handles deposits and withdrawals; pick the coin first: CRC can go through the bank account or a wallet, every other coin only through a wallet. Depositing from the bank turns credits into CRC in your Poinbase account; withdrawing to the bank turns CRC back into credits and goes through compliance screening, which looks at the Poinbase account's taint. Withdrawing to a wallet needs a payee address and a few confirmations before it arrives; the gas fee is fixed at the normal tier and taken from the coin sent. A wrong address format or checksum is rejected; a correctly formatted address nobody uses means the coins are gone.¶Trading: PSC stands for Probably Stolen Coin, the coin mined by GPUs and miners. Buys are paid in the quote coin, sells in the traded coin.¶The Web3 trade page can swap any two coins, always through CRC: with CRC on one side it uses one pool, otherwise two pools, with two fees and stacked slippage; the preview shows the amount received, the pools crossed and the loss.§Hardware wallets: on-chain coins sit in PLEDGER hardware wallets, each with its own balances and taint. A wallet is an item: drag it onto the trading terminal to load it. Open it on the terminal's Wallets page; connect and disconnect at the top right of the terminal. Trading on the Web3 page and the shop and mixer on the Gray Net page use the connected wallet; with no wallet or no connection they are view-only and every balance reads 0. Coin-paying customers pay into the connected wallet.¶Payments (shop, mixer, Ponero desk, listing fees) start as an invoice on the terminal; type the payee address on the wallet and hold ✓ to sign. The last two characters of an address are a checksum, so a one-character typo is usually caught; once in a while it happens to be valid and the coins go to an address nobody uses. DEX swaps also need a signature on the wallet.¶Poinbase is a custodial account; deposits are sent from a wallet to Poinbase's deposit address (PSC, CRC, CRT, CRA and SPARK are all accepted) and withdrawals are started on Poinbase's Funds page. The Explorer on the Wallets page looks up transfers by address and shows only transfers that really happened (your wallets, withdrawals, miner payouts). More hardware wallets are sold by Dr. Jackson; drag one onto the trading terminal to add it, up to {WalletMax}. The shop has cheaper ones. A wallet you no longer want can be destroyed on the Wallets page; its coins are lost for good, and anything sent to its address afterwards is lost too.¶Transfers pay a gas fee: slow, normal or fast, and gas prices rise and fall over roughly a week; when the network is congested gas fees rise and slow transactions may be dropped from the mempool. Check the full address before sending.§Staking: CRA staked in the Revolution pool earns a daily rate that compounds into the stake; withdrawing means requesting first and waiting four days, with no interest while waiting and no way to take it early. CRA is partly collateralized: each CRA is backed by the CRC reserve the Revolution holds and by the balance token SPARK; reserve coverage and the collateral ratio are shown on the staking page. Interest is paid in new uncollateralized CRA, which dilutes reserve coverage, faster the more is staked; when coverage is too low the Revolution cuts the rate. The Revolution sometimes diverts the reserve, preceded by rumors: that is the warning. If coverage then falls below {CraCrashRatio:%} it collapses: CRA is worthless within three days and four days of unlocking is too slow; above that there is only a discount, and money from raiding the upper class slowly refills the reserve.¶Official minting: deposit CRC and SPARK (ratio per the current collateral ratio; the preview shows what is needed) to mint CRA, queued {CraMintDaysMin}-{CraMintDaysMax} days; the minted CRA goes straight into staking. Burning turns CRA back into CRC and SPARK, waiting as long as the unlock period; when the reserve is short the CRC share is cut by coverage. Queued mints and burns may be dishonored in full by the Revolution: the nightly chance is how far the CRA price is below 1 times {CraRugPerDepeg}; if the price is not below 1 it cannot happen.¶Staking accepts CRA, CRC, CRT and SPARK: the last three are first swapped into CRA on the secondary market at the going price (through CRC, with fees and slippage). SPARK's price swings hard and crashes with the collapse. Staking, minting and burning are contract calls and need a signature on the wallet.§Miners: RatDigg miners (M1 / M2 / M3) are standalone machines with far more hash than a card and a lower power draw per hash; they need a battery, take modules and use no rig slots. Only the shop's miner dealers sell them, gated by black-market standing (M1 {AsicRepM1}, M2 {AsicRepM2}, M3 {AsicRepM3}), sometimes second-hand. When one burns out, repair it by dragging electronic components onto it in order; it comes back {AsicRepairHealthCut} health lower. Somewhere between day {EraMin} and day {EraMax} a ""miner era"" arrives, announced in the paper a few days earlier: the big farms halve their power costs, network hash climbs, GPU miners are diluted and low-end cards barely earn, while miners still do fine.¶Payout address: each miner (rigs and ASIC miners) has a payout address set in its own window; its mining output is sent there every night in proportion to hash power, so two miners can pay two different addresses. It starts unset; with no address, or a wallet that has been destroyed, that share is lost, so change the address when you change wallets.§Perps: the Perps tab on Poinbase uses your account CRC as margin, up to {PerpPscLev}× on PSC and {PerpSparkLev}× on SPARK, isolated margin only, a single position at a time (never long and short at once); to add to it, top up the margin. Fills are worse than the quote (more so for bigger orders, like the spot pool) and opening and closing both cost a fee. Liquidation is checked only overnight against the day's average price: equity under {PerpMaint:%} of notional wipes the margin. There is also a nightly funding payment; when the price is above its 7-day average, longs pay shorts.¶If a liquidation loses more than the margin, the insurance fund covers the gap; when it runs dry (a SPARK collapse can do that) winning positions are auto-deleveraged and give up half their profit; anything beyond that becomes your debt. Debt grows {PerpDebtInterest:%} a day, is repaid first from CRC in the account every night, blocks new positions and cash-outs, and after {PerpDebtDays} days items in your shop are seized to cover it; whatever is still short is written off and the perp account is banned for {PerpBanDays} days.§Shop: coin only, no CRC, {BmPremium:%} above normal channels, with extra markup on high-tech goods and GPUs; the coin you pay leaves its share of taint with the seller and the goods carry no stolen tag; GPUs may be fake, inspect them yourself.¶Shop purchases: pick a seller on the left, the shelf is on the right, and after 'Buy' the payment panel sets quantity, payment method and coin. Each kind of seller takes different coins: hardware and tech take PSC and CRT; arms, drugs, chemicals, documents, luxury and personal sellers take CRT and the privacy coin; farming, husbandry, water and brewing take PSC and CRA; platform spot takes PSC, CRT and CRA. If you lack a coin the seller takes you can use the built-in auto-convert: it swaps from another coin in the wallet at an {BmAutoSwapSlip:%} slippage and signs once; or swap on the DEX yourself first, with far less slippage but an extra step. Listing fees pick a coin at payment time too.¶Shop cart: 'Buy' on a shelf adds to the cart; the floating cart at the bottom right shows the count and opens checkout. Checkout shows the cart on the left (grouped by seller, quantities adjustable, items removable, escrow or advance release for sellers that allow it) and payment on the right: each seller has a different payee address, so you pay seller by seller - pick a coin that seller takes, create an invoice and transfer from the wallet; or auto-convert from another coin in the wallet ({BmAutoSwapSlip:%} slippage extra) and sign once for that seller.§Orders and selling: Orders are cheaper than spot but take days and may be intercepted; merchants sell by type at their own price factor, {BmBulk1Count}+ items get {BmBulk1Discount:%} off and {BmBulk2Count}+ get {BmBulk2Discount:%} off, and a bulk merchant appears at random with the lowest prices but {BmBulkDays} days of waiting; escrow costs {BmEscrowFee:%}, is released on delivery and refunded if the seller runs; advance release takes another {BmAdvanceDiscount:%} off, but a scammer keeps the money and only sellers with {BmAdvanceMinTrades}+ trades accept; the platform itself can rug, be taken over by enforcement, or a seller can be arrested, after which your orders get traced and crime logged; forum rumors can be warnings. An intercepted parcel sometimes turns into enforcement at your door: signing logs the crime on the spot and seizes the goods, refusing only costs the payment.¶Selling: on the shop's Sell tab, list contraband, high-tech goods and GPUs from storage at {BmSellMin}x to {BmSellMax}x the reference price. The higher the multiplier, the slower the sale (below {BmSellFastMult}x about {BmSellDaysFast} day, {BmSellDay1Mult}x about {BmSellDays1}, {BmSellMax}x about {BmSellDaysMax}), and the likelier and larger the taint on the payout, which also grows with how much you sold in the last 7 days; the Sell tab opens on your showcase of listed goods, and “Add listings” stages more: identical goods are grouped, the − and + keys set the quantity, the multiplier is picked on the left, and goods are listed only after you pay the listing fee with the Shelf button; all units of one item share one multiplier, so to change it take them all down first; up to {BmMaxKinds} kinds at once and {BmMaxStack} of each, {BmListFee:%} listing fee per unit; goods can be taken down from the showcase and return to storage, the fee is not refunded; “Accepted coins” on the showcase chooses which coins you take: every extra coin adds one more sale roll each night (in random order, with a different number of buyers per coin), so accepting more coins sells faster, and the payout arrives in the coin of the winning roll; {BmCommission:%} commission, payout held {BmSaleHold} days before reaching your wallet; a fake card may be spotted and returned, hurting your rating; if the platform rugs, listed goods and unreleased payouts are gone.§Prediction markets (Web3 Predict page, from game day {PredictUnlockDay}): each market is a yes/no question about things the game itself rolls or schedules: a news event appearing, a faction operation starting, tomorrow's water purity, the PSC price. A market is open until its window starts and settles on the night of the window's last day. Buy Yes or No with CRC from your on-chain wallet (a contract call: sign on the wallet; the position belongs to the signing wallet); the price is the market's implied probability and rises as you buy; each winning share pays 1 credit; {PredictFee:%} fee on each trade; each market has a position limit. Winnings inherit the taint ratio of the stake.¶Rumor slips and faction perks can tell you ahead of time that something will happen; betting Yes on such a market is an insider bet. A large insider position has a {PredictInsiderCatch:%} chance of being caught at settlement or when sold at a profit: stake and profit are confiscated and half the profit goes on record as fraud. If game data is missing for the window (for example you skipped the nightly settlement), the market is void and the stake is refunded.§Prices react to news: each night every open market moves halfway toward the fair probability given public information, plus some noise; so whoever reads the paper, a rumor slip or a faction perk first can buy ahead and sell after the move instead of waiting for settlement. The clue list in a market panel shows what you know about it: schedules, cooldowns, the halving day, recent gas values, the CRA reserve level, ASIC-era announcements.¶Patterns you can work out: faction operations are triggered by hidden power values at thresholds (for example a crackdown needs security >= 20 and black market >= 40, and drops security by 20); gas runs on a seven-day cycle; the price anchor ramps up the week before a halving; scheduled crackdowns and blackouts move the anchor but the market price does not reflect them ahead of time; the faster the reserve drains (the more is staked) the earlier CRA warns; the PSC price market can be moved by your own big orders. The intel broker (needs enough black-market standing) sells a situation brief (the five power values and what each faction can launch now, in CRT) and three grades of insider tip (only for faction operations and the ASIC era, which are already decided; accuracy rises with each tier; priced by market size; some tips are fake and say the opposite of the truth); betting the tipped side counts as an insider bet. Market size grows with the day and a wrong bet loses the whole stake, so do not put everything on one market.§Manipulation checks: your big Poinbase spot orders push the price away from where it would be without you (the push decays nightly with the price reversion; the market clue shows it). Once the push exceeds {ManipFree:%}, if you profit from the price (a PSC price market won in the direction you pushed, or a perp closed at a profit in that direction) you may be caught: the bigger the push the likelier (capped at {ManipMax:%}). When caught, the prediction stake and winnings are confiscated entirely, perp profit is seized, half the profit goes on record as fraud, the perp account is frozen for {ManipFreezeDays} days, and the paper reports the investigation. Short-then-dump is not a sure thing: perp slippage on both sides and the spot round trip often cost more than the short earns.§High-yield scheme (Yield page, Issue; from game day {PonziMinDay}, one per save): pick a daily rate ({PonziRates[0]:%}-{PonziRates[4]:%}), pay the marketing cost to launch (launching and rugging are contract calls signed on the wallet), and lower-level people deposit CRC by rate and lower-level standing; the higher the rate the faster they come. Each night interest is paid first from new deposits, then from the issuer wallet; if you cannot cover it there is a run and the scheme collapses; {PonziWithdraw:%} of the pool is withdrawn each night, and the bigger the pool and the higher the rate the likelier a report, which also collapses it. On collapse the pool is confiscated. You can rug the pool any time (click twice to confirm): it goes to the issuer wallet fully tainted (launder it before cashing out). Rugging and collapse both put fraud on record and wipe your lower-level standing. The word-on-the-street line hints at the report risk.§Scams: wicks - some mornings the price is slammed {WickMin:%}-{WickMax:%} up or down at open; most of it reverts that night, but some are real; the perp mark price only takes half, so do not panic-sell into a wick.¶Airdrops (Web3 Airdrops page) - each airdrop needs the wallet authorized first (one signed authorization contract), then a signed claim; check the approval scope before authorizing: real airdrops need no approval or a small one of a few dozen; an unlimited approval, or one far larger than the reward, is phishing, often under a lookalike name (0 for o, 1 for l), and a night or two later that coin is taken from the wallet. Approvals are listed on the right of the Airdrops page and can be revoked with a signature, after which nothing can be taken.¶Third-party yield pools (Yield page, Deposit) - {YieldRates[0]:%}-{YieldRates[2]:%} a day; you can see the reserve, whether there is a timelock and an audit, but not whether it is a scam: the higher the rate the likelier a rug, a timelock and an audit make it less likely; an honest pool closes and returns principal when its reserve cannot pay interest, a scam pool can vanish any night. Timelocked pools take {YieldLockDays} days to withdraw.¶Fake support - someone at the counter claiming to be Poinbase support asks you to move CRC to a ""safe address"": Poinbase never visits and never asks you to transfer. Forged transfers - a coin-paying customer who opens with ""already sent, here's the screenshot, hand it over"" never pays; honest ones say it takes a moment to confirm on chain.§Charts: the Poinbase spot page and the Web3 trade page can switch between daily candles of every coin (the perp page shows the current product, predictions show PSC), green up and red down; the yellow line is the 7-day average (perp funding uses it); the bars below are volume (grey the market, cyan you: spot, DEX, mint/burn, Ponero swaps and perp opens/closes all count). The bigger the move the more the market trades; wicks leave long shadows.§Story links: choices in the game's storylines change this market; the paper reports them the next day and the market takes a few days to react. Serpico's evidence to the Revolution: the CRA reserve is topped up, the collapse chance halves for {StorySecDays} days and SPARK rises {StorySerpicoSpark:+%} over {StorySparkNights} nights; to the black market: CRT depeg and sell-out chances halve; to Security: for {StorySecDays} days cash-out screening, mixer sanctions and manipulation and insider checks are stricter. Eleanor leaks the drive: the CRC custodian write-down chance doubles and SPARK rises {StoryLeakSpark:+%}; returns it: the CRC depeg chance halves. Officer Lun arrested: stricter cash-out screening and manipulation and insider checks for {StoryLunDays} days.¶Mixer operator Tumbler (after unlocking the mixer, from day {TumblerMinDay}): he visits a few times and finally asks you to hide a key drive. Hide it and give it back: mixer fees halve and the anonymity set grows, plus a gift; but the drive is contraband and goes on your record if a search turns it up meanwhile. Report him: a bounty and Security standing, and the mixer shuts down for good (coins inside come back). Sell it to the black market: a sum of CRT (half tainted) and black-market standing, after which mixer fees rise and the chance of a rug goes up.§Mixer and privacy coin: pick a coin, amount and rounds; each round takes a fee and lowers taint, rounds equal days of waiting, and the coins come back to the same address; the more you deposit, the worse the cleaning.¶Privacy-coin swap (Web3 trade page, needs black-market standing): Ponero is a privacy coin and swapping in wipes the taint on that value; {PoneroFee:%} fee each way with a daily limit; coin swapped out of Ponero has no origin and cash-out screening gets stricter.§Withdrawal screening (the screen shows neither the allowance nor the hit chance; the rules are these): withdrawing CRC from Poinbase for credits is judged against the current rent - a single withdrawal above {AmlBigRents}x rent, or totals above {AmlCumRents}x rent within {AmlWindowDays} days, raises the chance of being checked in proportion to the excess; once taint is at least {AmlTaintRatio:%} of the amount the chance gains 'ratio x {AmlTaintMult}'; coin recently returned by the mixer or from a flagged wallet adds {AmlMixerBonus:%}; the chance caps at {AmlMaxChance:%}. On a hit: taint under {AmlHeavyRatio:%} is light - the tainted part is confiscated and no crime is recorded; {AmlHeavyRatio:%} or more is heavy - the tainted part is confiscated and the taint amount is recorded as fencing. With no hit the full amount arrives. Withdrawals cost {ExchangeFee:%} and gains above cost are taxed {TaxRate:%}. Splitting into small amounts, spreading over days and washing first all lower the chance, but nothing tells you the allowance or the odds; estimate them yourself.¶Before destroying a wallet move the coins out yourself, and withdraw positions and deposits first: whatever is left goes with the wallet."
+courier.odd1,...Package is here.
+courier.odd2,(His hand stays in his pocket.) Sign here.
+courier.sign,Sign
+courier.refuse,Refuse
+courier.signed,"Good. Don't move, Security."
+courier.refused,"...Fine, forget it."
+black.state.Lost.seized,seized
+black.state.Lost.refused,refused
+black.forum.easy,"Too smooth lately: sellers ship faster than ever, and there are new accounts nobody has seen."
+black.forum.busted,"Word is {0} got arrested, and the order records are still around."
+nightlog.bm.trap.honeypot,"Black market: the platform was taken over by enforcement; your {0} was traced, crime logged {1}."
+nightlog.bm.trap.seller,"Black market: a seller was arrested and the order records implicate you: {0}, crime logged {1}."
+tab.mining,Mining
+courier.sign.say,I'll sign.
+courier.refuse.say,Not taking it. Send it back.
+black.forum.busted_buyer,"Word is a batch of buyers got arrested, and the sale records are still on the platform."
+nightlog.bm.sale_sold,Black market: your {0} sold for {1}; payout on day {2}.
+nightlog.bm.sale_paid,"Black market: payout of {1} for {0} arrived (CRT), taint {2}."
+nightlog.bm.sale_fake,Black market: the buyer saw that {0} is a fake and returned it; your rating dropped.
+nightlog.bm.sale_rug,Black market: the platform rugged; your {0} and the payout ({1}) are gone.
+black.sub.sell,Sell
+black.sell.h,Sell
+black.sell.mult,Price multiplier
+black.sell.none,Nothing sellable in storage.
+black.sell.rating,Rating {0}%
+black.mine.sale,{0}  ref {1}  price {2} (x{3}): {4}
+black.sale.Listed,listed
+black.sale.Paid,paid
+black.sale.Lost,"platform rugged, gone"
+black.sale.Delisted,taken down
+black.sale.Delisted.fake,buyer spotted the fake and returned it
+black.kind.gpunew,GPU  brand new
+merchant.GpuNew,New GPUs
+merchant.GpuUsed,Used GPUs
+merchant.Arms,Arms
+merchant.Docs,Keycards & chips
+merchant.Pharma,Pharma
+merchant.Bulk,Bulk
+black.days,{0} days delivery
+black.sell.listedall,Listed {0} items.
+merchant.Rigs,Rigs & power
+merchant.Modules,Modules
+merchant.GunMods,Gunsmith parts
+merchant.Chem,Chemicals
+merchant.Brewer,Brewing
+merchant.Farm,Hydroponics
+merchant.Husbandry,Husbandry
+merchant.Miner,Mining supplies
+merchant.Water,Water
+merchant.Storage,Storage
+merchant.Tools,Tools
+merchant.Luxury,Luxury
+black.kind.Goods,Goods
+merchant.Elite,Elite shop
+merchant.Personal,Private seller
+black.pay.confirm,Invoice
+black.pay.to,Payee address: {0}
+black.pay.cancel,Void
+pay.mix,Mixer {0} {1}
+pay.swap,Ponero desk {0} {1}
+black.edit.cancel,Cancel
+merchant.Platform,Platform
+black.platform.line,Platform spot  instant delivery
+black.orders.in,Bought
+black.orders.out,Selling
+black.desk.pair,PONERO [privacy coin]  price {0}
+black.pay.amount,Amount: {0} {1} (about {2} credits)
+black.pay.wallet,Pay from wallet
+hw.total,Total ≈ {0} credits
+hw.pending.bill,Unpaid: {0}
+hw.pending.sign,To sign: {0}
+hw.send,Send
+hw.review,Signature request
+hw.to,Payee address
+hw.avail,Available {1} {0}
+hw.amount,Amount
+hw.bill,Invoice: {0}  {1} {2}
+hw.fill,Fill invoice amount
+hw.next,✓ Next  × Back
+hw.err.format,Malformed address.
+hw.err.checksum,Address checksum failed.
+hw.err.self,That is this wallet's own address.
+hw.err.asset,The invoice asks for {0}.
+hw.err.short,Less than the invoice: {0} {1}.
+hw.err.nobill,No unpaid invoice for this payee.
+hw.review.h,Review
+hw.contract,Contract call
+hw.review.to,Payee address
+hw.review.amount,{0} {1} (about {2} credits)
+hw.review.bill,Invoice: {0}
+hw.review.unknown,No transaction history at this address.
+hw.review.over,Overpaying {0} {1}; not refunded.
+hw.hold,Hold ✓ to sign  × Reject
+hw.tx.h,Transaction
+hw.tx.signing,Signing…
+hw.tx.mempool,Broadcast; waiting in the mempool…
+hw.tx.packed,Included in block #{0}
+hw.tx.confirm,Block #{0}  confirmation {1}/{2}
+hw.skip,Skip
+hw.done.h,Confirmed
+hw.done.block,Block #{0}
+hw.done.sent,{0} {1} → {2}
+hw.done.void,Nobody uses this address. The coins are gone.
+hw.back,Back
+hw.rejected,Signature rejected on the wallet.
+hw.wait,Confirm on the wallet.
+hw.swap,Swap {0} {1} → about {2} {3}
+tab.wallets,Wallets
+hw.wallet.n,Wallet {0}
+hw.review.own,Own wallet: {0}
+hw.review.poinbase,Poinbase deposit address
+poin.deposit,Deposit address: {0}
+wallets.count,Wallets {0}/{1}
+wallets.col.name,Name
+wallets.col.addr,Address
+wallets.col.taint,Taint
+wallets.open,Open
+wallets.use,Connect
+wallets.current,Connected
+wallets.added,Added {0}: {1}
+nightlog.drained,"The coins in {0} were moved out, about {1} credits."
+item.hwwallet.name,PLEDGER hardware wallet
+item.hwwallet.desc,Large-screen hardware wallet. Drag it onto the trading terminal to add a wallet (up to 5).
+poin.empty,The account is empty.
+hw.copy,Copy
+hw.paste,Paste
+hw.copied,Address copied.
+hw.copied.addr,Copied {0}
+hw.balance.frozen," (frozen {0})"
+wallets.destroy,Destroy
+wallets.destroy.sure,Confirm
+wallets.destroyed,Destroyed {0}: {1}
+wallets.destroy.warn,Destroying {0} permanently loses its coins. Press again to confirm.
+payout.label,Payout
+payout.unset,Not set
+payout.set,Set address
+payout.h,Payout address
+payout.cur,Current: {0}
+payout.pick,Own wallets:
+payout.manual,Or enter an address:
+payout.clear,Clear
+payout.err,Invalid address.
+nightlog.mined.lost,"{0} PSC mined was lost: no payout address set, or its wallet was destroyed."
+wallets.none,No wallet loaded. Drag a hardware wallet onto the terminal.
+web3.err.noconn,No wallet is connected.
+web3.connect,Connect wallet
+web3.disconnect,Disconnect
+web3.conn,{0}  {1}
+hw.balance.value,≈ {0}
+wallets.rename,Rename
+wallets.rename.h,New name for {0}
+wallets.rename.ok,OK
+hw.fee.slow,Slow
+hw.fee.normal,Normal
+hw.fee.fast,Fast
+hw.fee,Gas fee {0} {1} (about {2} credits)
+hw.confs,{0} confirmations needed
+hw.congested,Network congested
+hw.congested.slow,Network congested: slow fee may be dropped from the mempool
+hw.recent,Recent
+hw.recent.out,→ {0}  {1} {2}
+hw.recent.in,← {0}  {1} {2}
+hw.review.history,Address in your history
+hw.tx.stuck,Queued in the mempool…
+hw.tx.dropped,Dropped from the mempool. Nothing was sent; the gas fee is still charged.
+hw.dropped.h,Not sent
+hw.err.fee,Not enough to cover the gas fee.
+news.congest.title,Chain congestion
+news.congest.desc,An airdrop rush has clogged the chain. Gas fees are several times higher and low-fee transactions may be dropped from the mempool.
+news.phish.title,Poinbase notice: deposit address migration
+news.phish.desc,Poinbase has upgraded its wallet system. The old deposit address will be retired; please send assets to the new address {0}.
+black.forum.phish,"Someone posted the mixer's new address: {0}, saying the old one is being watched."
+hw.gas,Gas ×{0}
+web3.sub.stake,Staking
+stake.h,Revolution staking pool
+stake.rate,Daily rate {0}%; withdrawals wait {1} days with no interest
+stake.low,Reserve coverage low; rate cut
+stake.cra,CRA price {0}  {1}
+stake.none,Nothing staked.
+stake.col.wallet,Wallet
+stake.col.amount,Staked
+stake.col.queue,Unlocking
+stake.day," (day {0})"
+spark.price,Balance token SPARK  {0} credits
+stake.ops,{0}
+stake.avail,CRA {0}  Staked {1}
+stake.do,Stake
+stake.undo,Request withdrawal
+stake.sum.in,Stake {0} CRA
+stake.sum.out,Request withdrawal of {0} CRA (arrives in {1} days)
+stake.done.in,Staked {0} CRA.
+stake.done.out,Requested withdrawal of {0} CRA; back in the wallet on day {1}.
+nightlog.stakeint,Staking interest +{0} CRA.
+nightlog.unstaked,{0} CRA withdrawn from staking returned to {1}.
+news.crawarn.title,Unrest at the Revolution staking pool
+news.cralow.title,Revolution cuts staking rate
+stake.avail2,SPARK {0}
+poin.sub.spot,Spot
+poin.sub.perp,Perps
+perp.h,Perpetual futures
+perp.acct,Margin account CRC {0}
+perp.debt,Debt {0}; items are seized in {1} days. No new positions or cash-outs until it is cleared.
+perp.banned,Perp account banned for {0} more days.
+perp.none,No positions.
+perp.col.pos,Position
+perp.col.notional,Notional Value
+perp.col.price,Entry → price
+perp.col.pnl,PnL
+perp.col.liq,Liq. price
+perp.long,Long
+perp.short,Short
+perp.rate,{0}  price {1}  funding {2}%/night
+perp.fund,Insurance fund {0}
+perp.open,Open
+perp.margin,Margin amount (CRC)
+perp.do.open,Open
+perp.do.add,Add margin
+perp.do.close,Close
+perp.opened,"Opened {0} {1}: margin {2} CRC, {3}×."
+perp.added,Added {0} CRC of margin.
+perp.closed,Closed; {0} CRC back in the account (PnL {1}).
+perp.deficit,"Equity fell short by {0}, covered by the insurance fund and debt."
+perp.err.Banned,The perp account is banned.
+perp.err.Debt,You have debt; no new positions.
+perp.err.Leverage,Leverage is above this product's limit.
+perp.err.Size,Above this product's position cap.
+perp.err.Funds,Not enough CRC in the account (the fee counts).
+perp.err.Opposite,You cannot be long and short the same product; close first.
+perp.err.NoPosition,No position.
+perp.err.Margin,Enter a margin amount.
+perp.debt.block,You owe the perps desk; no cash-outs.
+nightlog.perp.liq,{0} was liquidated; the {1} margin is gone.
+nightlog.perp.adl,The insurance fund ran dry; {0} was auto-deleveraged and gave up {1} of profit.
+nightlog.perp.interest,Perp debt accrued interest; you now owe {0}.
+nightlog.perp.seize,Overdue perp debt: seized items covered {0}.
+nightlog.perp.writeoff," {0} written off; the perp account is banned for {1} days."
+perp.slip.title,Perp debt seizure slip
+perp.preview2,Fee {0}  liq. {1}
+nightlog.perp.repaid,Perp deficit: {0} CRC was taken from the Poinbase account to repay it.
+perp.err.Thin,Slippage on this order is so large it would be liquidated at once. Reduce the size or leverage.
+perp.err.Single,Only one position at a time; add margin instead.
+mat.hypertech_electronic,Hypertech electronic component
+item.asic.name,RatDigg {0} miner
+item.asic.dead.name,Burnt-out RatDigg {0} miner
+item.asic.desc,"Rated {0} GH/s. Rated draw {1} kJ/day. Condition {2}. A standalone miner: needs a battery to run, takes modules."
+item.asic.dead.desc,Burnt out. Drag electronic components onto it to repair: now {0} × {1}. Health drops by 20 once fixed.
+item.asic.dead.fixed,Already fixed.
+merchant.Asic,Miner dealer
+black.kind.asic,Miner  condition {0}%
+black.kind.asicnew,Miner  new
+news.erawarn.title,RatDigg is about to launch a new generation of miners
+news.erawarn.desc,"The dedicated-miner maker has announced new hardware, and the industry expects big farms to swap out en masse before long. Some say the good days of GPU mining are numbered."
+news.era.title,The miner era
+news.era.desc,A new generation of dedicated miners is in mass production and the big farms have halved their power costs. Network hash will climb and GPU miners' returns will be diluted.
+web3.sub.predict,Predict
+predict.h,Prediction markets
+predict.acct,{0}: CRC {1}
+predict.none,No open markets today.
+predict.closed,closed
+predict.row,Yes {0}  No {1}
+predict.held,"holding {0} x{1}, cost {2}"
+predict.yes,Yes
+predict.no,No
+predict.void,void
+predict.result,Day {0}  {1}  result: {2}  {3}
+predict.pick,Trade
+predict.price,Price per share: Yes {0}  No {1}
+predict.pos,{0}: {1} x{2}
+predict.pos2,Cost {0}  pays {1}
+predict.sum.buy,Buy {1} for {2} CRC: {0}
+predict.sum.sell,Sell prediction position: {0}
+predict.closed.note,"Closed, waiting for settlement."
+predict.preview,"Buy {0}: about {1} shares (avg {2}), net {3} if right"
+predict.buy.yes,Buy Yes
+predict.buy.no,Buy No
+predict.sell,Sell all
+predict.bought,"Bought {0} for {2}, pays {1} if right."
+predict.sold,"Sold, received {0}."
+predict.err.Closed,This market is closed.
+predict.err.Amount,Invalid amount.
+predict.err.Funds,Not enough CRC in the wallet.
+predict.err.Cap,Over this market's position limit.
+predict.err.Opposite,You hold the other side; sell it first.
+predict.err.NoPosition,No position in this market.
+predict.win.one,Day {0}
+predict.win.range,Days {0}-{1}
+predict.q.event,"{0}: ""{1}"" happens"
+predict.q.faction,{0}: {1} starts an operation
+predict.q.purity,{0}: {1} purity >= {2}
+predict.q.price,{0}: {1} price >= {2}
+predict.faction.FACTION_SECURITY,Security
+predict.faction.FACTION_REVOLUTION,Revolution
+predict.faction.FACTION_LOWER_LEVEL,Lower level
+predict.faction.FACTION_UPPER_LEVEL,Upper level
+predict.faction.FACTION_BLACK_MARKET,Black market
+predict.purity.gutter,Lower water
+predict.purity.rust,Upper water
+nightlog.predict.win,"Prediction right: ""{0}"", paid out {1}."
+nightlog.predict.lose,"Prediction wrong: ""{0}"", stake {1} lost."
+nightlog.predict.void,"Prediction void: ""{0}"", stake {1} refunded."
+nightlog.predict.caught,"Insider bet caught: ""{0}"", stake and winnings {1} confiscated, fraud on record."
+predict.tab.markets,Markets
+predict.tab.intel,Intel
+predict.acct.crt,{0}: CRT {1}
+predict.tier.0,low
+predict.tier.1,mid
+predict.tier.2,high
+predict.clue.tip,Tip ({0}): says {1}
+predict.clue.queued,Scheduled: starts day {0}
+predict.clue.queued2,"Scheduled: day {0} ""{1}"""
+predict.clue.cool,Event active or on cooldown
+predict.clue.busy,Faction op running; no new one soon
+predict.clue.halving,Halving day {0}; anchor ramps the week before
+predict.clue.anchor,Price anchor now {0}
+predict.clue.gas,Recent gas: {0}
+predict.clue.drain,Drain per night {0}
+predict.clue.era,"Random in days {0}-{1}, announced ahead"
+predict.clue.era.warned,Announced: starts days {0}-{1}
+predict.q.gas,{0}: gas index >= {1}
+predict.q.cra,{0}: CRA warning issued
+predict.q.era,{0}: ASIC era starts
+predict.era,ASIC era
+predict.pos3,Avg {0}  now {1}
+predict.pos4,Selling now returns {0}
+intel.h,Intel broker
+intel.locked,Needs the Web3 shop and black-market standing {0}.
+intel.brief.buy,Buy situation brief ({0} CRT)
+intel.brief.none,No brief bought yet.
+intel.brief.day,Brief from day {0}
+intel.tips.h,Insider tips
+intel.tips.none,Nothing to ask about (only faction ops and the ASIC era).
+intel.tip.buy,About {0}% accurate  {1} CRT
+intel.err.funds,"Not enough CRT in the wallet, or the market can no longer be bought."
+intel.brief.sum,"Situation brief, {0} CRT"
+intel.tip.sum,Insider tip {0} CRT: {1}
+intel.brief.done,Got the brief.
+intel.tip.done,They say: {0}.
+predict.brief.levels,Security {0}  Rev {1}  Black mkt {2}  Unrest {3}  Upper {4}
+predict.brief.busy,{0}: operation running
+predict.brief.queued,{0}: operation scheduled
+predict.brief.none,{0}: nothing to launch
+predict.brief.can,{0}: can launch {1}
+predict.clue.push,You moved the price {0}%: risky
+nightlog.predict.manip,"Prediction ruled manipulation: ""{0}"", stake {1} confiscated, fraud on record."
+news.manip.title,Exchange probes unusual trading
+news.manip.desc,Regulators report that someone moved the price with large spot orders and profited from derivatives and predictions; the funds were seized.
+perp.manip,Profit {0} on close ruled price manipulation and seized; perp account frozen for {1} days.
+web3.sub.ponzi,Yield
+ponzi.h,High-yield scheme
+ponzi.acct,Issuer wallet {0}: CRC {1}
+ponzi.rate,Daily rate {0}%
+ponzi.pool,Pool {0} / cap {1}
+ponzi.inflow,New deposits last night {0}
+ponzi.interest,Interest due tonight {0}
+ponzi.own,Interest paid from your pocket {0}
+ponzi.wind,Report risk: {0}
+ponzi.wind.low,low
+ponzi.wind.mid,medium
+ponzi.wind.high,high
+ponzi.idle,No scheme issued.
+ponzi.done,The scheme is closed; only one per save.
+ponzi.ops,Actions
+ponzi.rug,Rug the pool ({0})
+ponzi.rug.confirm,Click again to confirm rugging {0}
+ponzi.rugged,"Took {0}, fully tainted."
+ponzi.open,Open a scheme
+ponzi.ad,Marketing cost {0} CRC from the current wallet; signature required.
+ponzi.start,Launch
+ponzi.started,Launched.
+ponzi.err,Not enough CRC in the wallet for the marketing cost.
+nightlog.ponzi.collapse,"The scheme could not pay interest; run on the pool, {0} confiscated, fraud on record, lower-level standing wiped."
+nightlog.ponzi.reported,"The scheme was reported; pool {0} confiscated, fraud on record, lower-level standing wiped."
+news.ponzi.title,High-yield scheme collapses
+news.ponzi.desc,A high-yield scheme run in the lower levels was reported; investors mobbed it and regulators froze the funds.
+news.ponzi.rug.title,Investment scam
+news.ponzi.rug.desc,The operator of a high-yield scheme has run off with all the funds; lower-level investors lost everything.
+ponzi.start.sum,"Open high-yield scheme, daily rate {0}%, marketing {1} CRC"
+ponzi.rug.sum,Rug the pool {0}
+ponzi.err.wallet,Sign with the issuer wallet.
+predict.clue.counter,"Intel: scheduled (counter informant, rumor slip)"
+web3.sub.airdrop,Airdrops
+air.h,Airdrops
+air.none,No airdrops to claim right now.
+air.row,{0}  reward {1} CRC  {2}  until day {3}
+air.claim,Claim
+air.unlimited,approve {0} unlimited
+air.limited,approve {0} {1}
+air.approvals,Approvals of {0}
+air.approvals.none,No approvals.
+air.approval,{0}: {1}
+air.revoke,Revoke
+air.sum,Claim airdrop {0} ({1})
+air.claimed,Received {0} CRC.
+air.auth,Authorize wallet
+air.unauth,Not authorized
+air.authed,Authorized: {0}
+air.authed.msg,Wallet authorized for {0}.
+air.auth.sum,Authorize {0} to act for this wallet. Scope: {1}.
+air.err.unauth,Authorize the wallet for this airdrop first.
+air.revoke.sum,Revoke {0}'s {1} approval
+air.revoked,Approval revoked.
+air.err.wallet,Sign with the approving wallet.
+pool.h,Third-party yield pools (CRC)
+pool.none,None right now.
+pool.col.name,Pool
+pool.col.rate,Daily
+pool.col.reserve,Reserve
+pool.col.lock,Timelock
+pool.col.audit,Audit
+pool.col.mine,Mine
+pool.yes,yes
+pool.no,no
+pool.pending,withdrawing
+pool.closed,(closed)
+pool.deposit,Deposit
+pool.withdraw,Withdraw
+pool.withdraw.lock,Request withdrawal ({0} days)
+pool.err.cap,Over the pool cap; {0} left.
+pool.err.none,No deposit.
+pool.sum.in,Deposit to {0}: {1} CRC
+pool.sum.out,Withdraw {1} CRC from {0}
+pool.done.in,Deposited {0} CRC to {1}.
+pool.done.out,Withdrew {0} CRC.
+pool.done.lock,"Requested {0} CRC, arrives on day {1}."
+nightlog.scam.drain,"{1} {2} in {0} was taken by ""{3}"" through an approval."
+nightlog.scam.rug,"Yield pool ""{0}"" rugged; {1} CRC from {2} is gone."
+nightlog.scam.dry,"Yield pool ""{0}"" ran out of reserve and closed; {1} CRC returned to {2}."
+nightlog.scam.paid,"Withdrawal from ""{0}"" arrived: {2} received {1} CRC."
+nightlog.scam.fakepay,Forged transfer: {0}
+nightlog.scam.sent,"The {0} {1} sent to the ""support"" safe address went to a scammer."
+coinpay.intro,I'll pay in {0}; it takes a moment to confirm on chain.
+coinpay.intro.fake,"Already sent the {0}, here's the screenshot. Hand it over, I'm in a hurry."
+coinpay.fake.entry,{0} took {1} claiming to have paid {2} credits in coin; no such transaction on chain.
+scam.support.name,Poinbase Support
+scam.support.1,"Hello, Poinbase support here. We detected an unusual login on your account and it has been flagged."
+scam.support.2,Please send {0} CRC to the safe address {1} today for verification; it will be returned right after.
+scam.support.3,"Otherwise the account will be frozen for good. I have to go, remember to send it."
+predict.sold.caught,"Insider trading caught on sale: stake and profit confiscated, fraud on record."
+predict.row.move," (last night {0} {1})"
+predict.stats.h,History (avg opening price / actual rate)
+predict.stats.row,"{0}: {1} markets, avg open {2}, happened {3}%"
+predict.kind.Event,News events
+predict.kind.Faction,Faction ops
+predict.kind.Purity,Water purity
+predict.kind.Price,PSC price
+predict.kind.Gas,Gas
+predict.kind.Cra,CRA warning
+predict.kind.Era,ASIC era
+nightlog.predict.move,"Prediction ""{0}"" moved {1} -> {2}"
+nightlog.predict.why," ({0})"
+chart.empty,{0} daily chart: no history yet; recording from today.
+chart.caption,{0} daily  H {2}  L {3}  C {4} ({5}%)
+chart.legend,"<size=80%>green up, red down; yellow 7-day MA; bars: grey market / cyan you</size>"
+chart.legend.thr,"<size=80%>green up, red down; yellow 7-day MA; blue dashes threshold</size>"
+news.story.serpico_rev.title,Revolution holds dirt on Security
+news.story.serpico_rev.desc,"The Revolution reportedly obtained evidence of corruption inside Security. Word from the staking pool: a large sum has been injected into the Revolution's reserve, and SPARK has been firming up."
+news.story.serpico_bm.title,Black market strikes a quiet deal
+news.story.serpico_bm.desc,"An internal Security document changed hands on the black market. Darknet settlement has been noticeably steadier since, and CRT redemptions have not slipped once."
+news.story.serpico_sec.title,Security launches internal purge
+news.story.serpico_sec.desc,Security announced a full investigation into internal corruption and tighter monitoring of money flows. Poinbase is tightening cash-out screening and mixing services have been named.
+news.story.eleanor_leak.title,Nutrifruit breeding data leaked
+news.story.eleanor_leak.desc,"The lower-level paper published research that lets nutrifruit set seed again; Pastelle shares plunged. The bank custodying upper-level funds reports bad debts, and the Revolution is gaining ground."
+news.story.eleanor_return.title,Pastelle recovers stolen data
+news.story.eleanor_return.desc,"Pastelle confirmed it recovered stolen research data. Upper-level capital breathed a sigh of relief, and the CRC custodian bank was upgraded."
+news.story.lun_arrested.title,Officer Lun arrested for abuse of power
+news.story.lun_arrested.desc,Security arrested Officer Lun on the spot for abuse of power and promised a strict crackdown on illegal trading for the next two weeks.
+tumbler.name,Tumbler
+tumbler.v1.1,Hi. I hear the terminal here is hooked up to my mixer.
+tumbler.v1.2,I wrote that thing. People call me Tumbler.
+tumbler.v1.3,It doesn't touch your goods or keep your books. It just stirs the coins.
+tumbler.v1.4,Was passing by. Wanted to see what my users look like.
+tumbler.v2.1,Things are getting rough. Security is going after on-chain mixing services.
+tumbler.v2.2,They flagged a few big addresses and traced them back to my node.
+tumbler.v2.3,"If the mixer goes down for a few days, don't panic. Coins inside won't be lost."
+tumbler.v3.1,They shut my node down. Sooner or later they'll find where I live.
+tumbler.v3.2,I've got a key drive with the mixer's signing keys on it.
+tumbler.v3.3,"If Security gets it, they can rebuild every user's history. Yours too."
+tumbler.v3.ask,Can you hide it for a few days?
+tumbler.v3.choice.hide,[Take the drive and hide it]
+tumbler.v3.choice.report,"[Agree, then tip off Security]"
+tumbler.v3.choice.sell,[Take the drive and sell it to the black market]
+tumbler.v3.thanks1,Thanks. I'll come back for it in a few days.
+tumbler.v3.thanks2,"Don't leave it lying around. If a search turns it up, we're both done."
+tumbler.v3.report1,...Okay. I'll come by later.
+tumbler.v4.back.1,I'm here for the drive.
+tumbler.v4.back.2,The node's moved somewhere new. Security won't find it anytime soon.
+tumbler.v4.back.3,Here's something for your trouble. From now on your mixer fees are half price.
+tumbler.v4.lost.1,Where's the drive?
+tumbler.v4.lost.2,...You lost it?
+tumbler.v4.lost.3,Forget it. I'll figure something out.
+tumbler.v4.sold.1,"You sold the drive to the black market, didn't you."
+tumbler.v4.sold.2,"They run the mixer now. Fees doubled, and users' money could vanish any day."
+tumbler.v4.sold.3,I won't forget this.
+tumbler.v4.none.1,Never mind. I was never here.
+item.keydrive.name,Key drive
+item.keydrive.desc,"A data stick Tumbler left with you, holding the mixer's signing keys. Contraband: if a search turns it up, it goes on your record."
+mixer.closed,The mixer has been shut down and takes no new deposits. Coins already inside come back as usual.
+news.tumbler.sanction.title,Security seizes mixing node
+news.tumbler.sanction.desc,"Security announced the seizure of a node of an on-chain mixing service, saying it facilitated money laundering. The service is temporarily down."
+news.tumbler.caught.title,Mixer operator arrested
+news.tumbler.caught.desc,The mixer operator known as Tumbler was arrested in the lower levels. Security says the mixing service has been shut down for good.
+news.tumbler.sold.title,Mixing service changes hands
+news.tumbler.sold.desc,"Word is the signing keys of a lower-level mixing service have fallen into black-market hands, and fees went up at once. Users fear for their funds."
+nightlog.tumbler.gift,Tumbler took back the key drive and left {0} CRT as thanks (sent to {1}); mixer fees halved.
+mixer.status.closed,Status: shut down
+yield.sub.pools,Yield pools
+yield.sub.mine,Issue scheme
+pool.side.h,Deposit
+ponzi.early,High-yield schemes can be issued from day {0}.
+bpay.h,Payment
+bpay.qty,Quantity
+bpay.total,Total {0} credits
+bpay.need,Pay {0} {1}  wallet balance {2}
+bpay.invoice,Create invoice
+bpay.swap.h,Auto-convert to {0}
+bpay.swap.none,No other coin in the wallet is enough
+bpay.swap.need,"Pay {0} {1}, includes {2}% slippage"
+bpay.swap.btn,Convert and pay
+bpay.swap.sum,"{0}: auto-convert, pay {2} {1}, swapped to {3} before ordering"
+bpay.back,Back
+cart.fab,Cart {0}
+cart.h,Cart
+cart.empty,The cart is empty.
+cart.added,Added to cart: {0}
+cart.back,Back to shop
+cart.done,Paid for {0} items.
+cart.partial,Paid for {0} items; {1} failed (stock or balance).
+black.info.accepts,Takes: {0}
+black.info.advance.yes,advance release accepted
+black.info.advance.no,no advance release
+settings.section.ui,Interface
+settings.section.story,Story
+settings.section.difficulty,Difficulty
+settings.terminal_size,Trading terminal size
+settings.terminal_size_desc,Window size in interface units (width × height). Applies the next time the terminal opens.
+settings.tumbler_story,Tumbler storyline
+settings.tumbler_story_desc,Tumbler's visits and the keydisk errand. Turning this off stops new visits; progress already made is kept.
+settings.risk_scale,Risk multiplier
+settings.risk_scale_desc,"Multiplies the chance of scams, rug pulls, wallet poisoning, address hijacking and phishing. Applies to all saves."
+settings.mining_scale,Mining reward multiplier
+settings.mining_scale_desc,Multiplies the block reward paid to mining rigs. Applies to all saves.
+gg.header,Station Trade Commission
+gg.p1.cap,Graphics card
+gg.p1.makers,"There are two common manufacturers on the Station:\n\n      - Probidia (""PB"")\n      - PMD (""MD"")"
+gg.p1.note,"Whoever made it, a card's value depends only on the list price of the real chip and its health: at full health it equals the list price, at zero health only {CardValueFloor:%} is left."
+gg.fan.h,Fan Blades
+gg.fan.0,Clean (price unchanged)
+gg.fan.1,Dusty (-{CardFanDust:%})
+gg.fan.2,Chipped (-{CardFanChipped:%})
+gg.fin.h,Contacts
+gg.fin.0,Bright (price unchanged)
+gg.fin.1,Dull (-{CardFingersDark:%})
+gg.fin.2,Oxidized (-{CardFingersOxidized:%})
+gg.brk.h,Bracket
+gg.brk.0,Intact (price unchanged)
+gg.brk.1,Scratched (-{CardBracketScratch:%})
+gg.seal.h,Seal
+gg.seal.0,Intact (price unchanged)
+gg.seal.2,Missing (-{CardSealMissing:%})
+gg.wear.note,"Fan blades, contacts and bracket wear down each night and never recover; the seal is fixed. Condition also affects hashrate, wear and burnout chance."
+gg.serial.h,Serial Number
+gg.serial.cap,Back of the card (serial sticker)
+gg.serial.pb,"Probidia (""PB"")\n      Valid factory codes: 11, 12, 21, 34, 47"
+gg.serial.md,"PMD (""MD"")\n      Valid factory codes: 13, 22, 35, 41, 58"
+gg.print.h,Back Print
+gg.print.0,Matches the model
+gg.print.1,Shows another model (counterfeit)
+gg.print.2,"Reprinted, crooked (counterfeit)"
+gg.point.h,Pointing Out
+gg.ex.card,"Example: {0}, health {1}%"
+gg.ex.base,Base value: +{0}
+gg.ex.fan,Chipped fan: -{0}
+gg.ex.fin,Dull contacts: -{0}
+gg.ex.seal,Missing seal: -{0}
+gg.ex.total,Final value: {0}
+gg.ex.note,Every discount is a share of the base value; they are added up and deducted.
+gg.ex.fan1,Dusty fan: -{0}
+gg.ex.fin2,Oxidized contacts: -{0}
+gg.ex.brk,Scratched bracket: -{0}
+gg.ex.nodisc,No discounts: -0
+gg.ex.fake,"Stated {0}, real chip {1}: valued as the real chip"
+gg.ex.claimed,Price as the stated model: {0}
+gg.ex.gap,Difference from the quote: {0}
+gg.ex.h2,Appraisal Example: Counterfeit
+gg.ex.h3,Appraisal Example: Badly Worn
+gg.ex.h4,Appraisal Example: Lightly Used
+gg.ex.h5,Appraisal Example: Brand New
+lbl.price,Label price: {0}
+lbl.row.count,Fans
+lbl.row.pin,Power
+lbl.count.1,1 fan
+lbl.count.2,2 fans
+lbl.count.3,3 fans
+lbl.pin.0,6-pin
+lbl.pin.1,8-pin
+lbl.pin.2,Dual 8-pin
+gg.p1.body,"Graphics cards are the core of every mining rig, and the goods most often counterfeited on the used market.\nFour things show whether a card is genuine: fan count, power connector, back print and serial number. Only a card that matches its stated model on all four is genuine; any single mismatch means a counterfeit.\nA card's value depends on the model of the chip inside and its health, and every sign of wear lowers the price.\n\nThis guide provides all the knowledge needed to appraise a graphics card."
+gg.p2.h,Card Models
+gg.p2.body,"The model sets the fan count and the power connector. A counterfeit is a low-model chip in a high-model shell, and its performance and value follow the chip inside."
+gg.tier.0,"RTX 60 / RX 70: 6-pin, one fan"
+gg.tier.1,"RTX 70 / RX 80: 8-pin, two fans"
+gg.tier.2,"RTX 80 / RX 800: 8-pin, three fans"
+gg.tier.3,"RTX 90 / RX 900: dual 8-pin, three fans"
+gg.count.h,Fan Count
+gg.count.body,"The model sets the fan count: one fan on the RTX 60 and RX 70, two on the RTX 70 and RX 80, three on the RTX 80, RTX 90, RX 800 and RX 900.\nA fan count that does not match the stated model marks a counterfeit."
+gg.pin.h,Power Connector
+gg.pin.body,"The model also sets the power connector: 6-pin on the RTX 60 and RX 70, 8-pin on the RTX 70, RTX 80, RX 80 and RX 800, dual 8-pin on the RTX 90 and RX 900.\nA power connector that does not match the stated model marks a counterfeit."
+gg.serial.body,"The serial number is on a sticker on the back, as prefix, model code, hyphen, two-digit factory code, hyphen and four-digit sequence, for example PB2-21-6251."
+gg.serial.rule,"Model codes 1 to 4 stand for RTX 60 / RX 70, RTX 70 / RX 80, RTX 80 / RX 800 and RTX 90 / RX 900.\nA model code that does not match the model (the sticker belongs to the original chip), or an invalid factory code or length (a sticker added later), marks a counterfeit. The factory code only proves authenticity and does not change the price."
+gg.print.note,"A card is genuine only if fan count, power connector, print and serial number all match. A counterfeit fails at least one, but may get the others right, so check every one."
+gg.point.body,"Inspect with the magnifier. In the label bar, only the model row has a Point out model button; the four rows below it (fan count, power connector, back print, serial number) are read-only, and each of the four condition rows has its own Point out button.\nPoint out a hidden condition problem and that row switches to the true state and the price drops by the difference; point out something true and the other side refuses and your reputation suffers.\nIf any of the four proof rows does not match the stated model, point out the model: the card is then ruled a counterfeit, the model reverts to the real chip, and the price is recalculated for that chip.\n\nCards brought by appraisal guild clients work the same way: pointing out problems changes the estimate until you report the correct value."
+gg.ex.serial,Serial number: {0}
+gg.ex.h,"Appraisal Example: Chipped Fan, Dull Contacts, Missing Seal"
+rig.label.status,Status
+rig.st.cards,Cards
+rig.st.power,Power
+rig.st.hash,Hashrate
+rig.st.kj,{0} kJ/day
+lbl.point.model,Point out model
+col.crcprice,CRC price
+swap.pay,Pay
+swap.get,Receive
+swap.preview,"Receive about {0} {1}　{2} pool(s), loss {3}%"
+swap.go,Swap
+swap.same,Pay and receive must be different coins.
+mint.need,Needs {0} CRC and {1} SPARK
+mint.reserve,Reserve coverage {0}%  Collateral ratio {1}%
+mint.queue,Pending orders
+mint.order,"{0} {1} CRA, day {2}"
+stake.coin,Deposit coin
+stake.sum.via,"Swap {0} {1} → about {2} CRA, then stake"
+nightlog.cra.lost,The issuer did not respond: the {1} order of {0} CRA is lost.
+news.crawarn.desc,"Someone is counting the Revolution's reserve, and staked CRA may not be redeemable in full. Unlocking takes four days; some say it is time to move."
+news.cralow.desc,"The reserve ratio is running low, and the Revolution has cut the CRA staking rate to a fraction."
+poin.sub.funds,Funds
+funds.receive,Receive
+funds.send,Send
+funds.bank,Bank account
+funds.wallet,Wallet
+funds.to,To address
+funds.go,Send
+funds.sending,Sending {0} {1} to {2}
+funds.confirm,Confirmation {0}/{1}
+funds.done,{0} {1} arrived in {2}.
+funds.done.void,{0} {1} sent; the address has no owner and the coins are gone.
+funds.err.addr,Invalid address.
+funds.err.self,That is the Poinbase deposit address.
+funds.err.known,That address only accepts payments against a bill.
+funds.err.fee,The amount does not cover the gas fee.
+wallets.sub.explorer,Explorer
+explorer.search,Address
+explorer.all,Latest
+explorer.none,No transfers.
+explorer.col.block,Block
+explorer.col.amount,Amount
+explorer.mixer,Mixer
+cra.mint,Mint
+cra.burn,Burn
+mint.h,Official mint (CRC + SPARK)
+mint.sum.in,Mint {0} CRA with {1} CRC and {2} SPARK ({3}–{4} days)
+mint.sum.out,Burn {0} CRA for CRC and SPARK ({1} days)
+mint.done.in,Mint order placed; due on day {0}.
+mint.done.out,Burn order placed; due on day {0}.
+nightlog.cra.minted,"Minted {0} CRA, now staked ({1})."
+nightlog.cra.burned,"Burned {0} CRA: +{1} CRC, +{2} SPARK ({3})."
+predict.clue.subsidy,Reserve {0}%; empty forces a warning
+air.noapprove,no token allowance
+tab.gray,Gray Net
+wallets.sub.list,Wallet list
+entry.web3.l1,Decentralized trading and yield
+entry.mining.l1,Rig status and nightly payouts
+entry.gray.l1,Mixer and shop
+entry.wallets.l1,Hardware wallets and Explorer
+entry.wallets.l2,Wallets {0} / {1}
+black.sell.add,Add listings
+black.sell.back,Back to showcase
+black.sell.kinds,Listed {0}/{1} kinds
+black.sell.have,{0} listed
+black.sell.coins,Accepted coins
+black.sell.off,Take down
+black.sell.off.n,Take down ×{0}
+black.sell.nocoin,Accept at least one coin.
+black.sell.empty,Nothing listed.
+black.sell.delisted,Took down {0}; the goods are back in storage.
+black.sell.partial,Listed {0}; {1} could not be listed.
+black.sell.limit.stack,Up to {0} of each item can be listed.
+black.sell.limit.kinds,Up to {0} kinds can be listed at once.
+shelf.fab,Shelf {0}
+delist.fab,Confirm take-down {0}
+black.fee.h,Ready to list
+black.fee.line,{0} ×{1} · price {2} ({3})
+black.fee.total,Listing fee {0}
+black.fee.sum,Listing fee ({0} items)
+black.sale.Sold,"Sold; payout on day {0} in {1}"
+explorer.col.day,Day
+explorer.day,Day {0}
+explorer.pool,RatDigg pool
+explorer.desk,Ponero desk
+black.fee.pay,Pay listing fee
+explorer.col.from,From
+explorer.col.to,To
+rig.st.cond,Condition
+asic.st.dead,Burnt out
+perp.preview,Notional {0}  est. avg price {1} (slippage {2}%)
+perp.sim.close,Close  notional {0}  est. avg price {1} (slippage {2}%)
+perp.sim.close2,Fee {0}  about {1} CRC back (P/L {2})
+trade.sim.buy,Buy gets about {0} {1}  avg {2}  slippage {3}%
+trade.sim.sell,Sell gets about {0} {1}  avg {2}  slippage {3}%

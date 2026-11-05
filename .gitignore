@@ -1,0 +1,10 @@
+bin/
+obj/
+*.user
+.vs/
+.idea/
+.vscode/
+*.swp
+.DS_Store
+tests/**/bin/
+__pycache__/

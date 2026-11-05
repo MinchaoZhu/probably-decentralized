@@ -1,0 +1,958 @@
+# Probably Decentralized localization table: Japanese (ja)
+# AI translation, not proofread. Source: en.csv. Format: key,text (text may be quoted; \n is a line break).
+upgrade.tab,Web3
+upgrade.title,Web3ガバナンスコミュニティ
+upgrade.desc,メンバーは取引ターミナル1台、ハードウェアウォレット1台、マイニングリグ1台、RTX 60グラフィックボード1枚、グラフィックボード鑑定ガイドを受け取る。ターミナルには銀行、Poinbase取引所、Web3、マイニング、ウォレットのページがある。追加のボードやリグはジャックソン博士が販売している。
+item.terminal.name,取引ターミナル
+item.terminal.desc,ウォレット、Poinbase取引所、夜間マイニングレポート。
+item.rig.name,マイニングリグ
+item.rig.desc,グラフィックボードを最大{0}枚搭載可能。ハッシュレート {1} MH/s。消費電力 {2} kJ/日。
+rig.label.modules,モジュール
+item.rig.modules,モジュール：ハッシュレート {0}、消費電力 {1}、損耗 {2}。
+item.rig.next,スロット{0}：{1}をマイニングリグにドラッグ（{2}/{3}）。
+mat.common_electronic,汎用電子部品
+mat.rare_electronic,希少電子部品
+rig.label.cards,グラフィックボード
+item.gpu.name,{0} {1}
+item.gpu.desc,定格ハッシュレート {0} MH/s。定格消費電力 {1} kJ/日。状態：{2}。
+item.gpu.burnt.name,焼損した{0} {1}
+item.gpu.burnt.desc,このボードはもう機能しない。
+term.title,取引ターミナル
+tab.report,レポート
+wallet.line,{0}：{1}（約{2}クレジット）
+wallet.empty,ウォレットは空です。
+wallet.total,総額：{0}クレジット
+wallet.taint,汚染額：{0}クレジット
+trade.amount,数量
+trade.deposit,クレジットを入金してCRCに交換
+trade.withdraw,CRCを出金してクレジットに交換
+trade.pair,{0}/{1}（{2}）
+trade.price,価格 {0}
+trade.buy,購入
+trade.sell,売却
+venue.Exchange,Poinbase
+venue.Dex,DEX
+venue.Darknet,ダークネット
+msg.amount,数量を入力してください。
+msg.balance,残高が不足しています。
+msg.trade,{0} {1}を支払い、{2} {3}を受け取りました。
+msg.deposit,{0}クレジットを入金し、CRCに変換しました。
+msg.cashout,{0}クレジットを受け取りました。税：{1}クレジット。
+msg.aml_light,コンプライアンス審査：{0}クレジットの汚染資金が保留されました。
+msg.aml_heavy,コンプライアンス審査：{0}クレジットの汚染資金が没収され、警察に通報されました。
+report.none,マイニングレポートはまだありません。
+report.day,{0}日目の夜
+report.rigs,稼働リグ：{0}/{1}
+report.hash,ハッシュレート：{0} MH/s（ネットワーク {1} MH/s）
+report.mined,採掘量：{0} PSC（約{1}クレジット）
+report.energy,消費電力：{0} kJ
+report.burnt,焼損ボード：{0}
+report.price,PSC価格：{0}クレジット
+nightlog.mined,マイニングリグが{0} PSCを採掘しました。
+nightlog.burnt,{0}が1枚焼損した。
+coinpay.line,取引成立。{0} {1}。
+nightlog.coinpay,コイン決済の客からの代金は計{0}クレジットが精算され、コインはホットウォレットに入った。
+nightlog.unpowered,{0}台のマイニングリグまたは専用採掘機に電力が供給されていませんでした。
+news.open.title,PoinbaseにPSCが上場
+news.open.desc,上層の取引所PoinbaseがPSC/CRCの取引ペアの取り扱いを開始した。ステーション全域でグラフィックボードの需要が高まっている。
+news.halving.title,PSCのブロック報酬が半減
+news.halving.desc,採掘人が毎晩獲得できるコインが半減した。
+appraisal.gpu,グラフィックボード
+dealer.name,中古ハードウェア取引人
+dealer.line1.1,マイニングファームの引き揚げ品のボードだ。状態は名前の横に書いてある。
+dealer.line1.2,何枚かマイニングに使ったやつがある。安く譲るよ。
+dealer.line1.3,道中で仕入れた品だ。卸値で出すよ。
+dealer.line2.1,自分の目で確かめてくれ。裏返して背面も見な。
+dealer.line2.2,保証はねえぞ。よく見てから買っていけ。
+dealer.line2.3,買う気があるなら、値段は相談に乗るぜ。
+inspect.flip.back,裏返す
+inspect.flip.front,表に戻す
+item.gpu.grade.1,ほぼ新品
+item.gpu.grade.2,並品
+item.gpu.grade.3,使用感あり
+item.gpu.grade.4,重度の使用感
+point.none.1,どこもおかしくないぞ。見間違いだろ。
+point.none.2,どこがだ？買わないなら適当なこと言うなよ。
+point.worn.1,……チッ、確かにそこはあるな。少し値引きしてやるよ。
+point.worn.2,目ざといな。わかった、この値段でどうだ。
+point.fake.1,……バレたか。書き換え品だ。中身相応の値段にするよ。
+point.fake.2,チッ、純正チップじゃねえな。いいぜ、本来のチップの値段にしてやる。
+lbl.fan.0,ブレード良好
+lbl.fan.1,ブレードに埃
+lbl.fan.2,ブレード欠け
+lbl.fingers.0,光沢あり
+lbl.fingers.1,くすみ
+lbl.fingers.2,酸化・腐食
+lbl.print.0,型番一致
+lbl.print.1,他型番の印字
+lbl.print.2,再印字・傾き
+lbl.said,（売り手の申告：{0}）
+lbl.point,指摘する
+lbl.edit,修正
+cust.fake.1,ラベルと違うじゃないか。偽物を売りつける気か？
+cust.fake.2,型番が一致しないぞ。表示どおりのチップじゃない。
+cust.worn.1,書いてあることと違うぞ。不具合を隠していただろ。
+cust.worn.2,ラベルの状態は嘘だな。この値段じゃ買えない。
+lbl.row.fan,ブレード
+lbl.row.fingers,端子
+lbl.row.bracket,ブラケット
+lbl.row.print,背面印字
+lbl.row.serial,シリアル番号
+lbl.row.seal,封印シール
+lbl.bracket.0,良好
+lbl.bracket.1,キズあり
+lbl.serial.0,正常
+lbl.serial.1,工場コードまたは桁数異常
+lbl.serial.2,型番コード不一致
+lbl.seal.0,無傷
+lbl.seal.2,欠損
+item.guide.name,グラフィックボード鑑定ガイド
+item.guide.desc,グラフィックボードの偽造品を見分け、価値を判定するためのガイド。
+lbl.row.spec,型番
+news.prehalving.title,PSC半減期が接近
+news.prehalving.desc,3日後、採掘人が毎晩獲得できるコインが半減する。保有者は価格上昇を期待している。
+tab.home,ホーム
+tab.bank,銀行
+tab.poinbase,Poinbase
+tab.web3,Web3
+home.enter,入る
+home.open,開く
+home.summary,クレジット {0}   |   オンチェーン資産 約{1}クレジット
+home.lastnight,{0}日目の夜：{1} PSC採掘、リグ稼働 {2}/{3}台
+entry.bank,銀行
+entry.bank.l1,入出金、家賃
+entry.bank.l2,クレジット {0}
+entry.poinbase,Poinbase
+entry.poinbase.l1,規制準拠取引所
+entry.poinbase.l2,PSC {0}クレジット
+entry.web3,Web3
+entry.web3.l2,約{0}クレジット
+entry.help,ヘルプ
+entry.help.l1,Web3ハンドブック
+bank.cash,クレジット：{0}
+bank.rent,家賃：{0}クレジット、期日：{1}日後
+bank.crc,Poinbase口座（CRC）：{0}
+poin.account,Poinbase口座：CRC {0}、PSC {1}
+avg.line,{0}の平均購入単価：{1}クレジット
+avg.short,平均単価 {0}
+avg.none,—
+col.asset,資産
+col.amount,数量
+col.value,評価額
+col.avg,平均単価
+bank.cash.k,クレジット
+bank.rent.k,家賃
+bank.rent.v,{0}、期日：{1}日後
+bank.crc.k,Poinbase口座（CRC）
+poin.account.h,Poinbase口座
+trade.h,取引
+web3.wallet.h,オンチェーンウォレット
+stable.ok,ペグ正常
+stable.depeg,デペグ
+stable.warn,警告：ステーキング準備率低下
+stable.spiral,崩壊中
+aml.taint,アカウント汚染率：{0}%
+mixer.h,ミキサー
+mixer.ok,状態：正常稼働
+mixer.sanctioned,状態：制裁中（残り{0}日）。この間に出金されたコインはフラグ付きとなる。
+mixer.pending,入金処理中
+mixer.none,処理中の入金はありません。
+mixer.col.taint,汚染
+mixer.col.ready,完了
+mixer.day,{0}日目
+mixer.deposit,入金
+mixer.balance,残高：{1} {0}
+mixer.rounds,ラウンド数
+mixer.preview,{0} {1} の受取見込み、汚染は約 {2}% 低下、{3}日目に完了。
+mixer.go,ミキサーに入金
+mixer.min,入金には最低{0}クレジット相当が必要です。
+mixer.done,{0} {1} を入金。{2}日目に受取可能。
+mixer.upgrade.title,ミキサー
+mixer.upgrade.desc,ターミナルのグレーネットページにあるミキサーをアンロック：汚染コインを入金し、数日後に汚染を減らして回収する。ミックス直後のコインは出金審査がより厳格化される。取締期間中はミキサーが制裁対象となる可能性があり、その間に出金されたコインはフラグ付きとなる。
+news.sanction.title,ミキサーを制裁リストに追加
+news.sanction.desc,警察が複数のミキシングサービスに制裁を実施。今後数日間にミキサーから出金された資金は不審として扱われる。
+nightlog.mixer,ミキサーから {0} {1} を回収。汚染 {2} → {3}。
+nightlog.mixer_flag,（制裁期間中に出金。アドレスはフラグ付き）
+nightlog.mixer_rug,ミキサーの運営者が持ち逃げした：{0} {1} は戻ってこなかった。
+web3.sub.trade,取引
+gray.sub.mixer,ミキサー
+msg.frozen,コインは凍結中のため、解除されるまで使用できません。
+wallet.frozen,{0}：{1} 凍結中、{2}日目に解除
+nightlog.crt_freeze,取締期間中に闇市場がアドレスリストを引き渡した：{0} CRT が{1}日目まで凍結された。
+nightlog.thaw,{0} {1} の凍結が解除された。
+news.crtfreeze.title,闇市場、取締に伴い一部のCRTアドレスを凍結
+news.crtfreeze.desc,噂によれば、闇市場は見逃してもらう見返りに、警察へCRTアドレスのリストを渡したとのことだ。評判が低い保有者ほど凍結される可能性が高い。
+black.upgrade.title,Web3ショップ
+black.upgrade.desc,ターミナルのグレーネットページのショップをアンロック：闇市場派閥のオンチェーン拠点。禁制品が毎週入荷し、時にはハイテク品やグラフィックボード（割増価格）も並ぶ。現物を購入するか、注文して配達人を待つ。決済はコイン限定（PSC、CRT、CRA、Ponero）、汚染コインも受付。闇市場の評判が必要で、取締期間中はオフラインとなる。
+black.offline,取締期間中、ショップのオンチェーン入口はオフラインとなる。
+black.closed,ショップに入るには闇市場の評判が {0} 必要（現在：{1}）。
+black.sub.buy,購入
+black.shop.h,現物カウンター
+black.rep,闇市場の評判 {0}
+black.empty,今週の商品は完売。
+black.offer,{0} ×{1}   {2}クレジット相当
+black.buy,購入
+black.bought,取引完了：{0}は保管庫に保管された。
+black.pay.h,支払い
+black.desk.h,Ponero窓口
+black.desk.left,本日の残額：{0}（上限 {1}）
+black.desk.price,Ponero価格：{0}
+black.desk.swap,スワップ
+black.desk.in,Poneroへスワップ
+black.desk.out,Poneroからスワップ
+black.desk.go,スワップ
+black.desk.fail,スワップ失敗：残高不足、限度額超過、または数量が無効です。
+black.sub.orders,注文
+black.rugged,プラットフォームがダウンした。再開まであと{0}日。
+black.seller,取引数 {1}、高評価 {2}%
+black.orders.h,注文カタログ
+black.order,注文
+black.mode.Escrow,エスクロー
+black.mode.Advance,事前リリース
+black.ordered,注文完了：{0}、{1}日目に到着予定。
+black.mine.h,注文一覧
+black.mine.none,注文はまだありません。
+black.mine.line,{0}（{1}、{2}）：{3}、{4}日目
+black.state.Pending,輸送中
+black.state.Ready,到着済み
+black.state.Done,受取済み
+black.state.Refunded.scam,売り手逃亡、返金済み
+black.state.Lost.scam,売り手逃亡、資金消失
+black.state.Lost.rug,プラットフォームがラグプル、資金消失
+black.state.Lost.intercept,途中で押収
+black.forum.h,フォーラム情報
+black.forum.quiet,最近は静かだ。
+black.forum.scam,{0} は金を受け取っても発送しないらしい。
+black.forum.rug,最近出金が遅延しており、サイトはプロモーション中、苦情スレッドも大量に削除されている。
+nightlog.bm.scam_refund,闇市場：売り手 {0} が逃亡。{1} のエスクロー資金が返金された。
+nightlog.bm.scam_loss,闇市場：売り手 {0} が事前リリースの資金を持ち逃げした。{1} を失った（{2}クレジット相当）。
+nightlog.bm.intercept,闇市場：{0} の荷物が押収された。支払い済みの{1}クレジット相当を失った。
+nightlog.bm.rug,闇市場：プラットフォームがラグプルした。{0} の輸送中資金（{1}）を失った。
+nightlog.bm.reopen,闇市場：何者かが元の場所で営業を再開した。
+news.bmrug.title,闇市場プラットフォームがラグプル
+news.bmrug.desc,闇市場のオンチェーン入口が一夜にして閉鎖され、すべてのエスクローおよび事前リリースの資金が消滅した。数日後には新しい入口が現れる見込みだ。
+courier.name,配達人
+courier.line1.1,荷物が届いたぞ。
+courier.line1.2,あんた宛ての荷物だ。
+courier.line2.1,中身は言うなよ。知りたくもない。
+courier.line2.2,ここに置いたぞ。じゃあな。
+gray.sub.black,ショップ
+black.stock,残り {0}
+black.price,{0}クレジット相当
+black.noadvance,事前リリース不可
+black.kind.gpu,グラフィックボード  状態 {0}%
+black.kind.Contraband.1,禁制品（低）
+black.kind.Contraband.2,禁制品（中）
+black.kind.Contraband.3,禁制品（高）
+black.kind.Tech,ハイテク品（割増）
+nightlog.bm.ready,闇市場：{0} が到着。開店後に配達人が届けてくれる。
+guide.web3.title,Web3ハンドブック
+guide.web3.text,銀行と取引：銀行ページは閲覧専用で、現金、家賃、Poinbase口座のCRCを表示する。入金と出金はPoinbaseの資金ページで行い、先にコインを選ぶ。CRCは銀行口座とウォレットのどちらでも可能で、他のコインはウォレットのみ。銀行からの入金はクレジットをPoinbase口座のCRCに変換し、銀行への出金はCRCをクレジットに戻すが、Poinbase口座の汚染を対象としたコンプライアンス審査が行われる。ウォレットへの出金は受取アドレスの入力が必要で、数回の承認を経て着金する。ガス代は通常の段階で固定され、送るコインから差し引かれる。アドレスの形式やチェックディジットが誤っていると拒否される。形式が正しくても誰も使っていないアドレスに送ったコインは失われる。¶取引：PSCは Probably Stolen Coin の略称で、グラフィックボードや専用採掘機で採掘されるコイン。買いは決済通貨で支払い、売りは取引対象のコインで行う。¶Web3の取引ページでは任意の2種類のコインを交換でき、必ずCRCを経由する。CRCが片側なら1つのプール、そうでなければ2つのプールを通り、手数料は2回、スリッページは重なる。プレビューに受取数量、経由するプール数、損失が表示される。§ハードウェアウォレット：チェーン上のコインはPLEDGERハードウェアウォレットに保管され、ウォレットごとに残高と汚染が個別に管理される。ウォレットはアイテムで、取引ターミナルにドラッグして読み込む。ターミナルのウォレットページで開き、ターミナル右上で接続・切断する。Web3ページの取引とグレーネットページのショップ、ミキサーは接続されたウォレットを使用する。ウォレットがない、または接続していないときは閲覧のみで、残高はすべて0になる。コイン決済の客は接続されたウォレットに支払う。¶支払い（ショップ、ミキサー、Ponero窓口、出品手数料）はまずターミナルで請求書を発行し、ウォレット側で送金先アドレスを入力して✓を長押しして署名する。アドレスの末尾2文字はチェックサムのため、1文字の誤入力なら通常は検出されるが、偶然有効なアドレスに一致した場合は誰も使っていないアドレスにコインが送られてしまう。DEXでのスワップもウォレットでの署名が必要となる。¶Poinbaseはカストディ口座で、入金はウォレットからPoinbaseの入金アドレスへ送金し（PSC、CRC、CRT、CRA、SPARKを受け付ける）、出金はPoinbaseの資金ページで行う。ウォレットページのエクスプローラーではアドレスで送金履歴を検索でき、実際に行われた送金（自分のウォレット、出金、採掘機の収益）のみが表示される。追加のハードウェアウォレットはジャックソン博士から購入し、取引ターミナルにドラッグして追加する（最大{WalletMax}個）。ショップにはより安価なものもある。不要になったウォレットは、ウォレットページで破棄できる。中のコインは永久に失われ、その後このアドレスに送られたものも失われる。¶送金にはガス代が必要で、低速・通常・高速の3段階があり、ガス価格は約1週間周期で上下する。ネットワーク混雑時はガス代が高騰し、低速のトランザクションはメムプールから除外されることがある。送金前にアドレス全体を必ず確認すること。§ステーキング：革命家のプールにCRAをステーキングすると日利が付与され、利息は元本に複利で組み入れられる。出金するにはまず申請して4日間待つ必要があり、待機期間中は利息が発生せず、早期引き出しもできない。CRAは部分担保で、CRA1枚ごとに革命家が保有するCRC準備金とバランストークンSPARKが裏付けとなる。準備率と担保率はステーキングページに表示される。利息は担保のない新規CRAで支払われるため準備率が薄まり、ステーキングが多いほど速く進む。準備率が低すぎると革命家は日利を引き下げる。革命家は時折準備金を流用し、事前に噂が流れる。それが予兆だ。流用後に準備率が{CraCrashRatio:%}を割り込むと崩壊する。3日以内にCRAは無価値となり、4日間のロック解除期間では間に合わない。割り込まなければディスカウントにとどまり、上流階級への略奪で得た資金が準備金を徐々に補う。¶公式ミント：CRCとSPARK（比率は現在の担保率による。必要量はプレビューに表示）を預けてCRAをミントし、{CraMintDaysMin}〜{CraMintDaysMax}日待つ。ミントしたCRAはそのままステーキングされる。バーンはCRAをCRCとSPARKに戻し、待機期間はロック解除期間と同じ長さ。準備金が不足するとCRC分は準備率に応じて減額される。待機中のミントとバーンは、公式が全額履行しない場合がある。毎晩の確率は、CRAの価格が1を下回る幅に{CraRugPerDepeg}を掛けたもので、価格が1を下回らなければ発生しない。¶ステーキングにはCRA、CRC、CRT、SPARKを預けられる。後の3種は先に二次市場で時価によりCRAへ交換してから（CRC経由、手数料とスリッページあり）ステーキングされる。SPARKの価格変動は激しく、崩壊時には連動して暴落する。ステーキング、ミント、バーンはすべてコントラクト呼出であり、ウォレットでの署名が必要となる。§専用採掘機：RatDigg専用採掘機（M1 / M2 / M3）は単体で稼働するマシンであり、グラフィックボードより遥かに高いハッシュレートを誇り、ハッシュあたりの消費電力も少ない。バッテリーが必要で、モジュールを装着でき、マイニングリグのスロットを使用しない。購入できるのはショップの専用採掘機の取引人のみで、闇市場の評判が条件となる（M1 {AsicRepM1}、M2 {AsicRepM2}、M3 {AsicRepM3}）。時折中古品も出回る。焼損した場合は電子部品を順番にドラッグして修理できるが、修理後は耐久度が{AsicRepairHealthCut}低下する。{EraMin}日目から{EraMax}日目の間に「専用採掘機時代」が到来し、数日前に新聞で予告される。到来後は大規模ファームの電力コストが半減してネットワーク全体のハッシュレートが上昇し、グラフィックボードによる採掘の利益が希薄化されて低スペックのボードはほとんど稼げなくなるが、専用採掘機への影響は比較的小さい。¶受取アドレス：各採掘機（リグと専用採掘機）は自分のウィンドウで受取アドレスを設定する。採掘の産出は毎晩ハッシュパワーの割合に応じてそのアドレスへ送られるので、2台の採掘機を別々のアドレスに払い出せる。初期状態では未設定で、アドレスがない、またはそのウォレットが破棄されている場合、その分は失われるため、ウォレットを替えたらアドレスも変更すること。§無期限先物：Poinbaseの「無期限先物」タブでは、口座内のCRCを証拠金として使用し、PSCは最大{PerpPscLev}倍、SPARKは最大{PerpSparkLev}倍のレバレッジが可能。分離マージン方式のみ対応で、同時に保有できるポジションは1つのみ（ロングとショートの同時保有はできない）。増やすには証拠金の追加のみ可能。約定価格は提示価格より不利になり（現物プールと同様、注文量が大きいほど乖離する）、建玉および決済の双方に手数料がかかる。ロスカット判定は夜間に当日の平均価格でのみ行われ、有効証拠金が想定元本の{PerpMaint:%}を下回るとロスカットが執行され証拠金はゼロになる。また毎晩資金調達料の支払いがあり、価格が7日平均を上回っている場合はロングがショートへ支払う。¶ロスカットで証拠金を超える損失が出た場合は保険基金が不足分を補填する。基金が枯渇した場合（SPARKの崩壊時など）、利益が出ているポジションに対して自動減倉が実行され利益の半分が削減される。それでも不足する分は負債となる。負債は1日ごとに{PerpDebtInterest:%}増加し、毎晩口座内のCRCから最優先で返済に充てられる。完済するまでは新規建てや出金が制限され、{PerpDebtDays}日経過すると店内の商品が差し押さえられて返済に充てられる。それでも補填しきれない分は貸倒処理され、無期限先物口座は{PerpBanDays}日間利用停止となる。§ショップ：コイン決済のみ（CRC不可）。通常ルートより{BmPremium:%}割高で、ハイテク品やグラフィックボードには追加の上乗せがある。支払ったコインの汚染は割合に応じて売り手側に残り、商品に盗品タグは付かない。グラフィックボードは偽物の可能性もあるため、自身で鑑定すること。¶ショップでの購入：左側で売り手を選択し、右側に商品棚が表示される。「購入」を押すと支払いパネルで数量、支払い方法、コインを設定できる。売り手の種類によって対応コインが異なり、ハードウェア・技術系はPSCとCRT、武器・医薬品・化学品・キーカード・チップ・高級品・個人売り手はCRTとプライバシーコイン、農業・畜産・水・醸造はPSCとCRA、プラットフォーム現物はPSC、CRT、CRAを受け付ける。売り手が受け付けるコインを持っていない場合は内蔵の自動スワップを利用でき、ウォレット内の別コインからスリッページ{BmAutoSwapSlip:%}でスワップして1回の署名で完了する。あるいは事前に自身でDEXでスワップすれば、スリッページはずっと抑えられるが手順が1つ増える。出品手数料も支払い時にコインを選択する。¶ショップのカート：棚の「購入」を押すとカートに追加され、右下のフローティングカートに数量が表示され、開くと決済画面に進む。決済画面の左側にはカート詳細が表示され（売り手ごとにグループ化、数量変更・削除が可能、対応する売り手ではエスクローまたは事前リリースを選択可能）、右側は支払いとなる。売り手ごとに送金先アドレスが異なるため、売り手ごとに個別決済を行う。その売り手が受け付けるコインを選んで請求書を作成し、ウォレットから送金するか、ウォレット内の別コインから自動スワップ（スリッページ{BmAutoSwapSlip:%}上乗せ）して1回の署名でその売り手への支払いを済ませる。§注文と出品：注文は現物より安価だが届くまで数日かかり、途中で押収される可能性がある。商人は種別ごとに独自の価格係数で販売し、{BmBulk1Count}点以上で{BmBulk1Discount:%}引き、{BmBulk2Count}点以上で{BmBulk2Discount:%}引きとなる。大口商人はランダムに出現し、価格は最安だが{BmBulkDays}日待つ必要がある。エスクローは{BmEscrowFee:%}の手数料がかかり、配達時に売り手へ送金され、売り手が逃走した場合は返金される。事前リリースならさらに{BmAdvanceDiscount:%}引きになるが、売り手が詐欺師なら返金されず、取引実績{BmAdvanceMinTrades}件以上の売り手のみが受け付ける。プラットフォーム自体のラグプル、警察による接収、または売り手が逮捕された場合、注文が追跡されて犯罪証拠が記録される。フォーラムの噂が前兆となる。押収された荷物が、警察の訪問に変わることがある。署名するとその場で犯罪証拠が記録され品物は没収されるが、拒否すれば代金を失うだけで済む。¶出品：ショップの出品タブで、保管庫の禁制品、ハイテク品、グラフィックボードを参考価格の{BmSellMin}倍〜{BmSellMax}倍で出品できる。倍率が高いほど売れるのが遅くなり（{BmSellFastMult}倍未満で約{BmSellDaysFast}日、{BmSellDay1Mult}倍で約{BmSellDays1}日、{BmSellMax}倍で約{BmSellDaysMax}日）、売上金が汚染される確率と割合も高くなる。直近7日間の販売量が多いほど汚染も重くなる。出品タブはまず出品中のショーケースが開き、「出品を追加」でさらに準備する。同じ商品はまとめて表示され、−と＋で数量を決め、倍率は左で選び、「棚」ボタンで出品手数料を払って初めて出品される。同じ商品の倍率は共通で、変えるにはいったん全部取り下げる。同時出品は最大{BmMaxKinds}種類、各{BmMaxStack}個まで、出品手数料は1個あたり{BmListFee:%}。ショーケースから取り下げると商品は保管庫に戻り、手数料は返らない。ショーケースの「受取コイン」で受け付けるコインを選ぶと、コインが増えるごとに夜の売却判定が1回増え（順番はランダムで、コインごとに買い手の数が違う）、受け付けるほど売れやすくなり、売上金は成約した判定のコインで届く。販売手数料として{BmCommission:%}が引かれ、売上金は{BmSaleHold}日間保留された後にウォレットへ届く。偽カードは買い手に見破られて返品され評価を落とす恐れがある。プラットフォームがラグプルした場合、出品中の商品も未払いの売上金も失われる。§予測市場（Web3「予測」ページ、ゲーム{PredictUnlockDay}日目より）：各市場はゲーム内の抽選や予定事項に関するはい／いいえで答える問題である（ニュースイベントの発生、派閥行動の開始、明日の水純度、PSC価格など）。市場は対象期間（ウィンドウ）開始前まで開いており、ウィンドウ最終日の夜に決済される。オンチェーンウォレットのCRCで「はい」または「いいえ」を購入する（コントラクト呼出：ウォレットでの署名が必要で、ポジションは署名したウォレットに帰属する）。価格は市場が織り込む確率であり購入するほど上昇する。的中した1口につき1クレジットが支払われ、売買ごとに手数料{PredictFee:%}がかかる。各市場にはポジション上限がある。払戻金は賭け金の汚染割合を継承する。¶噂のメモや派閥特典によって事象の発生を事前に知ることができ、そうした市場で「はい」に賭けるとインサイダー取引とみなされる。インサイダーのポジションが大きすぎる場合、決済時や利益確定の売却時に{PredictInsiderCatch:%}の確率で摘発され、元金と利益が全額没収された上で利益の半分が詐欺の犯罪証拠として記録される。ウィンドウ期間中のゲームデータが欠落した場合（夜間の決済処理をスキップしたなど）、市場は無効となり賭け金は返金される。§ニュースへの反応：毎晩、開催中の各市場は公開情報に基づく適正確率へ半分近づき、さらに若干の変動が加わる。そのため新聞、噂のメモ、派閥特典からいち早く情報を得れば、決済を待たずに先回りして購入し、変動後に売却できる。市場パネルの手がかり欄には、その市場に関する既知の情報が一覧表示される（予定、クールダウン、半減期の日、直近のガス値、CRA準備金の水位、専用採掘機時代の予告など）。¶推測できる法則：派閥作戦は隠された勢力値が閾値に達することでトリガーされる（例えば取締には警察≥20、闇市場≥40が必要で、警察が20低下する）。ガスは7日周期で変動する。半減期の1週間前から価格アンカーが日ごとに上昇する。予定された取締や停電はアンカーを動かすが、市場価格には事前に反映されない。準備金の消費が早い（ステーキングが多い）ほど、CRAの警告が早く発令される。PSC価格の市場はプレイヤー自身の大口注文で動かすことができる。情報ブローカー（十分な闇市場の評判が必要）は情勢ブリーフィング（5つの勢力値および各派閥が現在発動可能な行動、CRT払い）と、3段階のインサイダー情報（確定済みの派閥作戦と専用採掘機時代の市場のみが対象。ランクごとに精度が上昇し、価格は市場規模に応じる。真相と正反対の偽情報もある）を販売している。情報と同じ側に賭けるとインサイダー取引とみなされる。市場規模は日数の経過とともに拡大し、予測を外すと賭け金は全額失われるため、1つの市場に全額を投じてはならない。§価格操縦の検知：Poinbaseの現物取引における大口注文は、プレイヤーの介入がない場合の適正価格から乖離させる（乖離幅は毎晩の価格回帰によって減衰し、予測市場の手がかり欄に表示される）。乖離幅が{ManipFree:%}を超えた後、その価格変動から利益を得た場合（推し進めた方向でPSC価格予測市場が的中する、または同方向の無期限先物を利益確定して決済するなど）、摘発される可能性がある。乖離幅が大きいほど摘発率は上がり、上限は{ManipMax:%}となる。摘発されると予測市場の賭け金と払戻金は全額没収、無期限先物の利益も没収され、利益の半分が詐欺の犯罪証拠として記録される。さらに無期限先物口座は{ManipFreezeDays}日間凍結され、新聞に捜査が報道される。先にショートしてからの売り崩しは確実に儲かるわけではない。無期限先物の往復スリッページや現物の往復売買コストが、ショートの利益を上回ることが多いためだ。§ポンジ・スキーム（利回りページの「スキーム発行」、ゲーム{PonziMinDay}日目より、1セーブにつき1回のみ）：日利（{PonziRates[0]:%}〜{PonziRates[4]:%}）を設定し、宣伝費を支払って開始する（開始やラグプルはウォレットで署名するコントラクト呼出）。下層の住民は日利と下層の評判に応じてプールへCRCを入金し、日利が高いほど集まる速度が上がる。毎晩、利息はまず新規の入金から支払われ、不足分は発行者ウォレットから補填される。補填できない場合は取り付け騒ぎが発生して崩壊する。プールからは毎晩{PonziWithdraw:%}が出金され、プールが大きく日利が高いほど通報される確率が上がり、通報されても同様に崩壊する。崩壊時、プールは没収される。プールはいつでもラグプル可能（2回クリックして確定）：全額が汚染資金として発行者ウォレットへ送金される（出金前に資金洗浄が必要）。ラグプルと崩壊はどちらも詐欺の犯罪証拠として記録され、下層の評判はリセットされる。「通報リスク」欄で通報リスクの目安を確認できる。§詐欺：ヒゲ――朝の開店時に価格が一瞬で上下に{WickMin:%}〜{WickMax:%}振れることがある。大半はその夜のうちに大きく戻るが、本物の値動きもある。無期限先物のマーク価格には半分しか反映されないため、ヒゲに動揺して狼狽売りしないこと。¶エアドロップ（Web3のエアドロップページ）――エアドロップごとに、まずウォレットを承認し（承認コントラクトに署名）、次に署名して受け取る。承認する前に対象のトークン承認範囲を確認すること。正規のエアドロップはトークン承認が不要か、数十程度の少額承認で済む。「無制限承認」や報酬を大幅に上回る大口承認を要求するものはフィッシング詐欺であり、紛らわしい名前（oを0、lを1に置き換えるなど）が使われることが多い。1〜2晩後に該当コインがウォレットから抜き取られる。トークン承認はエアドロップページの右側に一覧表示され、署名によって取り消すことができる。取り消せば資金を持ち出されることはない。¶サードパーティ収益プール（利回りページ「入金」）――日利{YieldRates[0]:%}〜{YieldRates[2]:%}。準備金、タイムロックや監査の有無は確認できるが、詐欺かどうかは見抜けない。日利が高いほどラグプルの可能性が高く、タイムロックや監査があればその確率は下がる。健全なプールは利息を支払えなくなると元本を返還して閉鎖するが、詐欺プールは毎晩のように持ち逃げして消える可能性がある。タイムロック付きプールからの出金には{YieldLockDays}日かかる。¶偽サポート――Poinbaseのサポートを名乗る者が店頭に現れ、CRCを「安全なアドレス」へ移すよう要求してくる。Poinbaseが訪問したり、送金を要求することは決してない。偽造送金――コイン決済の客が「もう送金した、これがスクショだ、早く品物を渡せ」と言い出す場合、代金が支払われることはない。真っ当な客ならオンチェーンでの承認に少し時間がかかると言うはずだ。§チャート：Poinbase現物ページとWeb3取引ページでは、各コインの日足ローソク足（無期限先物ページは現在の銘柄、予測市場はPSC）を切り替えられる。緑は上昇、赤は下落。黄色のラインは7日移動平均線（無期限先物の資金調達料の算出に使用）。下部の棒グラフは出来高（灰色は市場、シアンは自身：現物、DEX、ミント / バーン、Poneroスワップ、無期限先物の新規・決済のすべてがカウントされる）。値動きが大きいほど市場の取引量も増加し、ヒゲは長い影を残す。§ストーリー連動：ゲーム内の各ストーリーでの選択がこの市場を変動させる。翌日の新聞で報じられ、市場が完全に反応するまで数日を要する。セルピコの証拠を革命家に渡す：CRA準備金に資金が注入され、{StorySecDays}日間崩壊の発生率が半減、SPARKが{StorySparkNights}晩で{StorySerpicoSpark:+%}上昇する。闇市場に渡す：CRTのディペッグおよび摘発時の密告確率が半減する。警察に渡す：{StorySecDays}日間、出金審査、ミキサー制裁、価格操縦およびインサイダー取引の取り締まりが強化される。エレノアがドライブを流出させる：CRCカストディアンの評価損発生率が2倍になり、SPARKが{StoryLeakSpark:+%}上昇する。返却した場合：CRCのディペッグ確率が半減する。ルン警部が逮捕された場合：{StoryLunDays}日間、出金審査、価格操縦およびインサイダー取引の取り締まりが強化される。¶ミキサー運営者タンブラー（ミキサーのアンロック後、{TumblerMinDay}日目以降）：数回店舗を訪れ、最終的にキードライブの隠匿を依頼してくる。隠し通して返還する：ミキサー手数料が半減し匿名セットが拡大、謝礼も受け取れる。ただしドライブは禁制品であり、その間に捜索で発見されると犯罪証拠として記録される。警察に通報する：賞金と警察の評判を獲得し、ミキサーは永久閉鎖される（預入中のコインは返還）。闇市場に売却する：CRT（半分は汚染資金）と闇市場の評判を獲得するが、以後はミキサー手数料が高騰し、ラグプルの確率も上昇する。§ミキサーとプライバシーコイン：コイン、数量、ラウンド数を選択する。ラウンドごとに手数料が引かれて汚染が減少し、ラウンド数は待機日数に等しく、同一アドレスにコインが戻る。入金額が多いほど洗浄効果は低下する。¶プライバシーコインのスワップ（Web3取引ページ、闇市場の評判が必要）：Poneroはプライバシーコインであり、Poneroへのスワップでその価値相当の汚染が除去される。どちらの方向も{PoneroFee:%}の手数料と1日の限度額がある。Poneroからスワップしたコインは出所不明となり、出金審査が厳しくなる。§出金審査（画面には限度額も検知率も表示されない。ルールは以下の通り）：PoinbaseからCRCを出金してクレジットに換金する際、現在の家賃を基準に判定される。1回の出金が家賃の{AmlBigRents}倍を超える、または直近{AmlWindowDays}日間の累計が家賃の{AmlCumRents}倍を超えると、超過分に比例して審査される確率が上昇する。金額に対する汚染割合が{AmlTaintRatio:%}以上に達すると、「割合 × {AmlTaintMult}」の確率が加算される。最近ミキサーから戻されたコインやフラグ付きウォレットからの資金はさらに{AmlMixerBonus:%}加算される。確率は最大{AmlMaxChance:%}。検知された場合：汚染率が{AmlHeavyRatio:%}未満なら軽微とみなされ、汚染分のみ没収されて犯罪証拠は記録されない。{AmlHeavyRatio:%}以上の場合は重大とみなされ、汚染分が没収された上で汚染額が盗品売買の犯罪証拠として記録される。検知されなければ全額が着金する。出金には{ExchangeFee:%}の手数料がかかり、原価を上回る利益には{TaxRate:%}の税金が課される。少額に分割する、複数日に分散する、あらかじめ洗浄するなどの手段で確率を下げられるが、限度額や確率は表示されないため自身で推測すること。¶ウォレットを破棄する前に必ず自分でコインを送金し、ポジションや入金分も先に出金しておくこと。残された資産はウォレットと共に消滅する。
+courier.odd1,……荷物が届いた。
+courier.odd2,（ポケットに手を入れたままだ）ここにサインを。
+courier.sign,サイン
+courier.refuse,受取拒否
+courier.signed,よし。動くな、警察だ。
+courier.refused,……そうか、ならいい。
+black.state.Lost.seized,押収
+black.state.Lost.refused,受取拒否
+black.forum.easy,最近順調すぎる。売り手の発送はいつもより早く、見慣れない新規アカウントも増えている。
+black.forum.busted,{0} が逮捕されたらしいが、注文履歴は残ったままだ。
+nightlog.bm.trap.honeypot,闇市場：プラットフォームが警察に接収された。購入した {0} が追跡され、犯罪証拠 {1} が記録された。
+nightlog.bm.trap.seller,闇市場：売り手が逮捕され、残された注文履歴から関与が特定された：{0}、犯罪証拠 {1} が記録された。
+tab.mining,マイニング
+courier.sign.say,サインする。
+courier.refuse.say,受け取らない。送り返せ。
+black.forum.busted_buyer,買い手がまとめて逮捕されたらしいが、取引記録はプラットフォームに残ったままだ。
+nightlog.bm.sale_sold,闇市場：出品した {0} が売却された。代金 {1}、{2}日目に入金予定。
+nightlog.bm.sale_paid,闇市場：{0} の売上代金 {1} が着金した（CRT）、うち汚染 {2}。
+nightlog.bm.sale_fake,闇市場：買い手に {0} が偽物だと見破られて返品された。評価が低下した。
+nightlog.bm.sale_rug,闇市場：プラットフォームがラグプルを起こした。{0} と売上代金（{1}）が消失した。
+black.sub.sell,出品
+black.sell.h,出品
+black.sell.mult,価格倍率
+black.sell.none,保管庫に出品可能なアイテムがありません。
+black.sell.rating,高評価 {0}%
+black.mine.sale,{0}  参考 {1}  価格 {2}（×{3}）：{4}
+black.sale.Listed,出品中
+black.sale.Paid,入金済
+black.sale.Lost,ラグプルにより消失
+black.sale.Delisted,出品取消済
+black.sale.Delisted.fake,買い手に偽物と見破られ返品
+black.kind.gpunew,グラフィックボード　新品
+merchant.GpuNew,新品グラフィックボード
+merchant.GpuUsed,中古グラフィックボード
+merchant.Arms,武器
+merchant.Docs,キーカード・チップ
+merchant.Pharma,医薬品
+merchant.Bulk,大口商品
+black.days,{0}日で到着
+black.sell.listedall,{0}件を出品しました。
+merchant.Rigs,マイニングリグ・電源
+merchant.Modules,モジュール
+merchant.GunMods,ガンスミスパーツ
+merchant.Chem,化学品
+merchant.Brewer,醸造
+merchant.Farm,水耕栽培
+merchant.Husbandry,畜産
+merchant.Miner,採掘用品
+merchant.Water,水
+merchant.Storage,倉庫
+merchant.Tools,工具
+merchant.Luxury,高級品
+black.kind.Goods,商品
+merchant.Elite,エリートショップ
+merchant.Personal,個人売り手
+black.pay.confirm,請求書
+black.pay.to,送金先アドレス：{0}
+black.pay.cancel,破棄
+pay.mix,ミキサー {0} {1}
+pay.swap,Ponero窓口 {0} {1}
+black.edit.cancel,キャンセル
+merchant.Platform,プラットフォーム
+black.platform.line,プラットフォーム現物  即時配達
+black.orders.in,購入
+black.orders.out,売却
+black.desk.pair,PONERO [プライバシーコイン]  価格 {0}
+black.pay.amount,数量：{0} {1}（約{2}クレジット）
+black.pay.wallet,ウォレットから送金
+hw.total,合計 ≈ {0}クレジット
+hw.pending.bill,未払い：{0}
+hw.pending.sign,署名待ち：{0}
+hw.send,送金
+hw.review,署名リクエスト
+hw.to,送金先アドレス
+hw.avail,利用可能 {1} {0}
+hw.amount,数量
+hw.bill,請求書：{0}  {1} {2}
+hw.fill,請求額を入力
+hw.next,✓ 次へ  × 戻る
+hw.err.format,無効なアドレス形式です。
+hw.err.checksum,アドレスのチェックサム検証に失敗しました。
+hw.err.self,このウォレット自身のアドレスには送金できません。
+hw.err.asset,請求書の指定トークンは {0} です。
+hw.err.short,請求額を下回っています：{0} {1}。
+hw.err.nobill,この送金先の未払い請求書はありません。
+hw.review.h,確認
+hw.contract,コントラクト呼出
+hw.review.to,送金先アドレス
+hw.review.amount,{0} {1}（約{2}クレジット）
+hw.review.bill,請求書：{0}
+hw.review.unknown,このアドレスの取引履歴はありません。
+hw.review.over,{0} {1} の過払いが発生します。超過分は返金されません。
+hw.hold,✓ 長押しで署名  × 拒否
+hw.tx.h,トランザクション
+hw.tx.signing,署名中…
+hw.tx.mempool,ブロードキャスト完了。メムプールで待機中…
+hw.tx.packed,ブロック #{0} に取り込まれました
+hw.tx.confirm,ブロック #{0}  確認 {1}/{2}
+hw.skip,スキップ
+hw.done.h,確認済み
+hw.done.block,ブロック #{0}
+hw.done.sent,{0} {1} → {2}
+hw.done.void,このアドレスは使われていません。コインは失われました。
+hw.back,戻る
+hw.rejected,ウォレット側で署名が拒否されました。
+hw.wait,ウォレットで確認してください。
+hw.swap,スワップ {0} {1} → 約 {2} {3}
+tab.wallets,ウォレット
+hw.wallet.n,ウォレット {0}
+hw.review.own,自身のウォレット：{0}
+hw.review.poinbase,Poinbase入金アドレス
+poin.deposit,入金アドレス：{0}
+wallets.count,ウォレット {0}/{1}
+wallets.col.name,名前
+wallets.col.addr,アドレス
+wallets.col.taint,汚染
+wallets.open,開く
+wallets.use,接続
+wallets.current,接続中
+wallets.added,{0} を追加しました：{1}
+nightlog.drained,{0} 内のコインが不正に送金された（約{1}クレジット相当）。
+item.hwwallet.name,PLEDGER ハードウェアウォレット
+item.hwwallet.desc,大画面のハードウェアウォレット。取引ターミナルにドラッグしてウォレットを追加する（最大5つ）。
+poin.empty,アカウントに残高がありません。
+hw.copy,コピー
+hw.paste,貼り付け
+hw.copied,アドレスをコピーしました。
+hw.copied.addr,{0} をコピーしました
+hw.balance.frozen,（凍結 {0}）
+wallets.destroy,破棄
+wallets.destroy.sure,破棄の確認
+wallets.destroyed,{0} を破棄しました：{1}
+wallets.destroy.warn,{0}を破棄すると中のコインは永久に失われる。もう一度押して確定する。
+payout.label,受取先
+payout.unset,未設定
+payout.set,アドレスを設定
+payout.h,受取アドレス
+payout.cur,現在：{0}
+payout.pick,自分のウォレット：
+payout.manual,またはアドレスを入力：
+payout.clear,クリア
+payout.err,無効なアドレスです。
+nightlog.mined.lost,採掘した{0} PSCが失われた：受取アドレス未設定、またはそのウォレットが破棄済み。
+wallets.none,ウォレットが読み込まれていません。ハードウェアウォレットをターミナルにドラッグしてください。
+web3.err.noconn,ウォレットが接続されていません。
+web3.connect,ウォレットを接続
+web3.disconnect,切断
+web3.conn,{0}  {1}
+hw.balance.value,≈ {0}
+wallets.rename,名前の変更
+wallets.rename.h,{0} の新しい名前
+wallets.rename.ok,OK
+hw.fee.slow,低速
+hw.fee.normal,標準
+hw.fee.fast,高速
+hw.fee,ガス代 {0} {1}（約{2}クレジット）
+hw.confs,必要な承認数：{0}
+hw.congested,ネットワーク混雑
+hw.congested.slow,ネットワーク混雑：低速手数料はメムプールから除外される可能性があります
+hw.recent,最近
+hw.recent.out,→ {0}  {1} {2}
+hw.recent.in,← {0}  {1} {2}
+hw.review.history,過去の取引履歴あり
+hw.tx.stuck,メムプールで待機中…
+hw.tx.dropped,メムプールから除外されました。送金は行われませんでしたが、ガス代は消費されました。
+hw.dropped.h,未完了
+hw.err.fee,ガス代を支払う残高が不足しています。
+news.congest.title,チェーン混雑
+news.congest.desc,エアドロップの駆け込み需要でチェーンが混雑している。ガス代は何倍にも跳ね上がり、低ガス代のトランザクションはメムプールから除外される可能性がある。
+news.phish.title,Poinbaseからのお知らせ：入金アドレス移行
+news.phish.desc,Poinbaseはウォレットシステムをアップグレードしました。旧入金アドレスは廃止されます。新しいアドレス {0} に資産を送金してください。
+black.forum.phish,ミキサーの新アドレスが投稿された：{0}。旧アドレスは監視されているとのことだ。
+hw.gas,ガス ×{0}
+web3.sub.stake,ステーキング
+stake.h,革命家のステーキングプール
+stake.rate,日利 {0}%、出金待機期間は{1}日（待機中は利息なし）
+stake.low,準備率低下、日利引き下げ
+stake.cra,CRA価格 {0}  {1}
+stake.none,ステーキング中の資産はありません。
+stake.col.wallet,ウォレット
+stake.col.amount,ステーキング額
+stake.col.queue,ロック解除中
+stake.day,（{0}日目）
+spark.price,バランストークン SPARK  {0}クレジット
+stake.ops,{0}
+stake.avail,CRA {0}  ステーキング中 {1}
+stake.do,ステーキング
+stake.undo,出金申請
+stake.sum.in,{0} CRA をステーキング
+stake.sum.out,{0} CRA の出金申請（{1}日後に着金）
+stake.done.in,{0} CRA をステーキングしました。
+stake.done.out,{0} CRA の出金を申請しました。{1}日目にウォレットに戻ります。
+nightlog.stakeint,ステーキング利息 +{0} CRA。
+nightlog.unstaked,ステーキングから出金された {0} CRA が {1} に戻った。
+news.crawarn.title,革命家のステーキングプールに不穏な動き
+news.cralow.title,革命家がステーキングの日利を引き下げ
+stake.avail2,SPARK {0}
+poin.sub.spot,現物
+poin.sub.perp,無期限先物
+perp.h,無期限先物
+perp.acct,証拠金口座 CRC {0}
+perp.debt,負債 {0}。{1}日後にアイテムが差し押さえられます。完済するまで新規建ておよび出金はできません。
+perp.banned,無期限先物口座は利用停止中です（残り{0}日）。
+perp.none,保有ポジションはありません。
+perp.col.pos,ポジション
+perp.col.notional,想定元本
+perp.col.price,建値 → 現在値
+perp.col.pnl,損益
+perp.col.liq,ロスカット価格
+perp.long,ロング
+perp.short,ショート
+perp.rate,{0}  価格 {1}  資金調達料 {2}%/夜
+perp.fund,保険基金 {0}
+perp.open,新規建て
+perp.margin,証拠金額（CRC）
+perp.do.open,新規建て
+perp.do.add,証拠金追加
+perp.do.close,決済
+perp.opened,{0} {1} を新規建てしました：証拠金 {2} CRC、{3}×。
+perp.added,{0} CRC の証拠金を追加しました。
+perp.closed,決済完了。{0} CRC が口座に戻りました（損益 {1}）。
+perp.deficit,口座残高が不足し、不足分 {0} は保険基金および負債により補填されました。
+perp.err.Banned,無期限先物口座は利用停止中です。
+perp.err.Debt,未払いの負債があるため、新規ポジションを建てられません。
+perp.err.Leverage,レバレッジがこの商品の設定上限を超えています。
+perp.err.Size,この商品の保有ポジション上限を超えています。
+perp.err.Funds,口座のCRC残高が不足しています（手数料を含む）。
+perp.err.Opposite,同一商品でロングとショートを同時に保有することはできません。先に決済してください。
+perp.err.NoPosition,ポジションがありません。
+perp.err.Margin,証拠金額を入力してください。
+perp.debt.block,無期限先物の未払い負債があるため、出金できません。
+nightlog.perp.liq,{0}がロスカットされた。証拠金{1}を失った。
+nightlog.perp.adl,保険基金が枯渇し、{0}が自動減倉され利益{1}が差し引かれた。
+nightlog.perp.interest,無期限先物の負債に利息が発生。現在の負債総額は{0}。
+nightlog.perp.seize,無期限先物の負債が延滞。押収品から{0}が充当された。
+nightlog.perp.writeoff," {0}が貸倒処理された。無期限先物口座は{1}日間利用停止。"
+perp.slip.title,無期限先物負債差押通知
+perp.preview2,手数料 {0}  ロスカット {1}
+nightlog.perp.repaid,無期限先物の赤字：返済のためPoinbase口座から{0} CRCが引き落とされた。
+perp.err.Thin,この注文のスリッページが大きすぎるため即座にロスカットされます。注文規模またはレバレッジを下げてください。
+perp.err.Single,ポジションは同時に1つまで。証拠金を追加してください。
+mat.hypertech_electronic,ハイパーテック電子部品
+item.asic.name,RatDigg {0} 専用採掘機
+item.asic.dead.name,焼損したRatDigg {0} 専用採掘機
+item.asic.desc,定格 {0} GH/s。定格消費電力 {1} kJ/日。状態 {2}。独立型専用採掘機：稼働にはバッテリーが必要、モジュール装着可能。
+item.asic.dead.desc,焼損状態。電子部品をドラッグして修理：現在は{0} × {1}が必要。修理後は耐久度が20低下する。
+item.asic.dead.fixed,修理済み。
+merchant.Asic,専用採掘機の取引人
+black.kind.asic,専用採掘機  状態{0}%
+black.kind.asicnew,専用採掘機  新品
+news.erawarn.title,RatDiggが新世代の専用採掘機を間もなく発表
+news.erawarn.desc,専用採掘機メーカーが新機材を発表し、業界内では大手ファームが一斉に機材を刷新すると予測されている。グラフィックボードによるマイニングの黄金期も終わりが近いとの声もある。
+news.era.title,専用採掘機時代
+news.era.desc,新世代の専用採掘機が量産体制に入り、大手ファームの電力コストは半減した。ネットワーク全体のハッシュレートは上昇し、グラフィックボードによる採掘の利益は希薄化する。
+web3.sub.predict,予測
+predict.h,予測市場
+predict.acct,{0}：CRC {1}
+predict.none,本日開催中の市場はありません。
+predict.closed,受付終了
+predict.row,はい {0}  いいえ {1}
+predict.held,保有: {0} ×{1}、コスト {2}
+predict.yes,はい
+predict.no,いいえ
+predict.void,無効
+predict.result,{0}日目  {1}  結果：{2}  {3}
+predict.pick,取引
+predict.price,1口あたりの価格：はい {0}  いいえ {1}
+predict.pos,{0}：{1} ×{2}
+predict.pos2,コスト {0}  払戻 {1}
+predict.sum.buy,{2} CRCで「{1}」を購入：{0}
+predict.sum.sell,予測ポジションを売却：{0}
+predict.closed.note,受付終了、決済待ち。
+predict.preview,「{0}」を購入: 約{1}口（平均{2}）、的中時の純益 {3}
+predict.buy.yes,「はい」を購入
+predict.buy.no,「いいえ」を購入
+predict.sell,すべて売却
+predict.bought,{2}で「{0}」を購入。的中時の払戻金は{1}。
+predict.sold,売却完了、{0}を受け取った。
+predict.err.Closed,この市場はすでに受付を終了しています。
+predict.err.Amount,数量が無効です。
+predict.err.Funds,ウォレット内のCRCが不足しています。
+predict.err.Cap,この市場の保有上限を超えています。
+predict.err.Opposite,反対側のポジションを保有しています。先に売却してください。
+predict.err.NoPosition,この市場のポジションがありません。
+predict.win.one,{0}日目
+predict.win.range,{0}〜{1}日目
+predict.q.event,{0}：「{1}」が発生
+predict.q.faction,{0}：{1}が作戦を開始
+predict.q.purity,{0}：{1}の純度 ≥ {2}
+predict.q.price,{0}：{1}の価格 ≥ {2}
+predict.faction.FACTION_SECURITY,警察
+predict.faction.FACTION_REVOLUTION,革命家
+predict.faction.FACTION_LOWER_LEVEL,下層
+predict.faction.FACTION_UPPER_LEVEL,上層
+predict.faction.FACTION_BLACK_MARKET,闇市場
+predict.purity.gutter,下層水
+predict.purity.rust,上層水
+nightlog.predict.win,予測的中：「{0}」、{1}が払い戻された。
+nightlog.predict.lose,予測不的中：「{0}」、賭け金{1}を失った。
+nightlog.predict.void,予測無効：「{0}」、賭け金{1}が返還された。
+nightlog.predict.caught,インサイダー取引が摘発：「{0}」、賭け金と配当{1}が没収され、詐欺の犯罪証拠が記録された。
+predict.tab.markets,市場
+predict.tab.intel,情報
+predict.acct.crt,{0}：CRT {1}
+predict.tier.0,低
+predict.tier.1,中
+predict.tier.2,高
+predict.clue.tip,情報（{0}）：「{1}」
+predict.clue.queued,予定：{0}日目に開始
+predict.clue.queued2,予定：{0}日目「{1}」
+predict.clue.cool,イベント進行中またはクールダウン中
+predict.clue.busy,派閥作戦が進行中。当面の間、新たな作戦はなし
+predict.clue.halving,半減期は{0}日目。その1週間前から価格アンカーが上昇
+predict.clue.anchor,現在の価格アンカー: {0}
+predict.clue.gas,直近のガス：{0}
+predict.clue.drain,1夜あたりの消費: {0}
+predict.clue.era,{0}〜{1}日目の間でランダム、事前予告あり
+predict.clue.era.warned,予告発令済み：{0}〜{1}日目に開始
+predict.q.gas,{0}：ガス指数 ≥ {1}
+predict.q.cra,{0}：CRA警告が発令
+predict.q.era,{0}：専用採掘機時代が開始
+predict.era,専用採掘機時代
+predict.pos3,平均 {0}  現在 {1}
+predict.pos4,今売却すると{0}を獲得
+intel.h,情報ブローカー
+intel.locked,Web3ショップと闇市場の評判{0}が必要。
+intel.brief.buy,情勢ブリーフィングを購入（{0} CRT）
+intel.brief.none,ブリーフィングは未購入。
+intel.brief.day,{0}日目のブリーフィング
+intel.tips.h,内部情報
+intel.tips.none,照会可能な項目なし（派閥作戦および専用採掘機時代のみ）。
+intel.tip.buy,精度約{0}%  {1} CRT
+intel.err.funds,ウォレットのCRTが不足しているか、対象の市場が購入不可です。
+intel.brief.sum,情勢ブリーフィング、{0} CRT
+intel.tip.sum,内部情報 {0} CRT：{1}
+intel.brief.done,情勢ブリーフィングを入手した。
+intel.tip.done,情報内容：「{0}」
+predict.brief.levels,警察 {0}  革命家 {1}  闇市場 {2}  動乱 {3}  上層 {4}
+predict.brief.busy,{0}：作戦進行中
+predict.brief.queued,{0}：作戦予定あり
+predict.brief.none,{0}：発動可能な作戦なし
+predict.brief.can,{0}：{1}を発動可能
+predict.clue.push,プレイヤーの価格誘導 {0}%: 操縦リスク高
+nightlog.predict.manip,予測が価格操縦と認定：「{0}」、賭け金{1}が没収され、詐欺の犯罪証拠が記録された。
+news.manip.title,取引所が不審な取引を調査
+news.manip.desc,規制当局の発表によると、大口現物注文で価格を操作し、デリバティブや予測市場で不当な利益を得た者がおり、関係資金は差し押さえられた。
+perp.manip,決済利益{0}が価格操縦と認定され没収。無期限先物口座が{1}日間凍結された。
+web3.sub.ponzi,利回り
+ponzi.h,ポンジ・スキーム
+ponzi.acct,発行者ウォレット {0}：CRC {1}
+ponzi.rate,日利 {0}%
+ponzi.pool,プール {0} / 上限 {1}
+ponzi.inflow,昨晩の新規入金 {0}
+ponzi.interest,今晩の支払利息 {0}
+ponzi.own,自己負担利息合計 {0}
+ponzi.wind,通報リスク：{0}
+ponzi.wind.low,低
+ponzi.wind.mid,中
+ponzi.wind.high,高
+ponzi.idle,ポンジ・スキームは未発行。
+ponzi.done,ポンジ・スキームは終了しました。1セーブデータにつき1回のみ発行可能。
+ponzi.ops,操作
+ponzi.rug,プールをラグプル（{0}）
+ponzi.rug.confirm,再クリックで{0}のラグプルを確定
+ponzi.rugged,{0}を持ち逃げした。全額が汚染資金。
+ponzi.open,ポンジ・スキームを発行
+ponzi.ad,宣伝費{0} CRCが現在のウォレットから支払われます。署名が必要です。
+ponzi.start,発行
+ponzi.started,ポンジ・スキームを発行した。
+ponzi.err,ウォレットのCRCが不足しており、宣伝費を支払えません。
+nightlog.ponzi.collapse,利息を支払えず取り付け騒ぎが発生。プール{0}が没収され、詐欺の犯罪証拠が記録され、下層の評判がリセットされた。
+nightlog.ponzi.reported,通報されたためプール{0}が没収され、詐欺の犯罪証拠が記録され、下層の評判がリセットされた。
+news.ponzi.title,ポンジ・スキームが破綻
+news.ponzi.desc,下層で運営されていたポンジ・スキームが通報された。投資家が殺到し、当局によって資金が凍結された。
+news.ponzi.rug.title,投資詐欺
+news.ponzi.rug.desc,ポンジ・スキームの運営者が全資金を持ち逃げし、下層の投資家は全財産を失った。
+ponzi.start.sum,ポンジ・スキーム発行、日利 {0}%、宣伝費 {1} CRC
+ponzi.rug.sum,プール {0} をラグプル
+ponzi.err.wallet,発行ウォレットで署名してください。
+predict.clue.counter,情報：予定確定（カウンターの情報屋、噂のメモ）
+web3.sub.airdrop,エアドロップ
+air.h,エアドロップ
+air.none,現在受け取れるエアドロップはありません。
+air.row,{0}  報酬 {1} CRC  {2}  {3}日目まで
+air.claim,受け取る
+air.unlimited,{0} の無制限トークン承認
+air.limited,{0} を {1} トークン承認
+air.approvals,{0} のトークン承認
+air.approvals.none,トークン承認なし。
+air.approval,{0}：{1}
+air.revoke,取り消し
+air.sum,エアドロップ {0}（{1}）を受け取り
+air.claimed,{0} CRC を受け取りました。
+air.auth,ウォレットを承認
+air.unauth,未承認
+air.authed,承認済み：{0}
+air.authed.msg,{0}に対してウォレットを承認しました。
+air.auth.sum,{0}にこのウォレットでの操作を承認。範囲：{1}。
+air.err.unauth,先にこのエアドロップに対してウォレットを承認してください。
+air.revoke.sum,{0} の {1} トークン承認を取り消し
+air.revoked,トークン承認を取り消しました。
+air.err.wallet,承認したウォレットで署名してください。
+pool.h,サードパーティ収益プール（CRC）
+pool.none,現在プールはありません。
+pool.col.name,プール
+pool.col.rate,日利
+pool.col.reserve,準備金
+pool.col.lock,タイムロック
+pool.col.audit,監査
+pool.col.mine,預入額
+pool.yes,あり
+pool.no,なし
+pool.pending,出金中
+pool.closed,（閉鎖）
+pool.deposit,入金
+pool.withdraw,出金
+pool.withdraw.lock,出金を申請（{0}日）
+pool.err.cap,プール上限を超過しています。残り枠: {0}。
+pool.err.none,預入残高がありません。
+pool.sum.in,{0} への入金：{1} CRC
+pool.sum.out,{0} から {1} CRC を出金
+pool.done.in,{1} に {0} CRC を入金しました。
+pool.done.out,{0} CRC を出金しました。
+pool.done.lock,{0} CRC の出金を申請しました。{1}日目に反映されます。
+nightlog.scam.drain,{0} の {1} {2} がトークン承認を通じて「{3}」に持ち去られた。
+nightlog.scam.rug,収益プール「{0}」がラグプルされ、{2} の {1} CRC が失われた。
+nightlog.scam.dry,収益プール「{0}」の準備金が底をつき閉鎖された。{2} に {1} CRC が返還された。
+nightlog.scam.paid,「{0}」からの出金が到着した：{2} が {1} CRC を受け取った。
+nightlog.scam.fakepay,偽造送金：{0}
+nightlog.scam.sent,「サポート」の安全アドレスに送金した {0} {1} は詐欺師の手に渡った。
+coinpay.intro,{0} で支払うよ。チェーン上の確認に少し時間がかかる。
+coinpay.intro.fake,{0} はもう送った、ほらスクショだ。急いでるんだ、早く品物を渡してくれ。
+coinpay.fake.entry,{0} はコインで{2}クレジット支払ったと主張して {1} を持ち去ったが、チェーン上にそのような取引は存在しない。
+scam.support.name,Poinbaseサポート
+scam.support.1,こんにちは、Poinbaseサポートです。お客様のアカウントで異常なログインが検出され、フラグ付きとなりました。
+scam.support.2,本日中に確認のため安全アドレス {1} へ {0} CRC を送金してください。確認後すぐに返金されます。
+scam.support.3,対応いただけない場合、アカウントは永久に凍結されます。では失礼します、送金を忘れずに。
+predict.sold.caught,売却時にインサイダー取引が発覚：元本と利益をすべて没収、詐欺の証拠を記録。
+predict.row.move,（昨晩 {0} {1}）
+predict.stats.h,履歴（始値平均 / 実際の発生率）
+predict.stats.row,{0}：{1}件、始値平均 {2}、発生率 {3}%
+predict.kind.Event,ニュースイベント
+predict.kind.Faction,派閥作戦
+predict.kind.Purity,水の純度
+predict.kind.Price,PSC 価格
+predict.kind.Gas,ガス
+predict.kind.Cra,CRA 警戒警報
+predict.kind.Era,専用採掘機時代
+nightlog.predict.move,予測市場「{0}」が変動 {1} → {2}
+nightlog.predict.why,（{0}）
+chart.empty,{0}日足チャート：履歴なし。本日より記録開始。
+chart.caption,{0}日足  高 {2}  安 {3}  終 {4}（{5}%）
+chart.legend,<size=80%>緑 上昇、赤 下落；黄 7日移動平均線；棒：灰 市場 / シアン プレイヤー</size>
+chart.legend.thr,<size=80%>緑 上昇、赤 下落；黄 7日移動平均線；青破線 閾値</size>
+news.story.serpico_rev.title,革命家が警察の弱みを握る
+news.story.serpico_rev.desc,革命家が警察内部の汚職証拠を入手した模様。ステーキングプールからの情報によると、革命家の準備金に多額の資金が注入され、SPARKが堅調に推移している。
+news.story.serpico_bm.title,闇市場が密約を交わす
+news.story.serpico_bm.desc,警察の内部文書が闇市場で取引された。以降、ダークネット決済は著しく安定し、CRTの償還に滞りは一切起きていない。
+news.story.serpico_sec.title,警察が内部粛清を開始
+news.story.serpico_sec.desc,警察は内部汚職の徹底調査と資金の流れの監視強化を発表した。Poinbaseは出金審査を厳格化し、ミキサーサービスが名指しされた。
+news.story.eleanor_leak.title,栄養フルーツの育種データが流出
+news.story.eleanor_leak.desc,下層の新聞社が栄養フルーツを再び結実させる研究データを公開し、パステルの株価が急落した。上層の資金を管理する保管銀行で焦げ付きが発生し、革命家が勢力を拡大している。
+news.story.eleanor_return.title,パステルが盗難データを回収
+news.story.eleanor_return.desc,パステルは盗難された研究データの回収を発表した。上層の資本勢力は安堵し、CRCの保管銀行は格付けが引き上げられた。
+news.story.lun_arrested.title,ルン警部、職権乱用で逮捕
+news.story.lun_arrested.desc,警察は職権乱用によりルン警部をその場で逮捕し、今後2週間にわたり違法取引を厳しく取り締まる方針を示した。
+tumbler.name,タンブラー
+tumbler.v1.1,やあ。ここの端末、俺のミキサーに繋がってるんだってな。
+tumbler.v1.2,あれを書いたのは俺だ。みんな俺のことをタンブラーと呼んでる。
+tumbler.v1.3,あんたの品物に触ることも、帳簿をつけることもない。コインをかき混ぜるだけだ。
+tumbler.v1.4,通りすがりだ。どんな奴が使ってるのか見てみたかったんでね。
+tumbler.v2.1,状況が怪しくなってきた。警察がオンチェーンのミキサーサービスを嗅ぎ回ってる。
+tumbler.v2.2,連中は大口のアドレスをいくつかフラグ付きにして、俺のノードまで辿ってきた。
+tumbler.v2.3,ミキサーが数日止まっても慌てるな。預けたコインが消えることはない。
+tumbler.v3.1,ノードが止められた。住処を突き止められるのも時間の問題だ。
+tumbler.v3.2,俺の手元にミキサーの署名鍵が入ったキードライブがある。
+tumbler.v3.3,警察の手に渡れば、全ユーザーの履歴が復元されてしまう。あんたのもな。
+tumbler.v3.ask,数日間、隠しておいてくれないか？
+tumbler.v3.choice.hide,[キードライブを受け取って隠す]
+tumbler.v3.choice.report,[応じるふりをして、警察に通報する]
+tumbler.v3.choice.sell,[キードライブを受け取り、闇市場に売り飛ばす]
+tumbler.v3.thanks1,助かる。数日したら取りに来る。
+tumbler.v3.thanks2,そこらに放置するなよ。家宅捜索で見つかったら、俺たち二人とも終わりだ。
+tumbler.v3.report1,……分かった。後でまた来る。
+tumbler.v4.back.1,キードライブを取りに来た。
+tumbler.v4.back.2,ノードは別の場所に移した。警察も当分は見つけられないだろう。
+tumbler.v4.back.3,お礼だ。今後はミキサーの手数料を半額にしてやる。
+tumbler.v4.lost.1,キードライブはどこだ？
+tumbler.v4.lost.2,……なくしたのか？
+tumbler.v4.lost.3,もういい。自分で何とかする。
+tumbler.v4.sold.1,キードライブを闇市場に売ったのはあんただな。
+tumbler.v4.sold.2,今じゃ連中がミキサーを牛耳ってる。手数料は倍になり、ユーザーの金はいつ持ち逃げされてもおかしくない。
+tumbler.v4.sold.3,このことは忘れないぞ。
+tumbler.v4.none.1,なんでもない。ここには来なかったことにしてくれ。
+item.keydrive.name,キードライブ
+item.keydrive.desc,タンブラーから預かったデータスティック。ミキサーの署名鍵が格納されている。禁制品：捜索で見つかった場合、犯罪証拠として記録される。
+mixer.closed,ミキサーは閉鎖され、新規の入金を受け付けていません。すでに預け入れられたコインは通常通り返還されます。
+news.tumbler.sanction.title,警察、ミキサーノードを押収
+news.tumbler.sanction.desc,警察は資金洗浄を助長したとして、オンチェーンミキサーサービスのノードを押収したと発表した。サービスは一時停止している。
+news.tumbler.caught.title,ミキサー運営者が逮捕された
+news.tumbler.caught.desc,タンブラーとして知られるミキサー運営者が下層で逮捕された。警察は、ミキサーサービスが永久に停止されたと発表した。
+news.tumbler.sold.title,ミキサーサービスが別人の手に渡る
+news.tumbler.sold.desc,下層のミキサーサービスの署名鍵が闇市場の手に渡り、手数料が即座に引き上げられたとの情報がある。ユーザーは資金の安全を懸念している。
+nightlog.tumbler.gift,タンブラーはキードライブを回収し、お礼として {0} CRT を残した（{1} に送金済み）。ミキサー手数料が半減した。
+mixer.status.closed,状態：停止中
+yield.sub.pools,収益プール
+yield.sub.mine,スキーム発行
+pool.side.h,入金
+ponzi.early,ポンジ・スキームは{0}日目から発行可能。
+bpay.h,支払い
+bpay.qty,数量
+bpay.total,合計{0}クレジット相当
+bpay.need,支払額 {0} {1}  ウォレット残高 {2}
+bpay.invoice,請求書を作成
+bpay.swap.h,{0} への自動変換
+bpay.swap.none,ウォレット内に十分な残高の他の通貨がありません
+bpay.swap.need,支払額 {0} {1}（スリッページ {2}% 含む）
+bpay.swap.btn,自動変換して支払う
+bpay.swap.sum,{0}：自動変換、{2} {1} を支払い、{3} に変換後に注文
+bpay.back,戻る
+cart.fab,カート {0}
+cart.h,カート
+cart.empty,カートは空です。
+cart.added,カートに追加：{0}
+cart.back,ショップに戻る
+cart.done,{0}件を決済しました。
+cart.partial,{0}件を決済、{1}件が失敗（在庫または残高不足）。
+black.info.accepts,対応通貨：{0}
+black.info.advance.yes,事前リリース対応
+black.info.advance.no,事前リリース非対応
+settings.section.ui,インターフェース
+settings.section.story,ストーリー
+settings.section.difficulty,難易度
+settings.terminal_size,取引ターミナルのサイズ
+settings.terminal_size_desc,ウィンドウサイズ（幅×高さ、UI 単位）。次にターミナルを開いたときに反映されます。
+settings.tumbler_story,タンブラーのストーリー
+settings.tumbler_story_desc,タンブラーの訪問とキードライブの依頼。オフにすると新たな訪問はなくなり、進行済みの分は保持されます。
+settings.risk_scale,リスク倍率
+settings.risk_scale_desc,詐欺、ラグプル、ウォレットポイズニング、アドレス乗っ取り、フィッシングの発生確率にかかる倍率。すべてのセーブに適用されます。
+settings.mining_scale,採掘報酬倍率
+settings.mining_scale_desc,採掘機器が受け取るブロック報酬にかかる倍率。すべてのセーブに適用されます。
+gg.header,ステーション取引委員会
+gg.p1.cap,グラフィックボード
+gg.p1.makers,ステーションには一般的なメーカーが2社ある。\n\n      - Probidia（「PB」）\n      - PMD（「MD」）
+gg.p1.note,メーカーを問わず、ボードの価値は本物のチップの型番定価と耐久度だけで決まる。耐久度が満タンなら定価と等しく、耐久度0では{CardValueFloor:%}だけが残る。
+gg.fan.h,ブレード
+gg.fan.0,良好（価格変わらず）
+gg.fan.1,埃あり（-{CardFanDust:%}）
+gg.fan.2,欠け（-{CardFanChipped:%}）
+gg.fin.h,端子
+gg.fin.0,光沢あり（価格変わらず）
+gg.fin.1,くすみ（-{CardFingersDark:%}）
+gg.fin.2,酸化（-{CardFingersOxidized:%}）
+gg.brk.h,ブラケット
+gg.brk.0,良好（価格変わらず）
+gg.brk.1,キズあり（-{CardBracketScratch:%}）
+gg.seal.h,封印シール
+gg.seal.0,無傷（価格変わらず）
+gg.seal.2,欠損（-{CardSealMissing:%}）
+gg.wear.note,ブレード、端子、ブラケットは毎晩の損耗で劣化し、悪化する一方である。封印シールは固定の特徴である。状態はハッシュレート、損耗、焼損確率にも影響する。
+gg.serial.h,シリアル番号
+gg.serial.cap,背面（シリアルシール）
+gg.serial.pb,Probidia（「PB」）\n      正規の工場コード：11、12、21、34、47
+gg.serial.md,PMD（「MD」）\n      正規の工場コード：13、22、35、41、58
+gg.print.h,背面印字
+gg.print.0,型番一致
+gg.print.1,他型番の印字（偽造品）
+gg.print.2,再印字・傾き（偽造品）
+gg.point.h,指摘
+gg.ex.card,例：{0}、耐久度{1}%
+gg.ex.base,基礎価値：+{0}
+gg.ex.fan,ブレード欠け：-{0}
+gg.ex.fin,端子のくすみ：-{0}
+gg.ex.seal,封印シール欠損：-{0}
+gg.ex.total,最終価値：{0}
+gg.ex.note,各減額は基礎価値に対する割合で計算し、合計して差し引く。
+gg.ex.fan1,ブレードに埃：-{0}
+gg.ex.fin2,端子の酸化：-{0}
+gg.ex.brk,ブラケットのキズ：-{0}
+gg.ex.nodisc,減額なし：-0
+gg.ex.fake,申告{0}、実チップ{1}：実チップで評価
+gg.ex.claimed,申告型番での価格：{0}
+gg.ex.gap,提示額との差：{0}
+gg.ex.h2,鑑定例：偽物
+gg.ex.h3,鑑定例：状態不良
+gg.ex.h4,鑑定例：軽使用
+gg.ex.h5,鑑定例：新品
+lbl.price,表示価格：{0}
+lbl.row.count,ファン数
+lbl.row.pin,電源コネクタ
+lbl.count.1,ファン1基
+lbl.count.2,ファン2基
+lbl.count.3,ファン3基
+lbl.pin.0,6ピン
+lbl.pin.1,8ピン
+lbl.pin.2,8ピン×2
+gg.p1.body,グラフィックボードはマイニングリグの中核部品であり、中古市場で最も偽造されやすい商品である。\n正規品かどうかは、ファン数、電源コネクタ、背面印字、シリアル番号の4項目で判断する。4項目すべてが表示上の型番と一致するものだけが正規品であり、1つでも合わなければ偽造品である。\nボードの価値は実際のチップの型番と状態で決まり、外観の傷みはすべて減額の対象となる。\n\n本ガイドは、グラフィックボードの鑑定に必要な知識をすべて提供する。
+gg.p2.h,ボードの型番
+gg.p2.body,型番によってファン数と電源コネクタが決まる。偽造品は、低い型番のチップに高い型番の外装を被せたもので、性能と価値は内部の実際のチップに基づく。
+gg.tier.0,RTX 60 / RX 70：6ピン、ファン1基
+gg.tier.1,RTX 70 / RX 80：8ピン、ファン2基
+gg.tier.2,RTX 80 / RX 800：8ピン、ファン3基
+gg.tier.3,RTX 90 / RX 900：8ピン×2、ファン3基
+gg.count.h,ファン数
+gg.count.body,ファン数は型番で決まる。RTX 60とRX 70は1基、RTX 70とRX 80は2基、RTX 80、RTX 90、RX 800、RX 900は3基である。\n実物のファン数が表示上の型番と合わないものは偽造品である。
+gg.pin.h,電源コネクタ
+gg.pin.body,電源コネクタも型番で決まる。RTX 60とRX 70は6ピン、RTX 70、RTX 80、RX 80、RX 800は8ピン、RTX 90とRX 900は8ピン×2である。\n実物の電源コネクタが表示上の型番と合わないものは偽造品である。
+gg.serial.body,シリアル番号はボード背面のシールに記載され、書式は、プレフィックス、型番コード、ハイフン、2桁の工場コード、ハイフン、4桁の連番の順である。例：PB2-21-6251。
+gg.serial.rule,型番コードの1～4は、順にRTX 60 / RX 70、RTX 70 / RX 80、RTX 80 / RX 800、RTX 90 / RX 900に対応する。\n型番コードが型番と合わないもの（元のチップのシリアルが貼られている）、または工場コードや桁数が不正なもの（後から貼られたシール）は偽造品である。工場コードは真贋の判定にのみ使い、価格には影響しない。
+gg.print.note,正規品となるのは、ファン数、電源コネクタ、印字、シリアル番号の4項目がすべて型番と一致する場合のみである。偽造品は少なくとも1項目が合わないが、残りが正しく作られていることもあるため、各項目を確認する。
+gg.point.body,拡大鏡で検分する。ラベルバーでは型番の行だけに「型番を指摘する」ボタンがある。その下の4行（ファン数、電源コネクタ、背面印字、シリアル番号）は閲覧のみで、ブレード、端子、ブラケット、封印シールの4つの状態の行にはそれぞれ専用の「指摘する」がある。\n隠された状態の問題を指摘すると、その行が実際の状態に変わり、価格は差額分下がる。事実でないことを指摘すると、相手は認めず、評判が下がる。\nファン数、電源コネクタ、背面印字、シリアル番号のいずれかが表示の型番と合わない場合は、型番を指摘する。そのボードは偽造品と認定され、型番は実際のチップに戻り、価格は実際のチップで再計算される。\n\n鑑定ギルドの依頼人が持ち込むボードも同様で、問題を指摘すると見積もりが変わり、最終的に正しい価値を報告する。
+gg.ex.serial,シリアル番号：{0}
+gg.ex.h,鑑定例：ブレード欠け、端子のくすみ、封印シール欠損
+rig.label.status,ステータス
+rig.st.cards,グラフィックボード数
+rig.st.power,消費電力
+rig.st.hash,ハッシュレート
+rig.st.kj,{0} kJ/日
+lbl.point.model,型番を指摘する
+col.crcprice,CRC 価格
+swap.pay,支払い
+swap.get,受取
+swap.preview,約 {0} {1}　プール {2} 個、損失 {3}%
+swap.go,スワップ
+swap.same,支払いと受取は別のコインにしてください。
+mint.need,必要：{0} CRC と {1} SPARK
+mint.reserve,準備率 {0}%　担保率 {1}%
+mint.queue,処理待ち
+mint.order,{0} {1} CRA、{2}日目
+stake.coin,預入通貨
+stake.sum.via,{0} {1} をスワップ → 約 {2} CRA をステーキング
+nightlog.cra.lost,発行元から応答がありません：{0} CRA の{1}注文は失われました。
+news.crawarn.desc,革命家の準備金を数え直す者がいる。ステーキング中の CRA は全額償還できないかもしれない。解除には4日かかる。動くなら今だという声もある。
+news.cralow.desc,準備率が危うくなり、革命家は CRA のステーキング日利を元の数分の一に引き下げた。
+poin.sub.funds,資金
+funds.receive,入金
+funds.send,出金
+funds.bank,銀行口座
+funds.wallet,ウォレット
+funds.to,送金先アドレス
+funds.go,送信
+funds.sending,{0} {1} を {2} に送金中
+funds.confirm,確認 {0}/{1}
+funds.done,{0} {1} が {2} に着金しました。
+funds.done.void,{0} {1} を送金しました。アドレスに持ち主がおらず、コインは戻りません。
+funds.err.addr,無効なアドレスです。
+funds.err.self,Poinbase 自身の入金アドレスです。
+funds.err.known,そのアドレスは請求書に対する支払いのみ受け付けます。
+funds.err.fee,金額がガス代に満たません。
+wallets.sub.explorer,エクスプローラー
+explorer.search,アドレス
+explorer.all,最新
+explorer.none,送金履歴はありません。
+explorer.col.block,ブロック
+explorer.col.amount,数量
+explorer.mixer,ミキサー
+cra.mint,ミント
+cra.burn,バーン
+mint.h,公式ミント（CRC＋SPARK）
+mint.sum.in,{1} CRC と {2} SPARK で {0} CRA をミント（{3}～{4}日）
+mint.sum.out,{0} CRA をバーンして CRC と SPARK に（{1}日）
+mint.done.in,ミントを申請しました。{0}日目に決済されます。
+mint.done.out,バーンを申請しました。{0}日目に決済されます。
+nightlog.cra.minted,ミントした {0} CRA をステーキングしました（{1}）。
+nightlog.cra.burned,{0} CRA をバーン：+{1} CRC、+{2} SPARK（{3}）。
+predict.clue.subsidy,準備金残量 {0}%。ゼロになれば必ず警告が出る
+air.noapprove,トークン許可なし
+tab.gray,グレーネット
+wallets.sub.list,ウォレット一覧
+entry.web3.l1,分散型取引と運用
+entry.mining.l1,リグの状態と夜間収益
+entry.gray.l1,ミキサーとショップ
+entry.wallets.l1,ハードウェアウォレットとエクスプローラー
+entry.wallets.l2,ウォレット {0} / {1}
+black.sell.add,出品を追加
+black.sell.back,ショーケースに戻る
+black.sell.kinds,出品中 {0}/{1} 種
+black.sell.have,出品中 {0}個
+black.sell.coins,受取コイン
+black.sell.off,取り下げ
+black.sell.off.n,取り下げ ×{0}
+black.sell.nocoin,少なくとも1種類のコインを受け付ける必要がある。
+black.sell.empty,出品中の商品はない。
+black.sell.delisted,{0}個を取り下げた。商品は保管庫に戻った。
+black.sell.partial,{0}個を出品、{1}個は出品できなかった。
+black.sell.limit.stack,同じ商品は最大{0}個まで出品できる。
+black.sell.limit.kinds,同時に出品できるのは最大{0}種類まで。
+shelf.fab,棚 {0}
+delist.fab,取り下げを確定 {0}
+black.fee.h,出品予定
+black.fee.line,{0} ×{1}　価格 {2}（{3}）
+black.fee.total,出品手数料 {0}
+black.fee.sum,出品手数料（{0}個）
+black.sale.Sold,成約済、{0}日目に{1}で入金
+explorer.col.day,日
+explorer.day,{0}日目
+explorer.pool,RatDiggプール
+explorer.desk,Ponero両替所
+black.fee.pay,出品手数料を支払う
+explorer.col.from,送信元
+explorer.col.to,送信先
+rig.st.cond,状態
+asic.st.dead,焼損
+perp.preview,想定元本 {0}　推定平均価格 {1}（スリッページ {2}%）
+perp.sim.close,決済　想定元本 {0}　推定平均価格 {1}（スリッページ {2}%）
+perp.sim.close2,手数料 {0}　約 {1} CRC が戻る（損益 {2}）
+trade.sim.buy,購入で約 {0} {1}　平均 {2}　スリッページ {3}%
+trade.sim.sell,売却で約 {0} {1}　平均 {2}　スリッページ {3}%

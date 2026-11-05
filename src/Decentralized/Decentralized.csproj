@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 游戏自带 mod 系统（Probably Stolen 完整版，Unity Mono）的 mod：IMod 入口，不打 Harmony 补丁，不需要任何能力。 -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>ProbablyDecentralized</AssemblyName>
+    <RootNamespace>Decentralized</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- 游戏安装目录：默认是 Windows 上 Steam 的默认位置；其它位置用 dotnet build -p:GameDir=... 指定 -->
+    <GameDir Condition="'$(GameDir)' == ''">C:/Program Files (x86)/Steam/steamapps/common/Probably Stolen</GameDir>
+    <ManagedDir>$(GameDir)/Probably Stolen_Data/Managed</ManagedDir>
+    <ModInstallDir>$(GameDir)/Mods/ProbablyDecentralized</ModInstallDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 游戏和 Unity 的程序集：只编译时引用，不复制 -->
+    <Reference Include="$(ManagedDir)/Assembly-CSharp.dll" Private="false" />
+    <Reference Include="$(ManagedDir)/UnityEngine*.dll" Private="false" />
+    <Reference Include="$(ManagedDir)/Unity.TextMeshPro.dll" Private="false" />
+    <Reference Include="$(ManagedDir)/Unity.Localization.dll" Private="false" />
+    <Reference Include="$(ManagedDir)/Newtonsoft.Json.dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Decentralized.Domain/Decentralized.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 随 mod 发布的文件：清单、本地化表、物品图（art/sprites.py 生成） -->
+    <ModFile Include="ModFiles/**" />
+  </ItemGroup>
+
+  <!-- 编译后装进 <游戏>/Mods/ProbablyDecentralized/。只在游戏关闭时编译；只想编译、不安装加 -p:InstallMod=false。 -->
+  <Target Name="InstallMod" AfterTargets="Build" Condition="'$(InstallMod)' != 'false'">
+    <MakeDir Directories="$(ModInstallDir)" />
+    <Copy SourceFiles="$(TargetPath);$(TargetDir)ProbablyDecentralized.Domain.dll" DestinationFolder="$(ModInstallDir)" />
+    <Copy SourceFiles="@(ModFile)" DestinationFiles="@(ModFile->'$(ModInstallDir)/%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Importance="high" Text="Installed into $(ModInstallDir)" />
+  </Target>
+
+</Project>
