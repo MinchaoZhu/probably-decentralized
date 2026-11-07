@@ -14,7 +14,7 @@ namespace Decentralized.Domain
     }
 
     /// <summary>
-    /// 全局账本：只记真实发生的转账（玩家的转出和转入、矿机收益、出金），不生成 NPC 流水；最新的在前，超过 <see cref="Tuning.LedgerMax"/> 条丢最旧的。
+    /// 全局账本：只记真实发生的转账（玩家钱包的每一笔进出，含合约调用和地址投毒的 0 币转入），不生成 NPC 流水；最新的在前，超过 <see cref="Tuning.LedgerMax"/> 条丢最旧的。
     /// </summary>
     public sealed class Ledger
     {
@@ -22,7 +22,7 @@ namespace Decentralized.Domain
 
         public void Add(LedgerEntry e)
         {
-            if (e == null || e.Amount <= 0) return;
+            if (e == null || e.Amount < 0) return;
             Entries.Insert(0, e);
             if (Entries.Count > Tuning.LedgerMax) Entries.RemoveRange(Tuning.LedgerMax, Entries.Count - Tuning.LedgerMax);
         }

@@ -309,9 +309,9 @@ namespace Decentralized
         private static bool ParseAmount(out double v) =>
             double.TryParse((_amount ?? "").Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out v) && v > 0;
 
-        private static void AmountRow(CustomUIBuilder b, bool label = true)
+        private static void AmountRow(CustomUIBuilder b, bool label = true, string unit = null)
         {
-            if (label) b.AddLabel(L.T("trade.amount"));
+            if (label) b.AddLabel(unit == null ? L.T("trade.amount") : L.T("trade.amount.unit", unit));
             b.BeginPanel(RightW - 30f, -1f, TextAnchor.MiddleCenter, 0f, 0f);
             _clear.Add(b.Last.image);
             b.AddInput("0", _amount, s => { _amount = s; RefreshLive(); }, "amount", s => { _amount = s; RefreshLive(); });
@@ -388,7 +388,7 @@ namespace Decentralized
             LiveLabel(b, () =>
             {
                 var q = ParseAmount(out double v) ? m.Quote(_swapFrom, _swapTo, v) : null;
-                return q == null ? "" : L.T("swap.preview", Fmt.Num(q.Out), _swapTo, q.Hops, (q.Impact * 100).ToString("0.0", CultureInfo.InvariantCulture));
+                return q == null ? "" : L.T("swap.preview", Fmt.Num(q.Out), _swapTo, q.Hops, (q.Impact * 100).ToString("0.00", CultureInfo.InvariantCulture));
             }, "swap_preview_dim");
             b.AddButton(L.T("swap.go"), () => Swap());
         }
@@ -404,7 +404,7 @@ namespace Decentralized
             if (w.Avail(from) + 1e-9 < v) { _message = L.T(frozenPay(w, from) ? "msg.frozen" : "msg.balance"); Open(); return; }
             _message = L.T("hw.wait");
             Open();
-            WalletWindow.OpenForBill(new WalletWindow.Bill { Contract = true, Asset = from, Amount = v, Summary = L.T("hw.swap", Fmt.Num(v), from, Fmt.Num(q.Out), to), Execute = pw => DoSwap(from, to, v, pw) });
+            WalletWindow.OpenForBill(new WalletWindow.Bill { Contract = true, Party = Session.Data.Address("dex"), Asset = from, Amount = v, Summary = L.T("hw.swap", Fmt.Num(v), from, Fmt.Num(q.Out), to), Execute = pw => DoSwap(from, to, v, pw) });
         }
 
         private static void DoSwap(string from, string to, double v, Wallet w)
@@ -422,12 +422,12 @@ namespace Decentralized
             Open();
         }
 
-        private static void TradeRows(CustomUIBuilder b, Venue venue)
+        private static void TradeRows(CustomUIBuilder b, Pool pool)
         {
-            foreach (var pool in Session.Data.Market.Pools.Where(x => x.Venue == venue))
             {
                 var p = pool;
-                b.AddLabel(L.T("trade.pair", p.Base, p.Quote, L.T("venue." + p.Venue)) + "  " + L.T("trade.price", Fmt.Num(p.Price)));
+                // 在 Poinbase 页里，交易所名不用再写一遍（行太长会被截断）
+                b.AddLabel(p.Base + "/" + p.Quote + "  " + L.T("trade.price", Fmt.Num(p.Price)) + "  " + L.T("trade.fee", (p.Fee * 100).ToString("0.0#", CultureInfo.InvariantCulture)));
                 LiveLabel(b, () => SpotPreview(p, true), "trade_preview_dim");
                 LiveLabel(b, () => SpotPreview(p, false), "trade_preview_dim");
                 b.BeginRow(4f);
@@ -437,15 +437,15 @@ namespace Decentralized
             }
         }
 
-        /// <summary>现货模拟：按输入数量算买入或卖出能得到多少、平均成交价、相对现价的滑点（不改池子）。买入数量是计价币，卖出数量是标的币。</summary>
+        /// <summary>现货模拟（不改池子）：输入的数量是标的币；买入算要付多少计价币，卖出算能得到多少。均价含手续费，滑点不含手续费。</summary>
         private static string SpotPreview(Pool p, bool buy)
         {
             if (!ParseAmount(out double v)) return "";
-            double got = buy ? p.BaseOut(v) : p.QuoteOut(v);
-            if (got <= 0) return "";
-            double avg = buy ? v / got : got / v;
-            double slip = buy ? avg / p.Price - 1 : 1 - avg / p.Price;
-            return L.T(buy ? "trade.sim.buy" : "trade.sim.sell", Fmt.Num(got), buy ? p.Base : p.Quote, Fmt.Num(avg), (Math.Max(0, slip) * 100).ToString("0.0", CultureInfo.InvariantCulture));
+            double quote = buy ? p.QuoteIn(v) : p.QuoteOut(v);
+            if (quote <= 0 || double.IsInfinity(quote)) return buy ? L.T("trade.sim.thin") : "";
+            double avg = quote / v, net = buy ? avg * (1 - p.Fee) : avg / (1 - p.Fee);
+            double slip = buy ? net / p.Price - 1 : 1 - net / p.Price;
+            return L.T(buy ? "trade.sim.buy" : "trade.sim.sell", Fmt.Num(quote), p.Quote, Fmt.Num(avg), (Math.Max(0, slip) * 100).ToString("0.00", CultureInfo.InvariantCulture));
         }
 
         private static readonly float[] HoldWBase = new[] { 80f, 100f, 110f, 110f };
@@ -491,16 +491,19 @@ namespace Decentralized
             if (_poinTab == PoinTab.Funds) { FundsPage(b); return; }
             Columns(b, l =>
             {
-                CandleChart.AddPicker(l, "poin", Assets.PSC, Open, _picked);
+                CandleChart.AddPicker(l, "poin", Assets.PSC, Open, _picked, Exchange.Listed);
                 l.AddSeparator();
                 l.AddHeader(L.T("poin.account.h"));
                 Holdings(l, w, a => true);
                 if (w.Taint > 0.5) l.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint)), "taint_note");
             }, r =>
             {
+                // 交易对跟着行情图选中的币（CRC 本身没有交易对，显示 PSC/CRC）
+                string sel = CandleChart.Selected("poin", Assets.PSC, Exchange.Listed);
+                var pair = d.Market.Find(Venue.Exchange, sel, Assets.CRC) ?? d.Market.Main;
                 r.AddHeader(L.T("trade.h"));
-                AmountRow(r);
-                TradeRows(r, venue);
+                AmountRow(r, unit: pair.Base);
+                TradeRows(r, pair);
             });
         }
 
@@ -529,8 +532,11 @@ namespace Decentralized
                     PledgerSkin.Pick(r, L.T("funds." + m.ToString().ToLowerInvariant()), mode == _fundsMode, () => { _fundsMode = mode; _message = null; Open(); }, _picked);
                 }
                 r.End();
+                // 入金只收 Poinbase 上架的币；出金另外列出账户里还有余额的其他币（旧存档里充进来的 CRT、CRA）
+                var coins = Exchange.Listed.Concat(_fundsMode == FundsMode.Send ? SwapCoins.Where(a => !Exchange.Listed.Contains(a) && w.Get(a) > 1e-9) : Enumerable.Empty<string>()).ToList();
+                if (!coins.Contains(_fundsAsset)) { _fundsAsset = Assets.CRC; _fundsBank = true; }
                 r.BeginRow(4f);
-                foreach (var c in SwapCoins)
+                foreach (var c in coins)
                 {
                     var coin = c;
                     PledgerSkin.Pick(r, coin, coin == _fundsAsset, () => { _fundsAsset = coin; if (coin != Assets.CRC) _fundsBank = false; Open(); }, _picked);
@@ -770,7 +776,7 @@ namespace Decentralized
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRC, Amount = v, Spend = deposit ? v : 0, FeeAsset = deposit ? null : BestFeeAsset(w),
+                Contract = true, Party = Session.Data.Address("yield:" + p.Name), Asset = Assets.CRC, Amount = v, Spend = deposit ? v : 0, FeeAsset = deposit ? null : BestFeeAsset(w),
                 Summary = L.T(deposit ? "pool.sum.in" : "pool.sum.out", p.Name, Fmt.Num(deposit ? v : p.Of(w.Address))),
                 Execute = pw =>
                 {
@@ -836,7 +842,7 @@ namespace Decentralized
             var w = d.Hot;
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
+                Contract = true, Party = Session.Data.Address("airdrop:" + a.Name), Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
                 Summary = L.T("air.auth.sum", a.Name, ApproveText(a.Approve, a.Asset)),
                 Execute = pw =>
                 {
@@ -858,7 +864,7 @@ namespace Decentralized
             var w = d.Hot;
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
+                Contract = true, Party = Session.Data.Address("airdrop:" + a.Name), Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
                 Summary = L.T("air.sum", a.Name, ApproveText(a.Approve, a.Asset)),
                 Execute = pw =>
                 {
@@ -881,7 +887,7 @@ namespace Decentralized
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
+                Contract = true, Party = Session.Data.Address("airdrop:" + ap.Spender), Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
                 Summary = L.T("air.revoke.sum", ap.Spender, ap.Asset),
                 Execute = pw =>
                 {
@@ -960,7 +966,7 @@ namespace Decentralized
                         Open();
                         WalletWindow.OpenForBill(new WalletWindow.Bill
                         {
-                            Contract = true, Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(iw),
+                            Contract = true, Party = Session.Data.Address("ponzi"), Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(iw),
                             Summary = L.T("ponzi.rug.sum", Fmt.Num(pz.Pool)),
                             Execute = pw =>
                             {
@@ -997,7 +1003,7 @@ namespace Decentralized
                     Open();
                     WalletWindow.OpenForBill(new WalletWindow.Bill
                     {
-                        Contract = true, Asset = Assets.CRC, Amount = Tuning.PonziAdCost,
+                        Contract = true, Party = Session.Data.Address("ponzi"), Asset = Assets.CRC, Amount = Tuning.PonziAdCost,
                         Summary = L.T("ponzi.start.sum", (rate * 100).ToString("0", CultureInfo.InvariantCulture), Fmt.Num(Tuning.PonziAdCost)),
                         Execute = pw =>
                         {
@@ -1143,7 +1149,7 @@ namespace Decentralized
                     for (int t = 0; t < 3; t++)
                     {
                         int tier = t;
-                        r.AddButton(L.T("intel.tip.buy", (int)Math.Round(Tuning.IntelTipAcc[t] * 100), Fmt.Num(Tuning.IntelTipPrice[t] * m.MaxLoss)), () => IntelBuyTip(mk, tier));
+                        r.AddButton(L.T("intel.tip.buy", (int)Math.Round(Tuning.IntelTipAcc[t] * 100), Fmt.Num(Tuning.IntelTipPrice[t] * m.Loss)), () => IntelBuyTip(mk, tier));
                         r.Last?.SetPreferredSize(RightW - 30f, 28f * F);
                         if (t < 2) r.AddSpace(2f);
                     }
@@ -1160,7 +1166,7 @@ namespace Decentralized
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRT, Amount = price, Summary = L.T("intel.brief.sum", Fmt.Num(price)),
+                Contract = true, Party = Session.Data.Address("intel"), Asset = Assets.CRT, Amount = price, Summary = L.T("intel.brief.sum", Fmt.Num(price)),
                 Execute = pw =>
                 {
                     if (pw.Avail(Assets.CRT) + 1e-9 < price) { _message = L.T("intel.err.funds"); Open(); return; }
@@ -1179,13 +1185,13 @@ namespace Decentralized
         private static void IntelBuyTip(PredictMarket m, int tier)
         {
             var d = Session.Data;
-            double price = Tuning.IntelTipPrice[tier] * m.MaxLoss;
+            double price = Tuning.IntelTipPrice[tier] * m.Loss;
             if (d.Hot.Avail(Assets.CRT) + 1e-9 < price) { _message = L.T("intel.err.funds"); Open(); return; }
             _message = L.T("hw.wait");
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRT, Amount = price, Summary = L.T("intel.tip.sum", Fmt.Num(price), PredictGame.Question(m)),
+                Contract = true, Party = Session.Data.Address("intel"), Asset = Assets.CRT, Amount = price, Summary = L.T("intel.tip.sum", Fmt.Num(price), PredictGame.Question(m)),
                 Execute = pw =>
                 {
                     int day = StoreStation.GetDayCounter();
@@ -1214,7 +1220,7 @@ namespace Decentralized
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRC, Amount = v,
+                Contract = true, Party = Session.Data.Address("predict"), Asset = Assets.CRC, Amount = v,
                 Summary = L.T("predict.sum.buy", PredictGame.Question(m), side, Fmt.Num(v)),
                 Execute = pw =>
                 {
@@ -1237,7 +1243,7 @@ namespace Decentralized
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
+                Contract = true, Party = Session.Data.Address("predict"), Asset = Assets.CRC, Amount = 0, Spend = 0, FeeAsset = BestFeeAsset(w),
                 Summary = L.T("predict.sum.sell", PredictGame.Question(m)),
                 Execute = pw =>
                 {
@@ -1568,9 +1574,25 @@ namespace Decentralized
             if (own != null) return WalletWindow.NameOf(own);
             if (ChainAddress.Same(a, d.Address("pool"))) return L.T("explorer.pool");
             if (ChainAddress.Same(a, d.Address("poinbase"))) return "Poinbase";
-            if (d.Addresses.TryGetValue("mixer", out var mx) && ChainAddress.Same(a, mx)) return L.T("explorer.mixer");
-            if (d.Addresses.TryGetValue("platform", out var pf) && ChainAddress.Same(a, pf)) return L.T("merchant.Platform");
-            if (d.Addresses.TryGetValue("desk", out var dk) && ChainAddress.Same(a, dk)) return L.T("explorer.desk");
+            // 其他收款方、合约按登记的键取名：空投、收益池带自己的名字
+            string key = d.Addresses.FirstOrDefault(kv => ChainAddress.Same(kv.Value, a)).Key;
+            if (key != null)
+            {
+                if (key.StartsWith("airdrop:") || key.StartsWith("yield:")) return key.Substring(key.IndexOf(':') + 1);
+                switch (key)
+                {
+                    case "mixer": return L.T("explorer.mixer");
+                    case "platform": return L.T("merchant.Platform");
+                    case "desk": return L.T("explorer.desk");
+                    case "dex": return "DEX";
+                    case "staking": return L.T("stake.h");
+                    case "cra": return L.T("mint.h");
+                    case "predict": return L.T("predict.h");
+                    case "intel": return L.T("intel.h");
+                    case "ponzi": return L.T("ponzi.h");
+                    case "tumbler": return "Tumbler";
+                }
+            }
             var sl = d.Black.Sellers.FirstOrDefault(x => ChainAddress.Same(x.Name, a));
             return sl != null ? L.T("merchant." + sl.Type) : null;
         }
@@ -1961,7 +1983,8 @@ namespace Decentralized
                 double mult = MultFor(g.Key);
                 foreach (var it in g.Items.Take(n))
                 {
-                    var s = d.Black.List(g.Id, g.Model, g.FakeOf, g.Health, g.Ref, mult, pw, asset, day, Session.Price);
+                    int heat = it.IsTag("STOLEN_VALUE_INT") ? it.GetTagReadonly("STOLEN_VALUE_INT").GetInt() : 0;
+                    var s = d.Black.List(g.Id, g.Model, g.FakeOf, g.Health, g.Ref, mult, pw, asset, day, Session.Price, heat);
                     if (s == null) { fail++; continue; }
                     it.Destroy();
                     ok++;
@@ -2194,7 +2217,12 @@ namespace Decentralized
                     pw.Add(src, -needSrc); pw.Add(coin, got); pw.RecordBuy(coin, got, credits);
                     CandleChart.Trade(src, credits); CandleChart.Trade(coin, credits);
                     Log.Info($"自动换币：{needSrc:0.####} {src} → {got:0.####} {coin}（{credits:0} 信用点等值）");
+                    // 一次签名两步：经 DEX 换币，再付给这家商家；分别记账
+                    d.Chain(pw.Address, d.Address("dex"), src, needSrc);
+                    d.Chain(d.Address("dex"), pw.Address, coin, got);
+                    var paying = SaveData.Snapshot(pw);
                     var r2 = ExecGroup(seller, lines, mode, coin, pw);
+                    d.ChainDiff(pw, paying, AddressOf(d, seller));
                     Finish(CartMessage(r2.items, r2.failed));
                 },
             });
@@ -2592,7 +2620,7 @@ namespace Decentralized
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = coin, Amount = v, Spend = into ? v : 0, FeeAsset = into ? null : BestFeeAsset(w),
+                Contract = true, Party = Session.Data.Address("staking"), Asset = coin, Amount = v, Spend = into ? v : 0, FeeAsset = into ? null : BestFeeAsset(w),
                 Summary = into && q != null ? L.T("stake.sum.via", Fmt.Num(v), coin, Fmt.Num(q.Out)) : L.T(into ? "stake.sum.in" : "stake.sum.out", Fmt.Num(v), Tuning.CraUnlockDays),
                 Execute = pw =>
                 {
@@ -2629,7 +2657,7 @@ namespace Decentralized
             Open();
             WalletWindow.OpenForBill(new WalletWindow.Bill
             {
-                Contract = true, Asset = mint ? Assets.CRC : Assets.CRA, Amount = mint ? needCrc : v, Spend = mint ? needCrc : v,
+                Contract = true, Party = Session.Data.Address("cra"), Asset = mint ? Assets.CRC : Assets.CRA, Amount = mint ? needCrc : v, Spend = mint ? needCrc : v,
                 Summary = mint ? L.T("mint.sum.in", Fmt.Num(v), Fmt.Num(needCrc), Fmt.Num(needSpark), minD, maxD) : L.T("mint.sum.out", Fmt.Num(v), Tuning.CraUnlockDays),
                 Execute = pw =>
                 {
@@ -2706,13 +2734,14 @@ namespace Decentralized
             Open();
         }
 
-        /// <summary>交易：Poinbase 是托管账户，直接成交。</summary>
+        /// <summary>交易：Poinbase 是托管账户，直接成交。输入的数量是标的币：买入按池子反算要付的计价币。</summary>
         private static void Trade(Pool p, bool buy)
         {
             if (!ReadAmount(out double v)) return;
             var w = Session.Data.Poinbase;
+            if (buy) v = p.QuoteIn(v);
             string pay = buy ? p.Quote : p.Base;
-            if (w.Avail(pay) + 1e-9 < v) { _message = L.T(frozenPay(w, pay) ? "msg.frozen" : "msg.balance"); Open(); return; }
+            if (double.IsInfinity(v) || w.Avail(pay) + 1e-9 < v) { _message = L.T(frozenPay(w, pay) ? "msg.frozen" : "msg.balance"); Open(); return; }
             DoTrade(p, buy, v, w);
         }
 

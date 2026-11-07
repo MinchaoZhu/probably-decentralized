@@ -22,6 +22,7 @@ namespace Decentralized
             DealerStock.Subscribe();
             UsedDealerClient.Subscribe();
             CoinCustomers.Subscribe();
+            HotCoinSeller.Subscribe();
             BlackDelivery.Subscribe();
             TumblerStory.Subscribe();
             GpuInspectView.Ensure();
@@ -37,6 +38,7 @@ namespace Decentralized
             DealerStock.Unsubscribe();
             UsedDealerClient.Unsubscribe();
             CoinCustomers.Unsubscribe();
+            HotCoinSeller.Unsubscribe();
             BlackDelivery.Unsubscribe();
             TumblerStory.Unsubscribe();
             GpuInspectView.Remove();

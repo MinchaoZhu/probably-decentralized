@@ -6,7 +6,7 @@ namespace Decentralized.Domain
     public static class Tuning
     {
         /// <summary>人脉网络升级价格：Web3 治理社区（入口）、混币器。</summary>
-        public const int UnlockPrice = 400, MixerUnlockPrice = 700;
+        public const int UnlockPrice = 400, MixerUnlockPrice = 300;
 
         // 挖矿
         public const double PscStartPrice = 100;
@@ -33,8 +33,17 @@ namespace Decentralized.Domain
         public const double RefurbishHealth = 30;
 
         // 市场
-        public const double PoolDepth0 = 50000;
-        public const double DexFee = 0.003, ExchangeFee = 0.002;
+        /// <summary>交易对信用点一侧的基础深度（DEX 侧池按比例取）。</summary>
+        public const double PoolDepth0 = 600000;
+        /// <summary>Poinbase 订单簿的冲击曲线：价格 = 参考价 × exp(κ · |x|^α)，x = 当天净买入的名义价值 / 深度。第 38 天买 2 PSC 平均滑点约 0.1%，卖 200 PSC 约 4%。</summary>
+        public const double BookK = 1.54, BookAlpha = 0.8;
+        /// <summary>DEX 手续费；Poinbase 现货与出金的手续费（对照头部交易所 taker 约 0.1%）。</summary>
+        public const double DexFee = 0.003, ExchangeFee = 0.001;
+        /// <summary>DEX 稳定币对（CRT/CRC、CRA/CRC）的 StableSwap 池：手续费（参考 Curve 3pool 0.04%）、放大系数；
+        /// 参考价偏离挂钩超过 1% 是脱锚（流动性变差，A 降到 20，参考 USDC 2023 年 3 月最低约 0.87、两三天回到 1），超过 15% 是崩盘（流动性被撤走，A 降到 1、深度只剩四分之一）。</summary>
+        public const double StableFee = 0.0004, StableAmp = 200, StableAmpDepeg = 20, StableAmpBroken = 1, StableDepegBand = 0.01, StableBrokenBand = 0.15, StableBrokenDepth = 0.25;
+        /// <summary>NPC 大户每笔成交额（信用点）的范围。</summary>
+        public const double WhaleMin = 24000, WhaleMax = 96000;
         public const double Revert = 0.15;
         public const double PscVol = 0.04;
         public const double SentimentKappa = 0.02, SentimentVol = 0.02;
@@ -62,7 +71,7 @@ namespace Decentralized.Domain
         /// <summary>Poinbase 出金到钱包的确认动画：基础秒数，加每个确认的秒数（确认数同 PLEDGER 的 TxConfirm*）。</summary>
         public const double FundsBaseSecs = 1.2, FundsConfSecs = 0.6;
         /// <summary>浏览器账本最多保留的转账条数，一次最多显示的条数。</summary>
-        public const int LedgerMax = 200, LedgerShow = 12;
+        public const int LedgerMax = 500, LedgerShow = 12;
         public const double CraSpiralWeekly = 0.03;
         public const int CraWarnLeadMin = 4, CraWarnLeadMax = 7;
         public static readonly double[] CraSpiralPath = { 0.85, 0.30, 0.02 };
@@ -109,6 +118,8 @@ namespace Decentralized.Domain
         public const double CardFanDust = 0.04, CardFanChipped = 0.12, CardFingersDark = 0.04, CardFingersOxidized = 0.12, CardBracketScratch = 0.02, CardSealMissing = 0.06;
         /// <summary>非主交易对每晚被拉回参考价的比例，及其深度占主交易对的比例。</summary>
         public const double SideArbRate = 0.75, SideDepthShare = 0.3, SparkDepthShare = 0.15;
+        /// <summary>Poinbase 的 SPARK/CRC 订单簿深度占主池深度的比例。</summary>
+        public const double PoinSparkDepthShare = 0.5;
         /// <summary>Web3 黑市：开放所需黑市声望，中 / 高档货所需声望，现货每周刷新的天数与基础件数（每高 BmStockPerRep 声望多一件），现货溢价。</summary>
         public const int BmOpenRep = 10, BmMidRep = 40, BmHighRep = 80, BmRefreshDays = 7, BmStockBase = 4;
         public const double BmStockPerRep = 40, BmPremium = 0.30;
@@ -168,7 +179,7 @@ namespace Decentralized.Domain
         /// <summary>出售量越大货款越容易带污点：近 7 天成交额达到参考量时，污点概率与比例各加最多 BmVolumeTaintMax。</summary>
         public const double BmVolumeRef = 14000, BmVolumeTaintMax = 0.30;
         /// <summary>黑市人脉升级的价格。</summary>
-        public const int BmUnlockPrice = 1500;
+        public const int BmUnlockPrice = 600;
         /// <summary>单个金融违规事件记入的罪证上限。</summary>
         public const double CrimeEventCap = 400;
 
@@ -197,13 +208,22 @@ namespace Decentralized.Domain
         public const double TxPoisonChance = 0.35, TxHijackChance = 0.3, TxPhishChance = 0.05;
         public const int TxPoisonDelayMax = 2;
 
-        /// <summary>永续合约：开平仓手续费、强平费、维持保证金比例；保险基金初值、每晚手续费补充、NPC 大行情穿仓的冲击系数与免冲击涨跌幅、手续费进基金的比例；
+        /// <summary>永续合约：开平仓手续费、强平费、维持保证金比例；保险基金初值（约 20 天的全网产出）、手续费进基金的比例；
         /// 基金见底时盈利仓位自动减仓的盈利折扣；资金费系数与上下限（每晚）；欠款日息、没收宽限天数、核销后拉黑天数；两个品种的最高杠杆与单仓名义价值上限。</summary>
         public const double PerpFee = 0.001, PerpLiqFee = 0.02, PerpMaint = 0.10;
-        public const double PerpFund0 = 10000, PerpFundDrift = 150, PerpFundShock = 2000, PerpShockFree = 0.06, PerpFeeToFund = 0.3, PerpAdlHaircut = 0.5;
+        public const double PerpFund0 = 200000, PerpFeeToFund = 0.3, PerpAdlHaircut = 0.5;
+        /// <summary>NPC 永续仓位（每晚按标记价的涨跌结算，进出保险基金）：亏损一侧的持仓占现货池深的倍数（SPARK 再乘 SparkDepthShare）；
+        /// 涨跌幅达到 PerpNpcLiqScale 时亏损一侧全部爆仓，之前按比例爆仓；爆仓里穿仓的比例 = 基础 + 斜率 × (涨跌幅 − 免穿仓幅度)，封顶；
+        /// 正常爆仓交给基金的剩余保证金（占名义价值）；穿仓的缺口（占名义价值）= 涨跌幅 × 系数。</summary>
+        public const double PerpNpcOi = 1.0, PerpNpcLiqScale = 0.25, PerpNpcBankBase = 0.05, PerpNpcBankSlope = 1.5, PerpNpcBankFree = 0.12, PerpNpcBankMax = 0.95;
+        public const double PerpNpcLeft = 0.005, PerpNpcGap = 0.3;
+        /// <summary>爆仓新闻：标记价单日涨跌达到多少上报纸；NPC 平均每个仓位的名义价值（折算人数）。</summary>
+        public const double PerpNewsMove = 0.15, PerpNpcAvgPos = 1500;
         public const double PerpFundCoef = 0.10, PerpFundCap = 0.003;
         /// <summary>永续的成交深度占现货主池的比例：开平仓的平均滑点 = 名义价值 / (深度倍数 × 池深)，和现货一样大单更贵。</summary>
         public const double PerpDepthMult = 5.0;
+        /// <summary>永续成交深度的基数（与现货分开；原来 50,000，减半滑点后 100,000，校准见 research/perpsim）。</summary>
+        public const double PerpDepth0 = 100000;
         /// <summary>开仓时按现价算权益至少要高出强平线多少（占名义价值的比例），否则拒绝（滑点太大，开了就被强平）。</summary>
         public const double PerpOpenBuffer = 0.02;
         public const double PerpDebtInterest = 0.02;
@@ -223,13 +243,15 @@ namespace Decentralized.Domain
         public const int EraMin = 50, EraMax = 90, EraWarnMin = 4, EraWarnMax = 7;
         public const double EraKjMult = 0.5;
 
-        /// <summary>预测市场：游戏第几天起开放；手续费；每盘系统最大亏损 = 基础 + 每天增量 × 天数；单人单盘份额上限（最大亏损的倍数）；
+        /// <summary>预测市场：游戏第几天起开放；手续费；单盘额度 = 基础 + 每天增量 × 天数；所有钱包在单盘合计的份额上限（额度的倍数）；
         /// 同时开放的盘口数量范围、每天最多新开几个；内幕持仓达到上限份额的多少比例后结算被查的概率，查实后收益记罪证的比例与上限；
         /// 派系行动的日均开始概率（先验）；先验概率的夹紧范围；结算记录保留条数。</summary>
         public const int PredictUnlockDay = 8;
-        public const double PredictFee = 0.02, PredictLoss0 = 800, PredictLossPerDay = 25, PredictCap = 3;
+        public const double PredictFee = 0.01, PredictLoss0 = 800, PredictLossPerDay = 25, PredictCap = 2;
+        /// <summary>预测盘的流动性：LMSR 的 b = 倍数 × 单盘额度 / ln 2，与先验无关（低先验盘不再更浅）。单盘额度只决定份额上限和消息价。</summary>
+        public const double PredictDepth = 1.8;
         public const int PredictOpenMin = 3, PredictOpenMax = 6, PredictNewPerDay = 2;
-        public const double PredictInsiderShare = 0.4, PredictInsiderCatch = 0.5, PredictFraudShare = 0.5, PredictFraudCap = 400;
+        public const double PredictInsiderShare = 0.4, PredictInsiderCatch = 0.7, PredictFraudShare = 0.5, PredictFraudCap = 400;
         public const double PredictFactionDaily = 0.06, PredictPMin = 0.03, PredictPMax = 0.97;
         public const int PredictHistory = 8;
         /// <summary>gas 盘的公开价里"不知道相位"的权重：越大，数清七天周期的玩家越赚。金融审查（agy_fin/subsim）发现 0.5 时 gas 盘胜率 96%、每周净赚约 1,400，调到 0.15。</summary>
@@ -240,7 +262,7 @@ namespace Decentralized.Domain
         public const double PredictMoveLog = 0.15;
         /// <summary>情报贩子：局势简报价格（CRT）、三档内幕消息的价格（占盘口最大亏损的比例）与准确率、假情报概率（claim 与真相相反）、需要的黑市声望。</summary>
         public const double IntelBriefPrice = 120, IntelFake = 0.10;
-        public static readonly double[] IntelTipPrice = { 0.01, 0.025, 0.05 }, IntelTipAcc = { 0.60, 0.80, 0.95 };
+        public static readonly double[] IntelTipPrice = { 0.02, 0.05, 0.12 }, IntelTipAcc = { 0.60, 0.80, 0.95 };
         public const int IntelRep = 20;
         /// <summary>操纵检出：玩家自己的大单把价格推离"没有你时的水平"的对数幅度（取绝对值）低于 ManipFree 不查；
         /// 超过后被查概率 = ManipBase + ManipSlope × (幅度 − ManipFree)，封顶 ManipMax；被查后永续账户冻结几天。</summary>
@@ -268,6 +290,10 @@ namespace Decentralized.Domain
         public const double YieldPoolChance = 0.25, YieldRugNightly = 0.18, YieldCap0 = 4000, YieldCapPerDay = 120, YieldReserveDays = 25;
         public static readonly double[] YieldRates = { 0.01, 0.02, 0.03 }, YieldScamByRate = { 0.15, 0.40, 0.75 };
         public const double YieldScamTimelock = 0.25, YieldScamAudit = 0.20;
+        /// <summary>收黑币：相关事件期间每天有人上门的概率（PSC、CRT），Ponero 兑换处开放后每天的概率；币的市值（房租的倍数）；
+        /// 现金要价占市值的比例（PSC、CRT 与 Ponero 分开）；钓鱼执法的概率与镇压期间的加成。</summary>
+        public const double HotEventChance = 0.35, HotPoneroChance = 0.05, HotValueMinRents = 4, HotValueMaxRents = 15;
+        public const double HotCutMin = 0.45, HotCutMax = 0.60, HotPoneroCutMin = 0.70, HotPoneroCutMax = 0.80, HotSting = 0.05, HotStingCrackdown = 0.10;
         /// <summary>假客服：每天上门的概率；伪造转账：用币付款的顾客里是骗子的比例；两者都从第几天起。</summary>
         public const double FakeSupportChance = 0.04, FakeTransferShare = 0.08;
         public const int ScamMinDay = 10;
@@ -298,5 +324,8 @@ namespace Decentralized.Domain
 
         /// <summary>主交易对（信用点一侧）的深度随天数增长。</summary>
         public static double PoolDepth(int day) => PoolDepth0 * (1 + day / 60.0);
+
+        /// <summary>永续的成交深度，同样随天数增长。</summary>
+        public static double PerpDepth(int day) => PerpDepth0 * (1 + day / 60.0);
     }
 }

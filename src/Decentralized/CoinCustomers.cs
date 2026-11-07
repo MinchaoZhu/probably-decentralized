@@ -267,6 +267,7 @@ namespace Decentralized
             int heat = item.IsTag("STOLEN_VALUE_INT") ? item.GetTagReadonly("STOLEN_VALUE_INT").GetInt() : 0;
             ModHelper.AddCredit(-cost, false);
             double qty = CoinPayment.Receive(d.Hot, asset, cost, price, heat);
+            d.Chain(ChainAddress.Make(d.Rng.NextUInt()), d.Hot.Address, asset, qty);
             d.CoinSalesToday += cost;
             Log.Info($"用币付款：{item.name} {cost} 信用点 → {qty:0.####} {asset}，污点 +{cost * heat / 100.0:0}");
             return qty;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Decentralized.Domain;
 using Newtonsoft.Json;
 
@@ -24,7 +25,8 @@ namespace Decentralized
     /// <summary>一局的 mod 状态。整体序列化成 JSON 存进游戏的 mod 存档数据；显卡的健康度等存在显卡物品的标签上。</summary>
     public sealed class SaveData
     {
-        public int Version = 1;
+        /// <summary>存档数据的版本：2 起保险基金用新的数值，3 起 Poinbase 主池是订单簿。</summary>
+        public int Version = 3;
         public int Day;
         public Rng Rng = new Rng((ulong)DateTime.UtcNow.Ticks);
         public Market Market;
@@ -98,6 +100,43 @@ namespace Decentralized
             if (!Addresses.TryGetValue(key, out var a) || !ChainAddress.Valid(a)) { a = ChainAddress.Make(Rng.NextUInt()); Addresses[key] = a; }
             return a;
         }
+
+        /// <summary>
+        /// 链上记账：钱包的每一笔进出都走这里。写进浏览器账本；转出方、转入方是自己的钱包时，也写进那个钱包自己的转账记录
+        /// （history: false 只记账本，矿池每晚的收益用，免得把钱包的记录挤满）。Ponero 是隐私币，不上浏览器。数额为 0 的只在 zero 时记（地址投毒）。
+        /// </summary>
+        public void Chain(string from, string to, string asset, double amount, double fee = 0, long block = -1, bool history = true, bool zero = false)
+        {
+            if (string.IsNullOrEmpty(asset) || string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || amount < 0 || (amount <= 1e-12 && !zero)) return;
+            int day = StoreStation.GetDayCounter();
+            if (asset != Assets.Ponero) Ledger.Add(new LedgerEntry { Block = block >= 0 ? block : Block, Day = day, From = from, To = to, Asset = asset, Amount = amount, Fee = fee });
+            if (!history) return;
+            var src = Own(from ?? "");
+            if (src != null) TxRules.Record(src.History, new TxRecord { Addr = to, Asset = asset, Amount = amount, Day = day });
+            var dst = Own(to ?? "");
+            if (dst != null && dst != src) TxRules.Record(dst.History, new TxRecord { Addr = from, Asset = asset, Amount = amount, Day = day, In = true });
+        }
+
+        public static Dictionary<string, double> Snapshot(Wallet w) => new Dictionary<string, double>(w.Balances);
+
+        public Dictionary<string, Dictionary<string, double>> SnapshotAll() => Wallets.ToDictionary(w => w.Address, Snapshot);
+
+        /// <summary>一次操作前后钱包余额的差，按币种记账：少了的记"钱包 → party"，多了的记"party → 钱包"。inOnly：只记转入（付款那一笔已经按转账记过）。</summary>
+        public void ChainDiff(Wallet w, Dictionary<string, double> before, string party, bool inOnly = false)
+        {
+            foreach (var asset in w.Balances.Keys.Union(before.Keys).ToList())
+            {
+                double diff = w.Get(asset) - (before.TryGetValue(asset, out var b) ? b : 0);
+                if (diff > 1e-9) Chain(party, w.Address, asset, diff);
+                else if (diff < -1e-9 && !inOnly) Chain(w.Address, party, asset, -diff);
+            }
+        }
+
+        /// <summary>夜间结算这类会动多个钱包的操作：所有自己的钱包各按差额记账。</summary>
+        public void ChainDiffAll(Dictionary<string, Dictionary<string, double>> before, string party)
+        {
+            foreach (var w in Wallets) if (before.TryGetValue(w.Address, out var b)) ChainDiff(w, b, party);
+        }
         /// <summary>网络拥堵的起止天（含）。</summary>
         public int CongestedFrom = -1, CongestedUntil = -1;
         /// <summary>当天的 gas 指数（夜间结算算出第二天的）与这一局的周期相位。</summary>
@@ -142,6 +181,14 @@ namespace Decentralized
             if (Data.Market == null || Data.Market.DexPool(Assets.SPARK) == null) Data.Market = Market.CreateDefault(StoreStation.GetDayCounter());
             // 旧存档里的商家地址没有校验位：换成合法地址
             foreach (var s in Data.Black.Sellers) if (!ChainAddress.Valid(s.Name)) s.Name = ChainAddress.Make(Data.Rng.NextUInt());
+            // 保险基金按新的规模补足
+            if (Data.Version < 2) Data.Perps.InsuranceFund = Math.Max(Data.Perps.InsuranceFund, Tuning.PerpFund0);
+            // Poinbase 主池换成订单簿（按当前价格、新手续费；侧池夜里按新深度重设）
+            if (!Data.Market.Main.Book)
+                Data.Market.Pools[0] = Pool.CreateBook(Venue.Exchange, Assets.PSC, Assets.CRC, Data.Market.Price, Tuning.PoolDepth(StoreStation.GetDayCounter()), Tuning.ExchangeFee);
+            Data.Market.AddPoinSpark(Data.Stable.Spark, StoreStation.GetDayCounter());
+            Data.Market.UpgradeDexPools(StoreStation.GetDayCounter());
+            if (Data.Version < 3) { Data.Version = 3; Log.Info("存档数据升级到版本 3：保险基金、Poinbase 订单簿"); }
             if (Data.Story == null) Data.Story = new StoryMods();
             StoryMods.Current = Data.Story;
             Log.Info($"状态已载入（第 {Data.Day} 天，PSC {Data.Market.Price:0.00}）");

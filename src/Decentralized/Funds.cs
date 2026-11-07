@@ -98,12 +98,8 @@ namespace Decentralized
                 var own = d.Own(t.To);
                 Wallet.Transfer(pb, own ?? new Wallet(), t.Asset, net, Session.Price);
                 d.Block += 1;
-                d.Ledger.Add(new LedgerEntry { Block = d.Block, Day = StoreStation.GetDayCounter(), From = d.Address("poinbase"), To = t.To, Asset = t.Asset, Amount = net, Fee = fee });
-                if (own != null)
-                {
-                    TxRules.Record(own.History, new TxRecord { Addr = d.Address("poinbase"), Asset = t.Asset, Amount = net, Day = StoreStation.GetDayCounter(), In = true });
-                    WalletWindow.RefreshDevice(own, true);
-                }
+                d.Chain(d.Address("poinbase"), t.To, t.Asset, net, fee);
+                if (own != null) WalletWindow.RefreshDevice(own, true);
                 else Log.Info($"出金转进没人用的地址 {t.To}：{net} {t.Asset}");
                 Session.Save();
                 TerminalWindow.Refresh(own != null

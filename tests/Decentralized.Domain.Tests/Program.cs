@@ -342,13 +342,13 @@ internal static class Program
             var twoHop = m.Quote(Assets.CRA, Assets.PSC, 100);
             Check(oneHop != null && oneHop.Hops == 1 && twoHop != null && twoHop.Hops == 2, "CRC 在一端走一个池，否则两个池");
             Check(m.Quote(Assets.PSC, Assets.PSC, 1) == null && m.Quote(Assets.CRC, Assets.CRC, 1) == null && m.Quote(Assets.CRC, Assets.Ponero, 1) == null, "同币、没有池没有路由");
-            Check(twoHop.Impact > oneHop.Impact && twoHop.Impact > Tuning.DexFee * 1.9, $"两跳损失更大：{oneHop.Impact:P2} 对 {twoHop.Impact:P2}");
+            Check(twoHop.Impact > oneHop.Impact && twoHop.Impact > Tuning.DexFee + Tuning.StableFee - 1e-9, $"两跳损失更大（稳定币池一跳 + PSC 池一跳）：{oneHop.Impact:P2} 对 {twoHop.Impact:P2}");
             double expect = m.DexPool(Assets.PSC).BaseOut(m.DexPool(Assets.CRA).QuoteOut(100));
             Check(Near(twoHop.Out, expect, 1e-9), "两跳的数量 = 先卖成 CRC 再买");
             double got = m.Swap(Assets.CRA, Assets.PSC, 100);
             Check(Near(got, twoHop.Out, 1e-9), "成交数量与报价一致");
             Check(m.DexPool(Assets.CRA).Price < 1 && m.DexPool(Assets.PSC).Price > Tuning.PscStartPrice, "成交推动两个池的价格");
-            var big = Market.CreateDefault(1).Quote(Assets.CRC, Assets.SPARK, 20000);
+            var big = Market.CreateDefault(1).Quote(Assets.CRC, Assets.SPARK, Tuning.PoolDepth(1) * Tuning.SparkDepthShare / 4);
             Check(big.Impact > 0.2, $"SPARK 池比较薄，大单滑点大：{big.Impact:P0}");
         });
 
@@ -416,9 +416,10 @@ internal static class Program
             string a = ChainAddress.Make(1), b = ChainAddress.Make(2), c = ChainAddress.Make(3);
             l.Add(new LedgerEntry { Block = 1, From = a, To = b, Asset = "PSC", Amount = 1 });
             l.Add(new LedgerEntry { Block = 2, From = b, To = c, Asset = "CRC", Amount = 5, Fee = 1 });
-            l.Add(new LedgerEntry { Block = 3, From = c, To = a, Asset = "PSC", Amount = 0 });
-            Check(l.Entries.Count == 2 && l.Entries[0].Block == 2, "数额为 0 不记；最新的在前");
-            Check(l.Of(b, 10).Count == 2 && l.Of(a, 10).Count == 1 && l.Of(a.ToUpperInvariant(), 10).Count == 1 && l.Of("", 10).Count == 2, "按地址过滤，大小写不敏感，空地址是最近的全部");
+            l.Add(new LedgerEntry { Block = 3, From = c, To = a, Asset = "PSC", Amount = -1 });
+            l.Add(new LedgerEntry { Block = 4, From = c, To = a, Asset = "PSC", Amount = 0 });
+            Check(l.Entries.Count == 3 && l.Entries[0].Block == 4 && l.Entries[1].Block == 2, "负数不记，0 币转入（地址投毒）照记；最新的在前");
+            Check(l.Of(b, 10).Count == 2 && l.Of(a, 10).Count == 2 && l.Of(a.ToUpperInvariant(), 10).Count == 2 && l.Of("", 10).Count == 3, "按地址过滤，大小写不敏感，空地址是最近的全部");
             for (int i = 0; i < Tuning.LedgerMax + 30; i++) l.Add(new LedgerEntry { Block = 100 + i, From = a, To = b, Asset = "PSC", Amount = 1 });
             Check(l.Entries.Count == Tuning.LedgerMax && l.Entries[0].Block == 100 + Tuning.LedgerMax + 29 && l.Of("", 5).Count == 5, "上限 200 条");
             var back = Newtonsoft.Json.JsonConvert.DeserializeObject<Ledger>(Newtonsoft.Json.JsonConvert.SerializeObject(l));
@@ -509,8 +510,8 @@ internal static class Program
                 var w = new Wallet { Taint = 500, Basis = 1000 };
                 w.Add(Assets.CRC, 1000);
                 var r = new Exchange().Cashout(w, 1000, px, 1, 200, false, new Rng((ulong)i));
-                if (r.Outcome == AmlOutcome.Heavy) { heavy++; crime = r.Crime; Check(Near(r.Received, 998 - 500, 1e-6), "重度：没收污点部分"); }
-                else Check(Near(r.Received, 998, 1e-6) && r.Tax == 0, "未命中：全额到账；本金不计税");
+                if (r.Outcome == AmlOutcome.Heavy) { heavy++; crime = r.Crime; Check(Near(r.Received, 1000 * (1 - Tuning.ExchangeFee) - 500, 1e-6), "重度：没收污点部分"); }
+                else Check(Near(r.Received, 1000 * (1 - Tuning.ExchangeFee), 1e-6) && r.Tax == 0, "未命中：全额到账；本金不计税");
             }
             Check(Near(heavy / 1000.0, 0.75, 0.04) && crime == 500, $"污点 50% 时约 75% 重度命中，罪证 = 污点额：{heavy / 1000.0:P0}");
             var light = new Wallet { Taint = 150 };
@@ -523,7 +524,7 @@ internal static class Program
                 lr = new Exchange().Cashout(w, 1000, px, 1, 200, false, new Rng(i));
             }
             Check(lr.Outcome == AmlOutcome.Light && lr.Crime == 0 && Near(lr.Confiscated, 150, 1e-6), "污点 15%：轻度命中，没收 150、不记罪证");
-            Check(Near(lr.Tax, (998 - 150) * Tuning.TaxRate, 1e-6), "成本为 0 时到账部分全额计税");
+            Check(Near(lr.Tax, (1000 * (1 - Tuning.ExchangeFee) - 150) * Tuning.TaxRate, 1e-6), "成本为 0 时到账部分全额计税");
             var ex = new Exchange();
             var big = new Wallet();
             big.Add(Assets.CRC, 4000);
@@ -890,6 +891,12 @@ internal static class Program
             Check(s2.State == SaleState.Sold, "没到放款日不动");
             b2.Night(5, false, w2, new Rng(9), 0, price);
             Check(s2.State == SaleState.Paid && Near(w2.Get(Assets.CRT), crt0 + s2.Proceeds, 1e-9) && Near(w2.Taint, s2.Taint, 1e-9) && (s2.Taint == 0 || Near(s2.Taint, s2.Proceeds * BlackMarket.TaintRatio(0.8), 1e-6)), "放款：货款进钱包，污点按比例");
+            // 赃物：货款按热度带污点，不走随机
+            var bh = new BlackMarket();
+            var wh = new Wallet(); wh.Add(Assets.CRT, 1000);
+            var sh = bh.List("c4", null, null, 0, 500, 0.8, wh, Assets.CRT, 1, price, 60);
+            bh.Night(2, false, wh, new Rng(7), 0, price);
+            Check(sh.State == SaleState.Sold && Near(sh.Taint, sh.Proceeds * 0.6, 1e-9), $"热度 60% 的赃物：污点 {sh.Taint:0} = 货款 × 60%");
             // 假卡被看穿
             int fake = 0;
             for (int i = 0; i < 400; i++)
@@ -1091,9 +1098,9 @@ internal static class Program
         {
             Func<string, double> pr = a => a == Assets.PSC ? 100 : 1;
             Wallet NewAcct(double crc, double taint = 0) { var w = new Wallet { Address = "pb" }; w.Add(Assets.CRC, crc); w.Taint = taint; w.Basis = crc; return w; }
-            // 滑点：名义价值占池深的比例，买入往上、卖出往下
+            // 滑点：名义价值占永续深度的比例，买入往上、卖出往下
             var bs = new PerpBook();
-            double pool = Tuning.PoolDepth(1);
+            double pool = Tuning.PerpDepth(1);
             Check(Math.Abs(bs.Exec(100, 2000, true, 1) - 100 * (1 + 2000 / (Tuning.PerpDepthMult * pool))) < 1e-9 && bs.Exec(100, 2000, false, 1) < 100 && bs.Exec(100, 1e12, true, 1) <= 150.0001, "滑点：买入上滑、卖出下滑，封顶 50%");
             // 滑点吃掉了强平线之间的空间：开仓被拒
             var bt = new PerpBook { DepthMult = 0.05 }; var at = NewAcct(5000);
@@ -1132,7 +1139,7 @@ internal static class Program
             b4.Open(a4, "SPARK", true, 1000, 3, 10, 1, pr);
             double crc4 = a4.Get(Assets.CRC);
             b4.Night(2, new Dictionary<string, double> { ["SPARK"] = 5 }, a4, pr);
-            Check(b4.Positions.Count == 0 && b4.Debt > 0 && b4.InsuranceFund < 1 + Tuning.PerpFundDrift, $"大跌穿仓，基金见底，欠款 {b4.Debt:0}");
+            Check(b4.Positions.Count == 0 && b4.Debt > 0 && b4.InsuranceFund < 1, $"大跌穿仓，基金见底，欠款 {b4.Debt:0}");
             Check(b4.Open(a4, "SPARK", true, 10, 1, 5, 2, pr) == PerpResult.Debt, "有欠款不能开仓");
             double debt0 = b4.Debt; a4.Add(Assets.CRC, 100);
             b4.Night(3, new Dictionary<string, double> { ["SPARK"] = 5 }, a4, pr);
@@ -1156,6 +1163,19 @@ internal static class Program
             b7.Night(2, new Dictionary<string, double> { ["SPARK"] = 10 }, a7, pr);
             var ev7 = b7.Night(3, new Dictionary<string, double> { ["SPARK"] = 3 }, a7, pr);
             Check(ev7.Any(e => e.Kind == "adl") && b7.Positions.Count == 0, "基金见底，盈利空头被自动减仓");
+            // NPC 爆仓：小行情爆仓的剩余保证金进基金，大行情穿仓吃基金；涨跌达到新闻线记一条 wipe（含玩家）
+            double oi = PerpBook.NpcOi("PSC", 30);
+            Check(PerpBook.NpcFlow(0.02, oi, out double l2) > 0 && l2 > 0 && PerpBook.NpcFlow(-0.04, oi, out _) > 0, $"2%–4% 的行情基金净流入 {PerpBook.NpcFlow(0.02, oi, out _):0}");
+            Check(PerpBook.NpcFlow(0.25, oi, out double l25) < 0 && Math.Abs(l25 - oi) < 1e-6, $"25% 的行情亏损一侧全部爆仓、基金净流出 {PerpBook.NpcFlow(0.25, oi, out _):0}");
+            Check(-PerpBook.NpcFlow(0.25, oi, out _) < Tuning.PerpFund0 / 5, "一次 25% 的行情吃不掉基金初值的五分之一");
+            var b8 = new PerpBook { DepthMult = 1e12 }; var a8 = NewAcct(5000);
+            b8.Night(1, new Dictionary<string, double> { ["PSC"] = 100 }, a8, pr);
+            b8.Open(a8, "PSC", true, 1000, 5, 100, 1, pr);
+            var ev8 = b8.Night(2, new Dictionary<string, double> { ["PSC"] = 85 }, a8, pr);
+            var wipe = ev8.FirstOrDefault(e => e.Kind == "wipe");
+            PerpBook.NpcFlow(-0.15, PerpBook.NpcOi("PSC", 2), out double npc8);
+            Check(wipe != null && wipe.Long && wipe.Count == (int)Math.Round(npc8 / Tuning.PerpNpcAvgPos) + 1 && wipe.Amount > npc8, $"−15%：多头爆仓 {wipe?.Count} 人（含玩家）");
+            Check(!b8.Night(3, new Dictionary<string, double> { ["PSC"] = 87 }, a8, pr).Any(e => e.Kind == "wipe"), "小行情不上新闻");
         });
 
         Test("CRA 质押池：计息、解锁期、污点随币、螺旋", () =>
@@ -1277,22 +1297,110 @@ internal static class Program
             Check(o.State == OrderState.Refunded && Math.Abs(b.Get(Assets.CRT) - bBefore) < 1e-6 && a.Get(Assets.CRT) == aBefore, $"骗子托管退款回 B：{o.State}");
         });
 
+        Test("Poinbase 现货：订单簿冲击曲线、按标的数量反算要付的计价币", () =>
+        {
+            var m = Market.CreateDefault(38);
+            var p = m.Main;
+            Check(p.Book, "Poinbase 主池是订单簿");
+            double q = p.QuoteIn(2);
+            Check(Near(p.BaseOut(q), 2, 1e-6), $"买 2 PSC 要付 {q:0.00} CRC，反算回来是 2 个");
+            double impact = q * (1 - p.Fee) / 2 / p.Price - 1;
+            Check(impact > 0.0008 && impact < 0.0012, $"第 38 天买 2 PSC 的滑点（不含手续费）约 0.1%：{impact * 100:0.000}%");
+            double sell = 1 - p.QuoteOut(200) / (1 - p.Fee) / 200 / p.Price;
+            Check(sell > 0.035 && sell < 0.045, $"第 38 天卖 200 PSC 的滑点约 4%：{sell * 100:0.00}%");
+            double p0 = p.Price, paid = p.QuoteIn(50);
+            double got = p.BuyBase(paid), back = p.SellBase(got);
+            Check(Near(got, 50, 1e-6) && Near(p.Price, p0, 1e-9) && back < paid && Near(back, paid * (1 - p.Fee) * (1 - p.Fee), paid * 1e-6), $"买进再卖出：价格回到原值，只损失两次手续费（付 {paid:0.00}，回 {back:0.00}）");
+            var one = Market.CreateDefault(38).Main; var split = Market.CreateDefault(38).Main;
+            double a1 = one.QuoteIn(100), a2 = 0;
+            for (int k = 0; k < 10; k++) { double c = split.QuoteIn(10); split.BuyBase(c); a2 += c; }
+            Check(Near(a1, a2, a1 * 1e-6), $"拆单不占便宜：一次买 100 付 {a1:0.00}，拆十次付 {a2:0.00}");
+            var dex = m.DexPool(Assets.PSC);
+            Check(double.IsPositiveInfinity(dex.QuoteIn(dex.BaseReserve)) && dex.QuoteIn(0) == 0, "DEX 恒定乘积池：超出储备为无穷，0 个为 0");
+        });
+
+        Test("稳定币池（StableSwap）：挂钩附近几乎没有滑点，脱锚变差，崩盘被抽干", () =>
+        {
+            var m = Market.CreateDefault(38);
+            var crt = m.DexPool(Assets.CRT);
+            Check(crt.Stable && m.DexPool(Assets.CRA).Stable && !m.DexPool(Assets.PSC).Stable, "CRT、CRA 对 CRC 是稳定币池，PSC 不是");
+            Check(Near(crt.Price, 1, 1e-9), "平衡时价格等于挂钩价");
+            double small = m.Quote(Assets.CRT, Assets.CRC, 998).Impact, big = m.Quote(Assets.CRT, Assets.CRC, 50000).Impact;
+            Check(small < Tuning.StableFee + 0.0002 && big < 0.002, $"998 CRT 损耗 {small * 100:0.000}%，5 万 {big * 100:0.000}%");
+            double got = crt.SellBase(998), back = crt.BuyBase(got);
+            Check(back < 998 && back > 998 * (1 - 2 * Tuning.StableFee) - 0.01 && Near(crt.Price, 1, 1e-6), $"来回成交只损失两次手续费：{back:0.000}");
+            m.Night(new MarketEvent[0], new Rng(1), 38, a => a == Assets.CRT ? 0.92 : a == Assets.CRA ? 0.30 : a == Assets.SPARK ? 10 : 1);
+            Check(m.DexPool(Assets.CRT).Amp == Tuning.StableAmpDepeg && m.DexPool(Assets.CRA).Amp == Tuning.StableAmpBroken, "偏离 8% 是脱锚，偏离 70% 是崩盘");
+            double dep = m.Quote(Assets.CRT, Assets.CRC, 50000).Impact, brk = m.Quote(Assets.CRA, Assets.CRC, 50000).Impact;
+            Check(dep > big && brk > dep * 5, $"5 万的损耗：脱锚 {dep * 100:0.00}%，崩盘 {brk * 100:0.00}%");
+            // 旧存档的恒定乘积池按当前价换成稳定币池
+            var old = Market.CreateDefault(38);
+            int i = old.Pools.FindIndex(x => x.Venue == Venue.Dex && x.Base == Assets.CRT);
+            old.Pools[i] = Pool.Create(Venue.Dex, Assets.CRT, Assets.CRC, 0.95, 1000, Tuning.DexFee);
+            old.UpgradeDexPools(38);
+            Check(old.DexPool(Assets.CRT).Stable && Near(old.DexPool(Assets.CRT).Price, 0.95, 1e-9), "旧存档的池子升级后保持当前价");
+        });
+
+        Test("Poinbase 上架的币：PSC、CRC、SPARK；SPARK/CRC 订单簿", () =>
+        {
+            Check(Exchange.Listed.SequenceEqual(new[] { Assets.PSC, Assets.CRC, Assets.SPARK }), "只收 PSC、CRC、SPARK");
+            var m = Market.CreateDefault(38);
+            var sp = m.Find(Venue.Exchange, Assets.SPARK, Assets.CRC);
+            Check(sp != null && sp.Book && Near(sp.Price, Tuning.SparkStart, 1e-9), "SPARK/CRC 是订单簿，起始价同 SPARK");
+            m.Pools.Remove(sp); m.AddPoinSpark(12, 38); m.AddPoinSpark(13, 38);
+            Check(m.Pools.Count(x => x.Venue == Venue.Exchange && x.Base == Assets.SPARK) == 1 && Near(m.Find(Venue.Exchange, Assets.SPARK, Assets.CRC).Price, 12, 1e-9), "旧存档补上一次，按当前价");
+            m.Night(new MarketEvent[0], new Rng(1), 38, a => a == Assets.SPARK ? 20 : 1);
+            double ps = m.Find(Venue.Exchange, Assets.SPARK, Assets.CRC).Price;
+            Check(ps > 12 && ps < 20, $"夜里向 SPARK 参考价靠拢：{ps:0.00}");
+        });
+
+        Test("收黑币：事件对应币种、报价、收下后的污点", () =>
+        {
+            var rng = new Rng(3);
+            int crt = 0, psc = 0, pon = 0;
+            for (int i = 0; i < 4000; i++)
+            {
+                string a1 = HotCoins.Pick(new[] { MarketEvent.GangWar }, false, rng);
+                if (a1 == Assets.CRT) crt++; else if (a1 != null) psc++;
+                if (HotCoins.Pick(new MarketEvent[0], true, rng) == Assets.Ponero) pon++;
+            }
+            Check(psc == 0 && Math.Abs(crt / 4000.0 - Tuning.HotEventChance) < 0.03, $"帮派火并期间只有 CRT：{crt}/4000");
+            Check(Math.Abs(pon / 4000.0 - Tuning.HotPoneroChance) < 0.015, $"兑换处开放后的 Ponero：{pon}/4000");
+            Check(HotCoins.Pick(new[] { MarketEvent.RevRaidUpper }, false, new Rng(1)) is string sa ? sa == Assets.PSC : true, "革命军袭击上层是 PSC");
+            Check(HotCoins.Pick(new MarketEvent[0], false, rng) == null, "没有事件、兑换处没开：没人上门");
+            var o = HotCoins.Make(Assets.CRT, 1, 500, false, new Rng(9));
+            Check(o.Value >= 500 * Tuning.HotValueMinRents && o.Value <= 500 * Tuning.HotValueMaxRents && o.Cash >= o.Value * Tuning.HotCutMin - 1 && o.Cash <= o.Value * Tuning.HotCutMax + 1, $"报价：市值 {o.Value:0}，现金 {o.Cash}");
+            var w = new Wallet();
+            HotCoins.Receive(w, o);
+            Check(Near(w.Get(Assets.CRT), o.Qty, 1e-9) && Near(w.Taint, o.Value, 1e-9) && Near(w.Basis, o.Cash, 1e-9), "CRT 全额带污点，成本是付的现金");
+            var op = HotCoins.Make(Assets.Ponero, 50, 500, false, new Rng(9));
+            var wp = new Wallet();
+            HotCoins.Receive(wp, op);
+            Check(wp.Taint == 0 && op.Cash >= op.Value * Tuning.HotPoneroCutMin - 1, "Ponero 不带污点、折扣小");
+            int stings = 0, stingsCd = 0;
+            for (int i = 0; i < 4000; i++) { if (HotCoins.Make(Assets.CRT, 1, 500, false, rng).Sting) stings++; if (HotCoins.Make(Assets.CRT, 1, 500, true, rng).Sting) stingsCd++; }
+            Check(stingsCd > stings * 2, $"镇压期间钓鱼执法更多：{stings} → {stingsCd}");
+        });
+
         Test("预测市场：LMSR 定价、最大亏损、买卖", () =>
         {
+            // 流动性：第 38 天在 5% 的盘口押 50，均价比现价贵约 10%（与先验无关，50% 盘口押 50 约 0.5%）
+            var lo = PredictMarket.Create(1, PredictKind.Event, "x", "t", 0, 38, 39, 40, 0.05);
+            double slipLo = 50 / lo.SharesFor(true, 50) / 0.05 - 1;
+            var mid = PredictMarket.Create(1, PredictKind.Event, "x", "t", 0, 38, 39, 40, 0.5);
+            double slipMid = 50 / mid.SharesFor(true, 50) / 0.5 - 1;
+            Check(slipLo > 0.08 && slipLo < 0.12 && slipMid < 0.01, $"押 50 的滑点：5% 盘口 {slipLo * 100:0.0}%，50% 盘口 {slipMid * 100:0.0}%");
             foreach (double p0 in new[] { 0.5, 0.08, 0.9 })
             {
                 var m = PredictMarket.Create(1, PredictKind.Event, "x", "t", 0, 10, 11, 12, p0);
                 Check(Math.Abs(m.PYes - p0) < 1e-9, $"初始价 = 先验 {p0}：{m.PYes:0.0000}");
-                Check(Math.Abs(m.MaxLoss - PredictMarket.LossFor(10)) < 1e-6, "最大亏损等于预设");
+                Check(Math.Abs(m.Loss - PredictMarket.LossFor(10)) < 1e-6 && Math.Abs(m.B - Tuning.PredictDepth * m.Loss / Math.Log(2)) < 1e-6, "单盘额度等于预设，流动性与先验无关");
                 double cost = 100, sh = m.SharesFor(true, cost);
                 Check(Math.Abs(m.BuyCost(true, sh) - cost) < 1e-6, $"闭式反解和成本函数一致（{p0}）");
                 Check(Math.Abs(m.SellValue(true, 0)) < 1e-9, "卖 0 份收回 0");
-                // 系统最大亏损：玩家买满一边，赢了系统最多亏 MaxLoss
-                double paid = m.BuyCost(true, 5000);
-                Check(5000 - paid <= m.MaxLoss + 1e-6, $"买得再多系统也亏不过最大亏损：{5000 - paid:0.0} ≤ {m.MaxLoss:0.0}");
-                var m2 = PredictMarket.Create(1, PredictKind.Event, "x", "t", 0, 10, 11, 12, p0);
-                double paidNo = m2.BuyCost(false, 5000);
-                Check(5000 - paidNo <= m2.MaxLoss + 1e-6, "反方向同理");
+                // 份额上限按额度：买满一边，系统最多亏份额上限
+                double paid = m.BuyCost(true, m.ShareCap);
+                Check(m.ShareCap - paid <= Tuning.PredictCap * m.Loss + 1e-6, $"买满上限系统亏 {m.ShareCap - paid:0.0}");
                 // 买了再卖：只损失手续费之外的价差为 0
                 var m3 = PredictMarket.Create(1, PredictKind.Event, "x", "t", 0, 10, 11, 12, p0);
                 double s3 = m3.SharesFor(true, 50);
@@ -1312,15 +1420,16 @@ internal static class Program
             Check(bk.Buy(acct, m, true, 0, 5, pr, false, out _) == PredictResult.Amount, "金额为 0 被拒");
             Check(bk.Buy(acct, m, true, 2000, 5, pr, false, out _) == PredictResult.Funds, "钱不够被拒");
             Check(bk.Buy(acct, m, true, 100, 6, pr, false, out _) == PredictResult.Closed, "窗口开始后封盘");
-            var res = bk.Buy(acct, m, true, 102, 5, pr, false, out double sh);
+            double spend = 100 * (1 + Tuning.PredictFee);
+            var res = bk.Buy(acct, m, true, spend, 5, pr, false, out double sh);
             Check(res == PredictResult.Ok && sh > 0, "买入成功");
             var pos = bk.PosOf(m.Id, acct.Address);
-            Check(Math.Abs(pos.Cost - 100) < 1e-6 && Math.Abs(acct.Get(Assets.CRC) - 898) < 1e-6, $"成本 100（手续费 2）：{pos.Cost:0.00}");
-            Check(Math.Abs(pos.Taint - 40.8) < 1e-6 && Math.Abs(acct.Taint - 359.2) < 1e-6, $"污点按花掉的价值比例带进持仓：{pos.Taint:0.00}");
+            Check(Math.Abs(pos.Cost - 100) < 1e-6 && Math.Abs(acct.Get(Assets.CRC) - (1000 - spend)) < 1e-6, $"成本 100（另付手续费）：{pos.Cost:0.00}");
+            Check(Math.Abs(pos.Taint - 400 * spend / 1000) < 1e-6 && Math.Abs(acct.Taint - (400 - 400 * spend / 1000)) < 1e-6, $"污点按花掉的价值比例带进持仓：{pos.Taint:0.00}");
             Check(bk.Buy(acct, m, false, 10, 5, pr, false, out _) == PredictResult.Opposite, "不能同盘反方向");
-            // 卖出：价差为 0，只付 2% 手续费
+            // 卖出：价差为 0，只付手续费
             double before = acct.Get(Assets.CRC);
-            Check(bk.SellAll(acct, m, 5, out double got) == PredictResult.Ok && Math.Abs(got - 98) < 1e-6, $"原价卖回只扣手续费：{got:0.00}");
+            Check(bk.SellAll(acct, m, 5, out double got) == PredictResult.Ok && Math.Abs(got - 100 * (1 - Tuning.PredictFee)) < 1e-6, $"原价卖回只扣手续费：{got:0.00}");
             Check(Math.Abs(acct.Get(Assets.CRC) - before - got) < 1e-6 && bk.PosOf(m.Id, acct.Address) == null, "回到账户");
             Check(acct.Taint < 400 && acct.Taint > 359.2, "卖回时污点按退回的比例回来");
             // 持仓上限
@@ -1343,9 +1452,10 @@ internal static class Program
             var lose = PredictMarket.Create(++bk.Seq, PredictKind.Event, "blackout", "x", 0, 4, 5, 6, 0.2);
             var voided = PredictMarket.Create(++bk.Seq, PredictKind.Faction, "FACTION_SECURITY", "镇压", 0, 4, 5, 8, 0.2);
             bk.Markets.AddRange(new[] { win, lose, voided });
-            bk.Buy(acct, win, true, 51, 4, pr, false, out double sw);
-            bk.Buy(acct, lose, true, 51, 4, pr, false, out _);
-            bk.Buy(acct, voided, true, 51, 4, pr, false, out _);
+            double stake = 50 * (1 + Tuning.PredictFee);
+            bk.Buy(acct, win, true, stake, 4, pr, false, out double sw);
+            bk.Buy(acct, lose, true, stake, 4, pr, false, out _);
+            bk.Buy(acct, voided, true, stake, 4, pr, false, out _);
             double cash = acct.Get(Assets.CRC);
             bk.Night(5, new[] { "oxymoreWave", "powerShortage" }, bk.Happened, _ => acct, rng);
             Check(win.Outcome < 0 && lose.Outcome < 0, "窗口没结束不结算");
@@ -1359,7 +1469,7 @@ internal static class Program
             double c2 = acct.Get(Assets.CRC);
             var ev2 = bk.Night(9, new string[0], bk.Happened, _ => acct, rng);
             Check(ev2.Any(e => e.Kind == "void") && Math.Abs(acct.Get(Assets.CRC) - c2 - 50) < 1e-6, $"缺数据作废并退本金：{acct.Get(Assets.CRC) - c2:0.00}");
-            // 内幕被查：持仓达到上限的 40% 就有概率；200 次里大约一半
+            // 内幕被查：持仓达到上限的 40% 就有概率，按查处概率被查
             int caught = 0, wins = 0;
             for (int i = 0; i < 400; i++)
             {
@@ -1372,7 +1482,7 @@ internal static class Program
                 if (e[0].Kind == "caught") { caught++; Check(e[0].Fraud > 0 && e[0].Fraud <= Tuning.PredictFraudCap, "罪证有上限"); }
                 else wins++;
             }
-            Check(caught > 140 && caught < 260, $"内幕大单约一半被查：{caught}/400");
+            Check(Math.Abs(caught / 400.0 - Tuning.PredictInsiderCatch) < 0.08, $"内幕大单按查处概率被查：{caught}/400");
             // 小额内幕不会被查
             var b3 = new PredictBook(); var a3 = new Wallet { Address = "p" }; a3.Add(Assets.CRC, 1e6);
             var m3 = PredictMarket.Create(++b3.Seq, PredictKind.Event, "e", "t", 0, 4, 5, 5, 0.1); b3.Markets.Add(m3);
@@ -1413,7 +1523,7 @@ internal static class Program
             int caught = 0;
             for (ulong sd = 1; sd <= 60; sd++)
             {
-                var b2 = new PredictBook(); b2.Markets.Add(new PredictMarket { Id = m.Id, Kind = m.Kind, Key = m.Key, Title = m.Title, FromDay = 5, ToDay = 5, P0 = m.P0, B = m.B, QYes = m.QYes, QNo = m.QNo });
+                var b2 = new PredictBook(); b2.Markets.Add(new PredictMarket { Id = m.Id, Kind = m.Kind, Key = m.Key, Title = m.Title, FromDay = 5, ToDay = 5, P0 = m.P0, B = m.B, Budget = m.Budget, QYes = m.QYes, QNo = m.QNo });
                 foreach (var p in bk.Positions) b2.Positions.Add(new PredictPos { Market = p.Market, Wallet = p.Wallet, Yes = p.Yes, Shares = p.Shares, Cost = p.Cost, Insider = p.Insider });
                 double a0 = w1.Get(Assets.CRC), b0 = w2.Get(Assets.CRC);
                 var ev = b2.Night(5, new string[0], x => true, pick, new Rng(sd));
@@ -1421,7 +1531,7 @@ internal static class Program
                 else Check(w1.Get(Assets.CRC) > a0 && w2.Get(Assets.CRC) > b0, "赢了各自的钱包都收到兑付");
                 w1.Balances[Assets.CRC] = a0; w2.Balances[Assets.CRC] = b0;
             }
-            Check(caught > 15 && caught < 45, $"分到两个钱包的内幕持仓合计后约一半被查：{caught}/60");
+            Check(Math.Abs(caught / 60.0 - Tuning.PredictInsiderCatch) < 0.2, $"分到两个钱包的内幕持仓合计后按查处概率被查：{caught}/60");
         });
 
         Test("预测市场：夜间消息反应、情报、新盘口先验", () =>
@@ -1450,7 +1560,7 @@ internal static class Program
                 double expect = (1 - Tuning.IntelFake) * Tuning.IntelTipAcc[tier] + Tuning.IntelFake * 0;
                 Check(Math.Abs(right / (double)trials - expect) < 0.04, $"第 {tier + 1} 档说对的比例约 {expect:0.00}：{right / (double)trials:0.00}");
             }
-            Check(Math.Abs(PredictBook.MakeTip(m, true, 2, rng).Paid - Tuning.IntelTipPrice[2] * m.MaxLoss) < 1e-9, "价格按盘口最大亏损的比例");
+            Check(Math.Abs(PredictBook.MakeTip(m, true, 2, rng).Paid - Tuning.IntelTipPrice[2] * m.Loss) < 1e-9, "价格按单盘额度的比例");
             // 到期后消息一起清掉
             bk.Tips.Add(new PredictTip { Market = closing.Id });
             var w = new Wallet { Address = "x" };
@@ -1634,7 +1744,7 @@ internal static class Program
                 if (fraud > 0) { caught++; Check(got == 0 && fraud <= Tuning.PredictFraudCap, "被查本金和收益全部没收"); }
                 else Check(got > cost, "没被查时赚到价差");
             }
-            Check(Math.Abs(caught / (double)n - Tuning.PredictInsiderCatch) < 0.08, $"约一半被查：{caught}/{n}");
+            Check(Math.Abs(caught / (double)n - Tuning.PredictInsiderCatch) < 0.08, $"按查处概率被查：{caught}/{n}");
             // 小额内幕、非内幕卖出不查
             var bk2 = new PredictBook(); var w2 = new Wallet { Address = "w" }; w2.Add(Assets.CRC, 1e6);
             var m2 = PredictMarket.Create(++bk2.Seq, PredictKind.Event, "e", "t", 0, 4, 7, 7, 0.05); bk2.Markets.Add(m2);

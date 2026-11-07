@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Decentralized.Domain;
 
@@ -87,7 +88,7 @@ namespace Decentralized
                 var w = string.IsNullOrEmpty(addr) ? null : d.Own(addr);
                 if (w == null) { lost += share; continue; }
                 w.Add(Assets.PSC, share);
-                d.Ledger.Add(new LedgerEntry { Block = d.Block, Day = StoreStation.GetDayCounter(), From = d.Address("pool"), To = w.Address, Asset = Assets.PSC, Amount = share });
+                d.Chain(d.Address("pool"), w.Address, Assets.PSC, share, history: false);
             }
             if (lost > 1e-9)
             {
@@ -130,7 +131,7 @@ namespace Decentralized
                 var w = d.Own(p.Wallet);
                 if (w == null) continue;
                 string fake = ChainAddress.Lookalike(p.Target, d.Rng);
-                TxRules.Record(w.History, new TxRecord { Addr = fake, Asset = Assets.PSC, Amount = 0, Day = day + 1, In = true });
+                d.Chain(fake, w.Address, Assets.PSC, 0, zero: true);
                 Log.Info($"地址投毒：{p.Target} 的相似地址 {fake} 向 {w.Address} 转入 0 币");
             }
             if (d.Rng.Chance(Scales.R(Tuning.TxPhishChance)))
@@ -194,7 +195,13 @@ namespace Decentralized
                 foreach (var t in w.Thaw(day)) PlayerStore.Instance.AddNightLog(L.T("nightlog.thaw", Fmt.Num(t.Value), t.Key));
             if (!wasSanctioned && d.Mixer.Sanctioned(day) && Unlock.MixerUnlocked) News.Show("pd_news_sanction_" + day, L.T("news.sanction.title"), L.T("news.sanction.desc"), 3);
             d.ActiveEvents = events;
-            if (Unlock.BlackUnlocked) BlackDelivery.Night(d, day, events.Contains(MarketEvent.Crackdown));
+            if (Unlock.BlackUnlocked)
+            {
+                // 黑市货款放款、订单退款都从平台转回钱包
+                var bmBefore = d.SnapshotAll();
+                BlackDelivery.Night(d, day, events.Contains(MarketEvent.Crackdown));
+                d.ChainDiffAll(bmBefore, d.Address("platform"));
+            }
             d.Network.Availability = (events.Contains(MarketEvent.Blackout) ? 0.8 : 1) * (events.Contains(MarketEvent.LowerUnrest) ? 0.9 : 1);
 
             d.Block += TxRules.BlocksPerDay(d.Rng);
@@ -229,13 +236,24 @@ namespace Decentralized
             foreach (var pp in d.Perps.Positions) Log.Info($"永续夜间：{pp.Product} {(pp.Long ? "多" : "空")} 保证金 {pp.Margin:0.00}，资金费率 {d.Perps.Rate(pp.Product) * 100:0.000}%，标记价 {(pp.Product == "PSC" ? pscMark : d.Stable.Spark):0.00}");
             if (perpEvents.Any(e => e.Kind == "seize")) SeizeForDebt(d, day);
             var stakeEvents = d.Staking.Night(day, d.Stable.CraRate, d.WalletAt);
+            foreach (var se in stakeEvents) if (se.Released > 0) d.Chain(d.Address("staking"), se.Wallet, Assets.CRA, se.Released);
             double crcFactor = d.Stable.Night(day, d.Rng, d.Staking.Earning);
             var orderEvents = d.Stable.NightOrders(day, d.Rng);
             foreach (var oe in orderEvents)
             {
                 var ow = d.WalletAt(oe.Order.Wallet);
-                if (oe.Kind == CraOrderKind.Minted) { ow.Add(Assets.CRA, oe.Cra); d.Staking.Stake(ow, oe.Cra, Session.Price); }
-                else if (oe.Kind == CraOrderKind.Burned) { ow.Add(Assets.CRC, oe.Crc); ow.Add(Assets.SPARK, oe.Spark); }
+                if (oe.Kind == CraOrderKind.Minted)
+                {
+                    ow.Add(Assets.CRA, oe.Cra); d.Staking.Stake(ow, oe.Cra, Session.Price);
+                    d.Chain(d.Address("cra"), ow.Address, Assets.CRA, oe.Cra);
+                    d.Chain(ow.Address, d.Address("staking"), Assets.CRA, oe.Cra);
+                }
+                else if (oe.Kind == CraOrderKind.Burned)
+                {
+                    ow.Add(Assets.CRC, oe.Crc); ow.Add(Assets.SPARK, oe.Spark);
+                    d.Chain(d.Address("cra"), ow.Address, Assets.CRC, oe.Crc);
+                    d.Chain(d.Address("cra"), ow.Address, Assets.SPARK, oe.Spark);
+                }
             }
             if (d.Stable.CraWarnDay == day) News.Show("pd_news_crawarn_" + day, L.T("news.crawarn.title"), L.T("news.crawarn.desc"), 4);
             if (d.Stable.CraSubsidyLow && !d.CraLowNews) { d.CraLowNews = true; News.Show("pd_news_cralow_" + day, L.T("news.cralow.title"), L.T("news.cralow.desc"), 3); }
@@ -251,7 +269,10 @@ namespace Decentralized
 
             var ps = PlayerStore.Instance;
             if (mined > 0) ps.AddNightLog(L.T("nightlog.mined", Fmt.Num(mined)));
-            foreach (var m in d.Mixer.Night(d.WalletAt, day, Session.Price, d.Rng))
+            var mixBefore = d.SnapshotAll();
+            var mixed = d.Mixer.Night(d.WalletAt, day, Session.Price, d.Rng);
+            d.ChainDiffAll(mixBefore, d.Address("mixer"));
+            foreach (var m in mixed)
             {
                 Log.Info($"混币器：{(m.Rugged ? "跑路" : "提回")} {m.Amount:0.##} {m.Asset}，污点 {m.TaintBefore:0} → {m.TaintAfter:0}，标记 {m.Flagged}");
                 if (m.Rugged) ps.AddNightLog(L.T("nightlog.mixer_rug", Fmt.Num(m.Amount), m.Asset), "cc7755");
@@ -266,7 +287,9 @@ namespace Decentralized
             {
                 double v = w.Value(Session.Price);
                 if (!d.Rng.Chance(Wallet.DrainChance(v))) continue;
+                var drained = SaveData.Snapshot(w);
                 w.Drain(Session.Price);
+                d.ChainDiff(w, drained, d.Address("drainer"));
                 Log.Info($"投毒钱包 {w.Address} 被转空：{v:0}");
                 ps.AddNightLog(L.T("nightlog.drained", WalletWindow.NameOf(w), Fmt.Credits(v)), "cc7755");
             }
@@ -276,15 +299,19 @@ namespace Decentralized
                 case Network.EraStep.Warn: News.Show("pd_news_erawarn_" + day, L.T("news.erawarn.title"), L.T("news.erawarn.desc"), 5); break;
                 case Network.EraStep.Start: News.Show("pd_news_era_" + day, L.T("news.era.title"), L.T("news.era.desc"), 5); Log.Info("矿机时代到来：NPC 耗电效率翻倍"); break;
             }
+            var predictBefore = d.SnapshotAll();
             var predictEvents = PredictGame.Available(day) || d.Predict.Markets.Count > 0
                 ? d.Predict.Night(day, PredictGame.ActiveIds(), m => PredictGame.Outcome(m, d), d.WalletAt, d.Rng, PredictGame.ClosePush) : new List<PredictEvent>();
+            d.ChainDiffAll(predictBefore, d.Address("predict"));
             foreach (var mv in d.Predict.Drift(day, m => PredictGame.PublicProb(m, d, day), d.Rng))
             {
                 if (Math.Abs(mv.To - mv.From) < Tuning.PredictMoveLog) continue;
                 var why = PredictGame.Clues(mv.Market);
                 ps.AddNightLog(L.T("nightlog.predict.move", PredictGame.Question(mv.Market), mv.From.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), mv.To.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)) + (why.Count > 0 ? L.T("nightlog.predict.why", why[0]) : ""));
             }
+            var ponziBefore = d.SnapshotAll();
             var ponzi = d.Ponzi.Night(day, StoreReputation.GetStoreReputation(StoreReputation.FACTION_LOWER_LEVEL)?.GetReputation() ?? 0, d.Own(d.Ponzi.Wallet ?? "") ?? d.Hot, d.Rng);
+            d.ChainDiffAll(ponziBefore, d.Address("ponzi"));
             if (ponzi != null)
             {
                 ps.secData.CommitCrime("FRAUD", (int)Tuning.PonziCrime);
@@ -297,6 +324,8 @@ namespace Decentralized
             {
                 var sw = d.Own(e.Wallet);
                 string wn = sw != null ? WalletWindow.NameOf(sw) : e.Wallet;
+                if (e.Kind == "drain") d.Chain(e.Wallet, d.Address("airdrop:" + e.Name), e.Asset, e.Amount);
+                else if (e.Kind == "dry" || e.Kind == "paid") d.Chain(d.Address("yield:" + e.Name), e.Wallet, e.Asset, e.Amount);
                 if (e.Kind == "drain") ps.AddNightLog(L.T("nightlog.scam.drain", wn, Fmt.Num(e.Amount), e.Asset, e.Name), "cc7755");
                 else if (e.Kind == "rug") ps.AddNightLog(L.T("nightlog.scam.rug", e.Name, Fmt.Num(e.Amount), wn), "cc7755");
                 else if (e.Kind == "dry") ps.AddNightLog(L.T("nightlog.scam.dry", e.Name, Fmt.Num(e.Amount), wn));
@@ -329,6 +358,13 @@ namespace Decentralized
                 else if (e.Kind == "adl") ps.AddNightLog(L.T("nightlog.perp.adl", who, Fmt.Credits(e.Amount)), "cc7755");
                 else if (e.Kind == "interest") ps.AddNightLog(L.T("nightlog.perp.interest", Fmt.Credits(e.Amount)), "cc7755");
                 else if (e.Kind == "repaid") ps.AddNightLog(L.T("nightlog.perp.repaid", Fmt.Credits(e.Amount)), "cc7755");
+                else if (e.Kind == "wipe")
+                {
+                    // 单日大涨大跌：全网爆仓上报纸（人数和金额含玩家被强平的仓位）
+                    string dir = e.Long ? "down" : "up", pct = Math.Abs(e.Move * 100).ToString("0", CultureInfo.InvariantCulture), n = Fmt.Credits(e.Count);
+                    News.Show("pd_news_wipe_" + e.Product + "_" + day, L.T("news.wipe." + dir + ".title", e.Product, pct, n), L.T("news.wipe." + dir + ".desc", e.Product, n, Fmt.Credits(e.Amount), Fmt.Credits(d.Perps.InsuranceFund)), 2);
+                    Log.Info($"爆仓新闻：{e.Product} {e.Move:+0.000;-0.000}，{e.Count} 人，{e.Amount:0} 信用点，保险基金 {d.Perps.InsuranceFund:0}");
+                }
             }
             foreach (var e in stakeEvents)
             {

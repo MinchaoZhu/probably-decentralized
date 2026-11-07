@@ -224,11 +224,18 @@ namespace Decentralized
             b.AddLabel(L.T(threshold > 0 ? "chart.legend.thr" : "chart.legend"), "chart_legend_dim");
         }
 
-        /// <summary>带币种切换的图：上面一排币种按钮（选中项带准星角标），切换后重画。</summary>
-        public static void AddPicker(CustomUIBuilder b, string key, string fallback, Action refresh, ICollection<GameObject> picked = null)
+        /// <summary>某张图当前选中的币（没选过或不在列表里时是 fallback）。</summary>
+        public static string Selected(string key, string fallback, IList<string> assets = null)
         {
-            var list = ChartAssets.Where(a => a != Assets.Ponero || Unlock.BlackUnlocked).ToList();
-            if (!Picked.TryGetValue(key, out var cur) || !list.Contains(cur)) cur = fallback;
+            var list = assets ?? ChartAssets.Where(a => a != Assets.Ponero || Unlock.BlackUnlocked).ToList();
+            return Picked.TryGetValue(key, out var cur) && list.Contains(cur) ? cur : fallback;
+        }
+
+        /// <summary>带币种切换的图：上面一排币种按钮（选中项带准星角标），切换后重画。assets 为空时是全部币种。</summary>
+        public static void AddPicker(CustomUIBuilder b, string key, string fallback, Action refresh, ICollection<GameObject> picked = null, IList<string> assets = null)
+        {
+            var list = (assets ?? ChartAssets.Where(a => a != Assets.Ponero || Unlock.BlackUnlocked)).ToList();
+            string cur = Selected(key, fallback, list);
             b.BeginRow(4f);
             foreach (var a in list)
             {

@@ -1,6 +1,6 @@
 # Probably Decentralized
 
-A mod for *Probably Stolen*: crypto mining, a fictional coin market, stablecoins, laundering and its risks, a Web3 black market, built on the game's own power, events and law systems. Current version: 1.0.0.
+A mod for *Probably Stolen*: crypto mining, a fictional coin market, stablecoins, laundering and its risks, a Web3 black market, built on the game's own power, events and law systems. Current version: 1.1.0.
 
 All coins, exchanges and events are fictional and have no real-world value.
 

@@ -32,6 +32,8 @@ namespace Decentralized
             /// <summary>合约调用时钱包里实际要花掉的数量（默认等于 Amount；取出质押这类不花币的调用为 0）和付手续费的币（默认用 Asset）。</summary>
             public double? Spend;
             public string FeeAsset;
+            /// <summary>合约调用的对方地址（DEX、质押池、预测市场等）：执行前后钱包余额的差按它记账。为空表示执行里自己记账。</summary>
+            public string Party;
             public Action<Wallet> Execute;
         }
 
@@ -336,7 +338,7 @@ namespace Decentralized
                 if (bill.Asset != dev.Asset) return L.T("hw.err.asset", bill.Asset);
                 if (v + 1e-9 < bill.Amount) return L.T("hw.err.short", Amt(bill.Amount), bill.Asset);
             }
-            else if (IsPoinbase(to)) { }
+            else if (IsPoinbase(to)) { if (!Exchange.Listed.Contains(dev.Asset)) return L.T("hw.err.poinbase", dev.Asset); }
             else if (Session.Data.Own(to) == null && Known(to)) return L.T("hw.err.nobill");
             return null;
         }
@@ -550,12 +552,9 @@ namespace Decentralized
                 double amt = tx.To != null ? Math.Min(tx.Amount, w.Avail(tx.Asset)) : 0;
                 if (tx.To != null)
                 {
-                    TxRules.Record(w.History, new TxRecord { Addr = tx.To, Asset = tx.Asset, Amount = amt, Day = day });
-                    d.Ledger.Add(new LedgerEntry { Block = tx.Block, Day = day, From = w.Address, To = tx.To, Asset = tx.Asset, Amount = amt, Fee = tx.FeeAsset == tx.Asset ? tx.Fee : 0 });
-                    var mine = d.Own(tx.To);
-                    if (mine != null) TxRules.Record(mine.History, new TxRecord { Addr = w.Address, Asset = tx.Asset, Amount = amt, Day = day, In = true });
+                    d.Chain(w.Address, tx.To, tx.Asset, amt, tx.FeeAsset == tx.Asset ? tx.Fee : 0, tx.Block);
                     // 地址投毒：链上公开的转账被人盯上，过一两天会收到一笔来自相似地址的 0 币转入
-                    else if (d.Rng.Chance(Scales.R(Tuning.TxPoisonChance))) d.PoisonPlans.Add(new PoisonPlan { Wallet = w.Address, Target = tx.To, Day = day + d.Rng.Range(1, Tuning.TxPoisonDelayMax) });
+                    if (d.Own(tx.To) == null && d.Rng.Chance(Scales.R(Tuning.TxPoisonChance))) d.PoisonPlans.Add(new PoisonPlan { Wallet = w.Address, Target = tx.To, Day = day + d.Rng.Range(1, Tuning.TxPoisonDelayMax) });
                 }
                 if (tx.Bill != null && !tx.Bill.Contract)
                 {
@@ -563,7 +562,15 @@ namespace Decentralized
                     double extra = amt - tx.Bill.Amount;
                     if (extra > 1e-9) Wallet.Transfer(w, new Wallet(), tx.Asset, extra, Session.Price);
                 }
-                if (tx.Bill != null) { tx.Bill.Execute(w); return; }
+                if (tx.Bill != null)
+                {
+                    // 账单执行前后的余额差记账：合约调用按对方地址记进出；转账付款那一笔上面已经记过，只记对方转回来的（如 Ponero 兑换处换出的币）
+                    var before = SaveData.Snapshot(w);
+                    tx.Bill.Execute(w);
+                    string party = tx.Bill.Contract ? tx.Bill.Party : tx.To;
+                    if (party != null) d.ChainDiff(w, before, party, inOnly: !tx.Bill.Contract);
+                    return;
+                }
                 if (tx.To == null) return;
                 var own = d.Own(tx.To);
                 Wallet target = own ?? (IsPoinbase(tx.To) ? d.Poinbase : new Wallet());

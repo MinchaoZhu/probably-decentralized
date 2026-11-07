@@ -71,15 +71,40 @@ namespace Decentralized.Domain
         {
             var m = new Market();
             double depth = Tuning.PoolDepth(day), p = Tuning.PscStartPrice;
-            m.Pools.Add(Pool.Create(Venue.Exchange, Assets.PSC, Assets.CRC, p, depth, Tuning.ExchangeFee));
+            m.Pools.Add(Pool.CreateBook(Venue.Exchange, Assets.PSC, Assets.CRC, p, depth, Tuning.ExchangeFee));
             m.Pools.Add(Pool.Create(Venue.Dex, Assets.PSC, Assets.CRC, p, depth * SideDepthShare, Tuning.DexFee));
-            m.Pools.Add(Pool.Create(Venue.Dex, Assets.CRT, Assets.CRC, 1, depth * SideDepthShare, Tuning.DexFee));
-            m.Pools.Add(Pool.Create(Venue.Dex, Assets.CRA, Assets.CRC, 1, depth * SideDepthShare, Tuning.DexFee));
+            m.Pools.Add(Pool.CreateStable(Venue.Dex, Assets.CRT, Assets.CRC, 1, depth * SideDepthShare, Tuning.StableFee, Tuning.StableAmp));
+            m.Pools.Add(Pool.CreateStable(Venue.Dex, Assets.CRA, Assets.CRC, 1, depth * SideDepthShare, Tuning.StableFee, Tuning.StableAmp));
             m.Pools.Add(Pool.Create(Venue.Dex, Assets.SPARK, Assets.CRC, Tuning.SparkStart, depth * Tuning.SparkDepthShare, Tuning.DexFee));
+            m.AddPoinSpark(Tuning.SparkStart, day);
             return m;
         }
 
         public Pool Main => Pools[0];
+
+        /// <summary>旧存档：稳定币对是恒定乘积池，按当前价换成 StableSwap 池；其他 DEX 池按新深度重设（不等到夜里）。</summary>
+        public void UpgradeDexPools(int day)
+        {
+            for (int i = 0; i < Pools.Count; i++)
+            {
+                var p = Pools[i];
+                if (p.Venue != Venue.Dex || p.Stable) continue;
+                if (p.Base == Assets.CRT || p.Base == Assets.CRA)
+                    Pools[i] = Pool.CreateStable(Venue.Dex, p.Base, p.Quote, p.Price, Tuning.PoolDepth(day) * SideDepthShare, Tuning.StableFee, Tuning.StableAmp);
+                else p.SetPrice(p.Price, Tuning.PoolDepth(day) * DepthShare(p));
+            }
+        }
+
+        /// <summary>Poinbase 的 SPARK/CRC 订单簿（旧存档没有时按当前价补上）。</summary>
+        public void AddPoinSpark(double price, int day)
+        {
+            if (Find(Venue.Exchange, Assets.SPARK, Assets.CRC) == null)
+                Pools.Add(Pool.CreateBook(Venue.Exchange, Assets.SPARK, Assets.CRC, price, Tuning.PoolDepth(day) * Tuning.PoinSparkDepthShare, Tuning.ExchangeFee));
+        }
+
+        /// <summary>非主交易对的深度占主池的比例。</summary>
+        private static double DepthShare(Pool p) =>
+            p.Base != Assets.SPARK ? SideDepthShare : p.Venue == Venue.Exchange ? Tuning.PoinSparkDepthShare : Tuning.SparkDepthShare;
 
         /// <summary>DEX 上 X/CRC 的池（所有币都以 CRC 计价）。</summary>
         public Pool DexPool(string asset) => Find(Venue.Dex, asset, Assets.CRC);
@@ -156,11 +181,11 @@ namespace Decentralized.Domain
             OpenPrice = p;
         }
 
-        /// <summary>NPC 大户：每周约 2 笔、每笔 2,000–8,000 信用点，随机买或卖。返回成交额（正为买入），没有交易时为 0。</summary>
+        /// <summary>NPC 大户：每周约 2 笔、每笔 <see cref="Tuning.WhaleMin"/>–<see cref="Tuning.WhaleMax"/> 信用点，随机买或卖。返回成交额（正为买入），没有交易时为 0。</summary>
         public double Whale(Rng rng)
         {
             if (!rng.Chance(2.0 / 7)) return 0;
-            double size = rng.Range(2000.0, 8000.0);
+            double size = rng.Range(Tuning.WhaleMin, Tuning.WhaleMax);
             if (rng.Chance(0.5)) { Main.BuyBase(size); return size; }
             Main.SellBase(size / Price);
             return -size;
@@ -189,7 +214,14 @@ namespace Decentralized.Domain
                 double baseCredits = pool.Base == Assets.PSC ? p : stablePrice(pool.Base);
                 double quoteCredits = pool.Quote == Assets.PSC ? p : stablePrice(pool.Quote);
                 if (quoteCredits <= 0) continue;
-                double share = pool.Base == Assets.SPARK ? Tuning.SparkDepthShare : SideDepthShare;
+                double share = DepthShare(pool);
+                // 稳定币对：参考价偏离挂钩超过界线时流动性变差（放大系数降低），回到挂钩附近恢复
+                if (pool.Stable)
+                {
+                    double dev = Math.Abs(baseCredits / quoteCredits - 1);
+                    pool.Amp = dev > Tuning.StableBrokenBand ? Tuning.StableAmpBroken : dev > Tuning.StableDepegBand ? Tuning.StableAmpDepeg : Tuning.StableAmp;
+                    if (dev > Tuning.StableBrokenBand) share *= Tuning.StableBrokenDepth;
+                }
                 pool.Revert(baseCredits / quoteCredits, ArbRate, depth * share / quoteCredits);
             }
         }

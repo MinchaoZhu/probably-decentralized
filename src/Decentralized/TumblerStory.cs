@@ -141,6 +141,7 @@ namespace Decentralized
                     case Tumbler.Sell:
                         d.Story.Apply("tumbler_sold", day);
                         d.Hot.Add(Assets.CRT, Tuning.TumblerSellCrt); d.Hot.Taint += Tuning.TumblerSellCrt * 0.5; d.Hot.Basis += Tuning.TumblerSellCrt;
+                        d.Chain(d.Address("platform"), d.Hot.Address, Assets.CRT, Tuning.TumblerSellCrt);
                         StoreReputation.ModReputation(StoreReputation.FACTION_BLACK_MARKET, Tuning.TumblerBmRep);
                         News.Show("pd_news_tumbler_sold", L.T("news.tumbler.sold.title"), L.T("news.tumbler.sold.desc"), 4, 8);
                         break;
@@ -161,6 +162,7 @@ namespace Decentralized
                 drive.Destroy();
                 d.Story.Apply("tumbler_kept", StoreStation.GetDayCounter());
                 d.Hot.Add(Assets.CRT, Tuning.TumblerGift); d.Hot.Basis += Tuning.TumblerGift;
+                d.Chain(d.Address("tumbler"), d.Hot.Address, Assets.CRT, Tuning.TumblerGift);
                 PlayerStore.Instance.AddNightLog(L.T("nightlog.tumbler.gift", Fmt.Num(Tuning.TumblerGift), WalletWindow.NameOf(d.Hot)));
                 Session.Save();
             });

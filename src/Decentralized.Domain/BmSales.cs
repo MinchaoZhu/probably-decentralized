@@ -24,6 +24,8 @@ namespace Decentralized.Domain
         /// <summary>成交后扣掉抽成的货款（信用点）与其中带的污点。</summary>
         public int Proceeds;
         public double Taint;
+        /// <summary>上架那件货的赃物热度（0–100）：赃物的货款按"货款 × 热度%"带污点，不走随机。</summary>
+        public double Heat;
         /// <summary>成交那一轮的收款币（空 = CRT，旧存档）：货款到期后以这个币付给钱包。</summary>
         public string PayAsset;
         /// <summary>终态原因：fake（买家看穿假卡退货）/ rug / delist。</summary>
@@ -102,8 +104,8 @@ namespace Decentralized.Domain
         public static int ListPriceOf(long refValue, double m) => (int)Math.Max(1, Math.Round(refValue * m));
         public static int ListFee(int listPrice) => (int)Math.Ceiling(listPrice * Tuning.BmListFee);
 
-        /// <summary>上架：交付一件货，收上架费（付给 feeAsset 币，污点与成本按比例带走）。倍率超出范围、平台关闭或余额不足返回 null。</summary>
-        public BmSale List(string item, string model, string fakeOf, double health, long refValue, double m, Wallet w, string feeAsset, int day, Func<string, double> price)
+        /// <summary>上架：交付一件货，收上架费（付给 feeAsset 币，污点与成本按比例带走）。heat 是这件货的赃物热度（0–100）。倍率超出范围、平台关闭或余额不足返回 null。</summary>
+        public BmSale List(string item, string model, string fakeOf, double health, long refValue, double m, Wallet w, string feeAsset, int day, Func<string, double> price, double heat = 0)
         {
             if (m < Tuning.BmSellMin - 1e-9 || m > Tuning.BmSellMax + 1e-9 || refValue <= 0 || Closed(day) || feeAsset == Assets.CRC || ListBlock(BmSale.KeyOf(item, model, fakeOf, health), m) != null) return null;
             int listPrice = ListPriceOf(refValue, m);
@@ -115,7 +117,7 @@ namespace Decentralized.Domain
             double share = total > 0 ? Math.Min(1, ListFee(listPrice) / total) : 0;
             w.Taint -= w.Taint * share; w.Basis -= w.Basis * share;
             w.Add(feeAsset, -qty);
-            var s = new BmSale { Item = item, Model = model, FakeOf = fakeOf, Health = health, Ref = refValue, Mult = m, ListPrice = listPrice, ListedDay = day, Wallet = w.Address };
+            var s = new BmSale { Item = item, Model = model, FakeOf = fakeOf, Health = health, Ref = refValue, Mult = m, ListPrice = listPrice, ListedDay = day, Wallet = w.Address, Heat = Math.Max(0, Math.Min(100, heat)) };
             Sales.Add(s);
             return s;
         }
@@ -148,7 +150,8 @@ namespace Decentralized.Domain
                 s.State = SaleState.Sold;
                 s.Proceeds = (int)Math.Round(s.ListPrice * (1 - Tuning.BmCommission));
                 double vb = VolumeTaint(day);
-                s.Taint = rng.Chance(Math.Min(1, TaintChance(s.Mult) + vb)) ? s.Proceeds * Math.Min(1, TaintRatio(s.Mult) + vb) : 0;
+                s.Taint = s.Heat > 0 ? s.Proceeds * s.Heat / 100
+                    : rng.Chance(Math.Min(1, TaintChance(s.Mult) + vb)) ? s.Proceeds * Math.Min(1, TaintRatio(s.Mult) + vb) : 0;
                 s.PayDay = day + Tuning.BmSaleHold;
                 Rating = Math.Min(100, Rating + 1);
                 if (Honeypot(day)) Traps.Add(new BmTrap { Day = day + Tuning.BmTrapDelay, Amount = s.Proceeds, Why = "honeypot", Item = s.Item, Group = HoneypotStart });

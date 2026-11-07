@@ -10,7 +10,8 @@ namespace Decentralized.Domain
 
     /// <summary>
     /// 一个盘口：问一个是非题，开盘当天可以买卖，窗口（FromDay..ToDay）里的结果由游戏或本 mod 的数值决定，ToDay 夜间结算。
-    /// 定价用 LMSR：初始价等于先验概率 P0，系统在单盘的最大亏损固定（<see cref="MaxLoss"/>），流动性参数 B 由它反推。
+    /// 定价用 LMSR：初始价等于先验概率 P0，流动性参数 B 按开盘日的单盘额度（<see cref="Budget"/>）定，与先验无关；
+    /// 额度决定份额上限（限制内幕单能赚多少）和内幕消息的价格。
     /// </summary>
     public sealed class PredictMarket
     {
@@ -22,13 +23,15 @@ namespace Decentralized.Domain
         public double Param;
         public int OpenDay, FromDay, ToDay;
         public double P0, B, QYes, QNo;
+        /// <summary>单盘额度（开盘日的 <see cref="LossFor"/>）。旧存档里的盘口没有这个字段，按当时"额度 = B × ln(1/先验)"回推。</summary>
+        public double Budget;
         /// <summary>昨晚消息反应之前的价格（-1 = 还没反应过）：列表里显示涨跌，让玩家看到消息怎样推动价格。</summary>
         public double PrevP = -1;
         /// <summary>-1 未结算，0 否，1 是，2 作废（缺观测数据，退还本金）。</summary>
         public int Outcome = -1;
 
-        public double MaxLoss => B * Math.Log(1 / Math.Min(P0, 1 - P0));
-        public double ShareCap => Tuning.PredictCap * MaxLoss;
+        public double Loss => Budget > 0 ? Budget : B * Math.Log(1 / Math.Min(P0, 1 - P0));
+        public double ShareCap => Tuning.PredictCap * Loss;
         public bool IsOpen(int day) => Outcome < 0 && day < FromDay;
         public double PYes => 1 / (1 + Math.Exp((QNo - QYes) / B));
 
@@ -37,8 +40,8 @@ namespace Decentralized.Domain
         public static PredictMarket Create(int id, PredictKind kind, string key, string title, double param, int openDay, int fromDay, int toDay, double p0)
         {
             p0 = Math.Max(Tuning.PredictPMin, Math.Min(Tuning.PredictPMax, p0));
-            double b = LossFor(openDay) / Math.Log(1 / Math.Min(p0, 1 - p0));
-            return new PredictMarket { Id = id, Kind = kind, Key = key, Title = title, Param = param, OpenDay = openDay, FromDay = fromDay, ToDay = toDay, P0 = p0, B = b, QYes = b * Math.Log(p0 / (1 - p0)) };
+            double budget = LossFor(openDay), b = Tuning.PredictDepth * budget / Math.Log(2);
+            return new PredictMarket { Id = id, Kind = kind, Key = key, Title = title, Param = param, OpenDay = openDay, FromDay = fromDay, ToDay = toDay, P0 = p0, B = b, Budget = budget, QYes = b * Math.Log(p0 / (1 - p0)) };
         }
 
         /// <summary>LMSR 成本函数（数值稳定写法）。</summary>
@@ -153,7 +156,7 @@ namespace Decentralized.Domain
         }
 
         /// <summary>
-        /// 买入：花 spend（含 2% 手续费）的 CRC。污点与成本按花掉的价值比例随资金进持仓。insider：这笔单下单时玩家已经知道答案（传闻纸条、派系特权）。
+        /// 买入：花 spend（含手续费）的 CRC。污点与成本按花掉的价值比例随资金进持仓。insider：这笔单下单时玩家已经知道答案（传闻纸条、派系特权）。
         /// </summary>
         public PredictResult Buy(Wallet acct, PredictMarket m, bool yes, double spend, int day, Func<string, double> pr, bool insider, out double shares)
         {
@@ -177,7 +180,7 @@ namespace Decentralized.Domain
             return PredictResult.Ok;
         }
 
-        /// <summary>全部卖出这个钱包在盘口里的持仓（盘口关闭前）：收回 LMSR 的卖价减 2% 手续费，污点按比例退回，赚的部分是干净的。返回收回的 CRC。</summary>
+        /// <summary>全部卖出这个钱包在盘口里的持仓（盘口关闭前）：收回 LMSR 的卖价减手续费，污点按比例退回，赚的部分是干净的。返回收回的 CRC。</summary>
         public PredictResult SellAll(Wallet acct, PredictMarket m, int day, out double got) => SellAll(acct, m, day, null, out got, out _);
 
         /// <summary>
@@ -291,7 +294,7 @@ namespace Decentralized.Domain
             bool claim;
             if (rng.Chance(Tuning.IntelFake)) claim = !truth;
             else claim = rng.Chance(Tuning.IntelTipAcc[tier]) ? truth : !truth;
-            return new PredictTip { Market = m.Id, Tier = tier, Claim = claim, Paid = Tuning.IntelTipPrice[tier] * m.MaxLoss };
+            return new PredictTip { Market = m.Id, Tier = tier, Claim = claim, Paid = Tuning.IntelTipPrice[tier] * m.Loss };
         }
 
         /// <summary>

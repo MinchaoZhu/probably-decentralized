@@ -27,16 +27,19 @@ namespace Decentralized.Domain
     /// <summary>夜间发生的事：强平、自动减仓、催收没收、核销。</summary>
     public sealed class PerpEvent
     {
-        public string Kind;           // liq / adl / seize / writeoff / interest
+        public string Kind;           // liq / adl / seize / writeoff / interest / wipe
         public string Product;
         public bool Long;
-        public double Amount;         // 损失、减记、或欠款（信用点）
+        public double Amount;         // 损失、减记、或欠款（信用点）；wipe 是全网爆仓的名义价值（含玩家）
+        public int Count;             // wipe：爆仓人数（含玩家）
+        public double Move;           // wipe：标记价的涨跌幅
     }
 
     /// <summary>
     /// Poinbase 永续合约（PSC-PERP、SPARK-PERP）：保证金用 Poinbase 账户里的 CRC，一个品种一个净仓位。
     /// 标记价是当日均价，强平只在夜间检查（白天插针不触发）。强平后的剩余权益进保险基金，权益为负先由基金垫付，
-    /// 基金不够的缺口记成玩家的欠款；NPC 在大行情里穿仓会消耗基金，基金见底时盈利的仓位被自动减仓（盈利打折）。
+    /// 基金不够的缺口记成玩家的欠款。NPC 仓位随行情爆仓：大部分正常爆仓，剩余保证金进基金；行情越快穿仓越多，缺口由基金垫付。
+    /// 基金见底时盈利的仓位被自动减仓（盈利打折）。
     /// 欠款每天计息，每晚先用账户里的 CRC 还；逾期没还清由接入层没收物品抵债，剩下的核销并拉黑永续账户一段时间。
     /// </summary>
     public sealed class PerpBook
@@ -49,13 +52,13 @@ namespace Decentralized.Domain
         public Dictionary<string, double> Funding = new Dictionary<string, double>();
         /// <summary>资金费系数（费率 = 系数 × 标记价偏离 7 日均价的比例）。默认取配置，模拟里用来校准。</summary>
         public double FundCoef = Tuning.PerpFundCoef;
-        /// <summary>成交深度倍数（滑点 = 名义价值 / (倍数 × 池深)），模拟里用来校准。</summary>
+        /// <summary>成交深度倍数（滑点 = 名义价值 / (倍数 × 永续深度)），模拟里用来校准。</summary>
         public double DepthMult = Tuning.PerpDepthMult;
 
-        /// <summary>成交价：买入（开多、平空）往上滑，卖出往下滑，滑点随名义价值占现货池深的比例增大，封顶 50%。</summary>
+        /// <summary>成交价：买入（开多、平空）往上滑，卖出往下滑，滑点随名义价值占永续深度的比例增大，封顶 50%。</summary>
         public double Exec(double price, double notional, bool buy, int day)
         {
-            double slip = Math.Min(0.5, notional / (DepthMult * Tuning.PoolDepth(day)));
+            double slip = Math.Min(0.5, notional / (DepthMult * Tuning.PerpDepth(day)));
             return price * (1 + (buy ? slip : -slip));
         }
 
@@ -151,12 +154,28 @@ namespace Decentralized.Domain
         }
 
         /// <summary>
-        /// 夜间结算。marks：各品种今天的标记价（日均价）。顺序：资金费 → NPC 穿仓消耗基金 → 强平 → 基金见底时自动减仓盈利仓位 →
-        /// 欠款计息并用账户 CRC 偿还 → 逾期的触发没收。
+        /// NPC 仓位在一晚涨跌幅 move 下对保险基金的净流入（可为负），以及爆仓的名义价值。oi 是亏损一侧的持仓。
+        /// 爆仓量 = oi × min(1, move / PerpNpcLiqScale)；其中穿仓的比例随涨跌幅升高，正常爆仓交出剩余保证金，穿仓的缺口由基金垫付。
+        /// </summary>
+        public static double NpcFlow(double move, double oi, out double liquidated)
+        {
+            move = Math.Abs(move);
+            liquidated = oi * Math.Min(1, move / Tuning.PerpNpcLiqScale);
+            double bank = Math.Min(Tuning.PerpNpcBankMax, Tuning.PerpNpcBankBase + Tuning.PerpNpcBankSlope * Math.Max(0, move - Tuning.PerpNpcBankFree));
+            return liquidated * ((1 - bank) * Tuning.PerpNpcLeft - bank * move * Tuning.PerpNpcGap);
+        }
+
+        /// <summary>NPC 在某个品种上单边的持仓（信用点名义价值）。</summary>
+        public static double NpcOi(string product, int day) => Tuning.PerpNpcOi * Tuning.PoolDepth(day) * (product == "SPARK" ? Tuning.SparkDepthShare : 1);
+
+        /// <summary>
+        /// 夜间结算。marks：各品种今天的标记价（日均价）。顺序：资金费 → NPC 爆仓与穿仓进出基金 → 强平 → 基金见底时自动减仓盈利仓位 →
+        /// 欠款计息并用账户 CRC 偿还 → 逾期的触发没收。标记价涨跌达到 <see cref="Tuning.PerpNewsMove"/> 的品种另记一条 wipe（全网爆仓，含玩家）。
         /// </summary>
         public List<PerpEvent> Night(int day, IDictionary<string, double> marks, Wallet acct, Func<string, double> pr)
         {
             var evs = new List<PerpEvent>();
+            var wipes = new Dictionary<string, PerpEvent>();
             bool adl = false;
             foreach (var kv in marks)
             {
@@ -169,9 +188,10 @@ namespace Decentralized.Domain
                 hist.Add(mark); if (hist.Count > 7) hist.RemoveAt(0);
                 var pos = Of(product);
                 if (pos != null) pos.Margin -= (pos.Long ? 1 : -1) * rate * pos.Notional(mark);
-                double ret = prev > 0 ? Math.Abs(mark / prev - 1) : 0;
-                double shock = Math.Max(0, (ret - Tuning.PerpShockFree) / Tuning.PerpShockFree);
-                InsuranceFund += Tuning.PerpFundDrift - Tuning.PerpFundShock * shock * shock;
+                double ret = prev > 0 ? mark / prev - 1 : 0;
+                InsuranceFund += NpcFlow(ret, NpcOi(product, day), out double liq);
+                if (Math.Abs(ret) >= Tuning.PerpNewsMove)
+                    wipes[product] = new PerpEvent { Kind = "wipe", Product = product, Long = ret < 0, Amount = liq, Count = (int)Math.Round(liq / Tuning.PerpNpcAvgPos), Move = ret };
             }
             if (InsuranceFund < 0) { InsuranceFund = 0; adl = true; }
             foreach (var pos in Positions.ToList())
@@ -183,7 +203,9 @@ namespace Decentralized.Domain
                 double rem = eq - Tuning.PerpLiqFee * notional;
                 if (rem >= 0) InsuranceFund += rem; else Cover(-rem, day);
                 evs.Add(new PerpEvent { Kind = "liq", Product = pos.Product, Long = pos.Long, Amount = pos.Margin });
+                if (wipes.TryGetValue(pos.Product, out var wp) && wp.Long == pos.Long) { wp.Amount += notional; wp.Count++; }
             }
+            evs.AddRange(wipes.Values);
             if (adl)
                 foreach (var pos in Positions.ToList())
                 {

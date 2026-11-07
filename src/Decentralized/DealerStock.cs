@@ -199,7 +199,7 @@ namespace Decentralized
                 int day = StoreStation.GetDayCounter();
                 d.CongestedFrom = day; d.CongestedUntil = day + 1;
                 var last = d.Hot.History.FirstOrDefault(r => !r.In);
-                if (last != null) TxRules.Record(d.Hot.History, new TxRecord { Addr = ChainAddress.Lookalike(last.Addr, d.Rng), Asset = Assets.PSC, Amount = 0, Day = day, In = true });
+                if (last != null) d.Chain(ChainAddress.Lookalike(last.Addr, d.Rng), d.Hot.Address, Assets.PSC, 0, zero: true);
                 string fake = ChainAddress.Make(d.Rng.NextUInt());
                 News.Show("pd_news_phish_test_" + day, L.T("news.phish.title"), L.T("news.phish.desc", fake), 2);
                 d.Black.Forum.Add("phish:" + ChainAddress.Make(d.Rng.NextUInt()));

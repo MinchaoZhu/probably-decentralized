@@ -24,6 +24,9 @@ namespace Decentralized.Domain
     /// </summary>
     public sealed class Exchange
     {
+        /// <summary>Poinbase 上架的币：只有这些能充值、能在现货交易。黑市的 CRT、革命军的 CRA 合规交易所不收。</summary>
+        public static readonly string[] Listed = { Assets.PSC, Assets.CRC, Assets.SPARK };
+
         /// <summary>最近的出金记录：(天, 金额)。</summary>
         public List<KeyValuePair<int, double>> History = new List<KeyValuePair<int, double>>();
 
