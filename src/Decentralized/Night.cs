@@ -72,6 +72,17 @@ namespace Decentralized
         }
 
         /// <summary>挖矿产出按各台机器的算力占比，发到每台机器设置的收款地址；没设置或地址对应的钱包已销毁，这一份丢失。</summary>
+        /// <summary>一台机器的产出发到它的收款地址；没设置或钱包已销毁返回 false（产出丢失）。</summary>
+        public static bool PayMachine(SaveData d, GameItem machine, double amount)
+        {
+            string addr = Payout.Get(machine);
+            var w = string.IsNullOrEmpty(addr) ? null : d.Own(addr);
+            if (w == null) return false;
+            w.Add(Assets.PSC, amount);
+            d.Chain(d.Address("pool"), w.Address, Assets.PSC, amount, history: false);
+            return true;
+        }
+
         private static void PayMined(SaveData d, IEnumerable<(GameItem item, double hash)> cards, double mined, double totalHash)
         {
             var byMachine = new Dictionary<GameItem, double>();
@@ -84,16 +95,37 @@ namespace Decentralized
             foreach (var kv in byMachine)
             {
                 double share = mined * kv.Value / totalHash;
-                string addr = Payout.Get(kv.Key);
-                var w = string.IsNullOrEmpty(addr) ? null : d.Own(addr);
-                if (w == null) { lost += share; continue; }
-                w.Add(Assets.PSC, share);
-                d.Chain(d.Address("pool"), w.Address, Assets.PSC, share, history: false);
+                if (!PayMachine(d, kv.Key, share)) lost += share;
             }
             if (lost > 1e-9)
             {
                 Log.Info($"挖矿产出丢失 {lost:0.####} PSC（矿机没设置收款地址，或地址对应的钱包已销毁）");
                 PlayerStore.Instance.AddNightLog(L.T("nightlog.mined.lost", Fmt.Num(lost)));
+            }
+        }
+
+        /// <summary>自营混币器的夜间：客户存入、出款、便衣、查封。对手是 Tumbler 的混币器（关停或被制裁时不算对手）。</summary>
+        private static void OwnMixNight(SaveData d, int day, PlayerStore ps)
+        {
+            var m = d.OwnMix;
+            bool rivalOpen = !d.Story.MixerClosed && !d.Mixer.Sanctioned(day);
+            double rivalRemain = Math.Pow(1 - Mixer.RoundRate(Tuning.OwnMixTicket, day), Tuning.OwnMixAvgRounds);
+            var evs = m.Night(day, Session.Price, StoreReputation.GetBMReputation(), Mixer.Fee, rivalRemain, rivalOpen, StoryMods.Current.Sanction(day), ActiveEvents().Contains(MarketEvent.Crackdown), d.Rng);
+            foreach (var e in evs)
+            {
+                if (e.Kind == "deposit") ps.AddNightLog(L.T("nightlog.ownmix.in", e.Count, Fmt.Credits(e.Value), Fmt.Credits(e.Value * m.Fee)));
+                else if (e.Kind == "sting")
+                {
+                    ps.secData.CommitCrime("FENCING", (int)Math.Round(e.Crime));
+                    ps.AddNightLog(L.T("nightlog.ownmix.sting"), "cc7755");
+                }
+                else if (e.Kind == "seized")
+                {
+                    ps.secData.CommitCrime("FENCING", (int)Math.Round(e.Crime));
+                    ps.AddNightLog(L.T("nightlog.ownmix.seized", Fmt.Credits(e.Value)), "cc7755");
+                    News.Show("pd_news_ownmix_seized_" + day, L.T("news.ownmix.seized.title"), L.T("news.ownmix.seized.desc"), 4, 8);
+                }
+                Log.Info($"自营混币器 {e.Kind}：{e.Value:0}（{e.Count} 笔），比例 {e.Ratio:0.00}，罪证 {e.Crime:0}，口碑 {m.Rating:0.00}，风声 {m.Heat:0.00}");
             }
         }
 
@@ -244,13 +276,13 @@ namespace Decentralized
                 var ow = d.WalletAt(oe.Order.Wallet);
                 if (oe.Kind == CraOrderKind.Minted)
                 {
-                    ow.Add(Assets.CRA, oe.Cra); d.Staking.Stake(ow, oe.Cra, Session.Price);
+                    ow.AddDirty(Assets.CRA, oe.Cra, oe.Cra * oe.Order.DirtyRatio); d.Staking.Stake(ow, oe.Cra, Session.Price);
                     d.Chain(d.Address("cra"), ow.Address, Assets.CRA, oe.Cra);
                     d.Chain(ow.Address, d.Address("staking"), Assets.CRA, oe.Cra);
                 }
                 else if (oe.Kind == CraOrderKind.Burned)
                 {
-                    ow.Add(Assets.CRC, oe.Crc); ow.Add(Assets.SPARK, oe.Spark);
+                    ow.AddDirty(Assets.CRC, oe.Crc, oe.Crc * oe.Order.DirtyRatio); ow.AddDirty(Assets.SPARK, oe.Spark, oe.Spark * oe.Order.DirtyRatio);
                     d.Chain(d.Address("cra"), ow.Address, Assets.CRC, oe.Crc);
                     d.Chain(d.Address("cra"), ow.Address, Assets.SPARK, oe.Spark);
                 }
@@ -269,6 +301,7 @@ namespace Decentralized
 
             var ps = PlayerStore.Instance;
             if (mined > 0) ps.AddNightLog(L.T("nightlog.mined", Fmt.Num(mined)));
+            if (Unlock.OtcUnlocked) OwnMixNight(d, day, ps);
             var mixBefore = d.SnapshotAll();
             var mixed = d.Mixer.Night(d.WalletAt, day, Session.Price, d.Rng);
             d.ChainDiffAll(mixBefore, d.Address("mixer"));
@@ -278,7 +311,9 @@ namespace Decentralized
                 if (m.Rugged) ps.AddNightLog(L.T("nightlog.mixer_rug", Fmt.Num(m.Amount), m.Asset), "cc7755");
                 else
                 {
-                    string line = L.T("nightlog.mixer", Fmt.Num(m.Amount), m.Asset, Fmt.Credits(m.TaintBefore), Fmt.Credits(m.TaintAfter)) + (m.Flagged ? L.T("nightlog.mixer_flag") : "");
+                    // 被标记的不洗、按全额污点带回：制裁期间提出的写明制裁；不在制裁期却被标记的是治安部的钓鱼混币器
+                    string flag = !m.Flagged ? "" : (d.Mixer.Sanctioned(day) ? L.T("nightlog.mixer_flag") : L.T("nightlog.mixer_flag.trap"));
+                    string line = L.T("nightlog.mixer", Fmt.Num(m.Amount), m.Asset, Fmt.Credits(m.TaintBefore), Fmt.Credits(m.TaintAfter)) + flag;
                     if (m.Flagged) ps.AddNightLog(line, "cc7755"); else ps.AddNightLog(line);
                 }
             }
@@ -301,7 +336,7 @@ namespace Decentralized
             }
             var predictBefore = d.SnapshotAll();
             var predictEvents = PredictGame.Available(day) || d.Predict.Markets.Count > 0
-                ? d.Predict.Night(day, PredictGame.ActiveIds(), m => PredictGame.Outcome(m, d), d.WalletAt, d.Rng, PredictGame.ClosePush) : new List<PredictEvent>();
+                ? d.Predict.Night(day, PredictGame.ActiveIds(), m => PredictGame.Outcome(m, d), d.WalletAt, Session.Price, d.Rng, PredictGame.ClosePush) : new List<PredictEvent>();
             d.ChainDiffAll(predictBefore, d.Address("predict"));
             foreach (var mv in d.Predict.Drift(day, m => PredictGame.PublicProb(m, d, day), d.Rng))
             {
@@ -341,15 +376,11 @@ namespace Decentralized
                 else if (e.Kind == "void") ps.AddNightLog(L.T("nightlog.predict.void", PredictGame.Question(e.Market), Fmt.Credits(e.Amount)));
                 else if (e.Kind == "manip")
                 {
-                    ps.secData.CommitCrime("FRAUD", (int)Math.Round(e.Fraud));
-                    ps.AddNightLog(L.T("nightlog.predict.manip", PredictGame.Question(e.Market), Fmt.Credits(e.Amount)), "cc7755");
+                    ps.AddNightLog(L.T("nightlog.predict.manip", PredictGame.Question(e.Market), Fmt.Credits(e.Amount), Fmt.Num(e.Taint)), "cc7755");
                     News.Show("pd_news_manip_" + day, L.T("news.manip.title"), L.T("news.manip.desc"), 3);
                 }
-                else if (e.Kind == "caught")
-                {
-                    ps.secData.CommitCrime("FRAUD", (int)Math.Round(e.Fraud));
-                    ps.AddNightLog(L.T("nightlog.predict.caught", PredictGame.Question(e.Market), Fmt.Credits(e.Amount)), "cc7755");
-                }
+                else if (e.Kind == "insider")
+                    ps.AddNightLog(L.T("nightlog.predict.insider", PredictGame.Question(e.Market), Fmt.Credits(e.Amount), Fmt.Num(e.Taint)), "cc7755");
             }
             foreach (var e in perpEvents)
             {

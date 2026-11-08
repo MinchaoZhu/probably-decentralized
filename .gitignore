@@ -7,4 +7,3 @@ obj/
 *.swp
 .DS_Store
 tests/**/bin/
-__pycache__/

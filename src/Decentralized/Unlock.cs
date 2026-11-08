@@ -15,6 +15,10 @@ namespace Decentralized
         public static bool MixerUnlocked => PlayerStore.Instance != null && ModHelper.IsNetworkUpgradeUnlocked(MixerId);
 
         public const string BlackId = "PD_BLACKMARKET";
+
+        /// <summary>场外换币台：小偷灯多一个目标"换币客户"，买下时附赠一盏小偷灯（已切到这个目标）。</summary>
+        public const string OtcId = "PD_OTC";
+        public static bool OtcUnlocked => PlayerStore.Instance != null && ModHelper.IsNetworkUpgradeUnlocked(OtcId);
         public static bool BlackUnlocked => PlayerStore.Instance != null && ModHelper.IsNetworkUpgradeUnlocked(BlackId);
 
         public static bool IsUnlocked => PlayerStore.Instance != null && ModHelper.IsNetworkUpgradeUnlocked(Id);
@@ -27,12 +31,21 @@ namespace Decentralized
             Add(Id, Price, () => L.T("upgrade.title"), () => L.T("upgrade.desc"), OnPurchased, "terminal", null);
             Add(MixerId, MixerPrice, () => L.T("mixer.upgrade.title"), () => L.T("mixer.upgrade.desc"), () => Log.Info("混币器已解锁"), "ui_web3", new[] { Id });
             Add(BlackId, Domain.Tuning.BmUnlockPrice, () => L.T("black.upgrade.title"), () => L.T("black.upgrade.desc"), () => Log.Info("Web3 黑市已解锁"), "ui_web3", new[] { Id });
+            Add(OtcId, Domain.Tuning.OtcUnlockPrice, () => L.T("otc.upgrade.title"), () => L.T("otc.upgrade.desc"), OnOtcPurchased, "ui_web3", new[] { Id });
         }
 
         private static void Add(string id, int price, Func<string> title, Func<string> desc, Action onUnlock, string icon, string[] prerequisites)
         {
             try { ModHelper.AddNetworkUpgrade(ModInfo.Id, id, price, Card, title, desc, onUnlock, iconKey: ModInfo.Id + ":" + icon, prerequisites: prerequisites, subtitleLabel: () => L.T("upgrade.tab")); }
             catch (NullReferenceException) { Log.Info($"人脉升级 {id} 已登记（主菜单阶段访问 PlayerStore 失败，已忽略）"); }
+        }
+
+        private static void OnOtcPurchased()
+        {
+            var lamp = ModHelper.SpawnItem(BlackLampHelper.BLACK_LAMP_ID);
+            OtcLamp.SetTarget(lamp, OtcLamp.Target);
+            Items.GiveToFront(lamp);
+            Log.Info("场外换币台已解锁，附赠小偷灯");
         }
 
         private static void OnPurchased()

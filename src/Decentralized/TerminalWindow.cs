@@ -13,7 +13,7 @@ namespace Decentralized
     /// 交易终端窗口：首页三个入口（银行、Poinbase、Web3）加报告。银行是真实的信用点（存取、房租）；
     /// Poinbase 是合规交易所；Web3 是去中心化交易和链上钱包。每次操作后按当前页重建窗口。
     /// </summary>
-    public static class TerminalWindow
+    public static partial class TerminalWindow
     {
         public const string Id = "pd_terminal";
         private const float Bezel = 6f;
@@ -29,7 +29,7 @@ namespace Decentralized
         private static float F => Mathf.Clamp(1f + Ext * 0.00065f, 1f, 1.3f);
         public static float ChartScale => LeftW >= 634f ? 3f : 2f;
         private static float[] Sc(float[] b) { float k = LeftW / 420f; return b.Select(x => x * k).ToArray(); }
-        private enum Page { Home, Bank, Poinbase, Web3, Mining, Gray, Wallets }
+        private enum Page { Home, Bank, Poinbase, Web3, Mining, Gray, Wallets, Otc }
 
         private static Page _page = Page.Home;
         private static string _amount = "";
@@ -76,7 +76,8 @@ namespace Decentralized
         private static void BuildTop(CustomUIBuilder b)
         {
             if (_page == Page.Gray && !GrayAvailable) _page = Page.Web3;
-            TabRows(b, Enum.GetValues(typeof(Page)).Cast<Page>().Where(p => p != Page.Gray || GrayAvailable).Select(p =>
+            if (_page == Page.Otc && OtcClient.Active == null) _page = Page.Home;
+            TabRows(b, Enum.GetValues(typeof(Page)).Cast<Page>().Where(p => (p != Page.Gray || GrayAvailable) && (p != Page.Otc || OtcClient.Active != null)).Select(p =>
             {
                 var page = p;
                 return new TabDef { Name = L.T("tab." + p.ToString().ToLowerInvariant()), On = page == _page, Click = () => { _page = page; _message = null; Open(); } };
@@ -86,8 +87,11 @@ namespace Decentralized
 
         private static void BuildBody(CustomUIBuilder b)
         {
-            if ((_page == Page.Web3 || _page == Page.Gray) && WalletWindow.Pending != null && !WalletWindow.Pending.Contract) PayPage(b);
-            else switch (_page)
+            bool pay = (_page == Page.Web3 || _page == Page.Gray) && WalletWindow.Pending != null && !WalletWindow.Pending.Contract;
+            // 换币客户的账单不独占页面：手里往往没有客户要的币，要先在这里换出来再付
+            if (pay) PayPage(b);
+            if (pay && !OtcClient.IsBill(WalletWindow.Pending)) return;
+            switch (_page)
             {
                 case Page.Home: HomePage(b); break;
                 case Page.Bank: BankPage(b); break;
@@ -96,6 +100,7 @@ namespace Decentralized
                 case Page.Mining: ReportPage(b); break;
                 case Page.Gray: GrayPage(b); break;
                 case Page.Wallets: WalletsPage(b); break;
+                case Page.Otc: OtcPage(b); break;
                 default: break;
             }
         }
@@ -167,6 +172,63 @@ namespace Decentralized
         }
 
         private static void Go(Page p) { _page = p; _message = null; Open(); }
+
+        /// <summary>换币客户选了"去终端交易"：打开终端的柜台交易页，数量默认填客户的全部。</summary>
+        public static void OpenOtc()
+        {
+            var o = OtcClient.Active;
+            if (o == null) return;
+            _page = Page.Otc; _message = null;
+            _amount = WalletWindow.Amt(o.Qty);
+            Open();
+        }
+
+        private static readonly double[] OtcRatios = { 0.25, 0.5, 0.75, 1 };
+
+        /// <summary>柜台交易：客户的来意和报价，按比例或手输定成交数量，预览现金和币，成交或放弃。</summary>
+        private static void OtcPage(CustomUIBuilder b)
+        {
+            var o = OtcClient.Active;
+            b.AddHeader(L.T("otc.h"));
+            if (o == null || !OtcClient.Present()) { b.AddLabel(L.T("otc.msg.gone")); return; }
+            var w = new[] { 200f, 300f };
+            bool take = o.Side == OtcSide.Sell;
+            TableRow(b, w, L.T("otc.k.side"), L.T(take ? "otc.side.sell" : "otc.side.buy", o.Asset));
+            TableRow(b, w, L.T("otc.k.qty"), Fmt.Num(o.Qty) + " " + o.Asset);
+            TableRow(b, w, L.T("otc.k.value"), Fmt.Credits(o.Value));
+            TableRow(b, w, L.T(take ? "otc.k.ask" : "otc.k.bid"), Fmt.Credits(o.Cash));
+            TableRow(b, w, L.T("otc.k.unit"), Fmt.Num(o.Cash / o.Qty) + " / " + o.Asset);
+            b.BeginRow(6f, TextAnchor.MiddleLeft);
+            b.AddLabel(L.T("otc.k.addr", ChainAddress.Short(OtcClient.ActiveAddress)));
+            if (take) b.AddButton(L.T("otc.lookup"), () => { _explorerQuery = OtcClient.ActiveAddress; _page = Page.Wallets; _walletTab = WalletTab.Explorer; _message = null; Open(); });
+            b.End();
+            b.AddSeparator();
+            b.BeginRow(4f);
+            foreach (var r in OtcRatios)
+            {
+                double ratio = r;
+                string v = WalletWindow.Amt(o.Qty * ratio);
+                PledgerSkin.Pick(b, (ratio * 100).ToString("0") + "%", (_amount ?? "").Trim() == v, () => { _amount = v; Open(); }, _picked);
+            }
+            b.End();
+            AmountRow(b, true, o.Asset);
+            if (double.TryParse((_amount ?? "").Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out double q) && q > 0)
+            {
+                var part = Otc.Part(o, q);
+                b.AddLabel(take ? L.T("otc.preview.take", Fmt.Credits(part.Cash), Fmt.Num(part.Qty), o.Asset) : L.T("otc.preview.give", Fmt.Num(part.Qty), o.Asset, Fmt.Credits(part.Cash)));
+                if (!take) b.AddLabel(L.T("mixer.balance", o.Asset, Fmt.Num(Session.Data.Hot.Avail(o.Asset))));
+            }
+            b.BeginRow(6f);
+            b.AddButton(L.T("otc.deal"), () =>
+            {
+                if (!ReadAmount(out double v)) return;
+                string msg = OtcClient.Deal(v);
+                if (msg != null) _message = msg;
+                Open();
+            });
+            b.AddButton(L.T("otc.cancel"), () => { OtcClient.Cancel(); _message = null; _page = Page.Home; Open(); });
+            b.End();
+        }
 
         /// <summary>钱包那边交易落地后刷新终端（开着的话），带上结果消息。</summary>
         public static void Refresh(string message)
@@ -329,16 +391,6 @@ namespace Decentralized
             TableRow(b, w, L.T("bank.crc.k"), Fmt.Num(Session.Data.Poinbase.Get(Assets.CRC)));
         }
 
-        /// <summary>提取前的合规审查提示：仅保留账户污点比例（额度与命中概率按设计不公开）。</summary>
-        private static void AmlPreview(CustomUIBuilder b)
-        {
-            var pb = Session.Data.Poinbase;
-            double total = pb.Value(Session.Price);
-            double taintRatio = total > 0 ? pb.Taint / total : 0;
-            b.AddSeparator();
-            b.AddLabel(L.T("aml.taint", (int)Math.Round(taintRatio * 100)), taintRatio > 0.05 ? "aml_note" : "aml_dim");
-        }
-
         private static string StableStatus(Stablecoins st, string asset, int day)
         {
             double p = st.Price(asset);
@@ -414,8 +466,8 @@ namespace Decentralized
             if (got <= 0) { _message = L.T("swap.same"); Open(); return; }
             double spent = v * Session.Price(from);
             CandleChart.Trade(from, spent); CandleChart.Trade(to, spent);
-            w.Add(from, -v);
-            w.Add(to, got);
+            // 换来的币继承付出那种币的脏比例
+            w.Convert(from, v, to, got);
             w.RecordBuy(to, got, spent);
             _message = L.T("msg.trade", Fmt.Num(v), from, Fmt.Num(got), to);
             Session.Save();
@@ -451,18 +503,27 @@ namespace Decentralized
         private static readonly float[] HoldWBase = new[] { 80f, 100f, 110f, 110f };
         private static float[] HoldW => Sc(HoldWBase);
         private static readonly TextAnchor[] HoldAligns = { TextAnchor.MiddleLeft, TextAnchor.MiddleRight, TextAnchor.MiddleRight, TextAnchor.MiddleRight };
+        /// <summary>钱包的持仓表多一列“其中脏的”（Poinbase 没有污点，不显示）。</summary>
+        private static readonly float[] HoldDWBase = new[] { 60f, 85f, 75f, 90f, 90f };
+        private static float[] HoldDW => Sc(HoldDWBase);
+        private static readonly TextAnchor[] HoldDAligns = { TextAnchor.MiddleLeft, TextAnchor.MiddleRight, TextAnchor.MiddleRight, TextAnchor.MiddleRight, TextAnchor.MiddleRight };
 
         private static void Holdings(CustomUIBuilder b, Wallet w, Func<string, bool> show)
         {
-            TableHeader(b, HoldW.Sum() + 8f, HoldW, HoldAligns, L.T("col.asset"), L.T("col.amount"), L.T("col.value"), L.T("col.avg"));
+            bool dirtyCol = w != Session.Data.Poinbase;
+            var hw = dirtyCol ? HoldDW : HoldW; var ha = dirtyCol ? HoldDAligns : HoldAligns;
+            if (dirtyCol) TableHeader(b, hw.Sum() + 8f, hw, ha, L.T("col.asset"), L.T("col.amount"), L.T("col.dirty"), L.T("col.value"), L.T("col.avg"));
+            else TableHeader(b, hw.Sum() + 8f, hw, ha, L.T("col.asset"), L.T("col.amount"), L.T("col.value"), L.T("col.avg"));
             bool any = false;
             foreach (var kv in w.Balances.OrderBy(k => k.Key).Where(k => show(k.Key)))
             {
                 any = true;
                 string asset = kv.Key;
                 bool selected = (_page == Page.Poinbase && _poinTab == PoinTab.Funds && asset == _fundsAsset);
-                TableRow(b, HoldW.Sum() + 8f, HoldW, HoldAligns,
-                    new[] { kv.Key, Fmt.Num(kv.Value), Fmt.Credits(kv.Value * Session.Price(kv.Key)), AvgText(w, kv.Key) },
+                double dirty = w.DirtyOf(asset);
+                TableRow(b, hw.Sum() + 8f, hw, ha,
+                    dirtyCol ? new[] { kv.Key, Fmt.Num(kv.Value), dirty > 1e-9 ? Fmt.Num(dirty) : "—", Fmt.Credits(kv.Value * Session.Price(kv.Key)), AvgText(w, kv.Key) }
+                             : new[] { kv.Key, Fmt.Num(kv.Value), Fmt.Credits(kv.Value * Session.Price(kv.Key)), AvgText(w, kv.Key) },
                     selected,
                     () => { if (_page == Page.Poinbase && _poinTab == PoinTab.Funds) { _fundsAsset = asset; if (asset != Assets.CRC) _fundsBank = false; Open(); } });
             }
@@ -495,7 +556,6 @@ namespace Decentralized
                 l.AddSeparator();
                 l.AddHeader(L.T("poin.account.h"));
                 Holdings(l, w, a => true);
-                if (w.Taint > 0.5) l.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint)), "taint_note");
             }, r =>
             {
                 // 交易对跟着行情图选中的币（CRC 本身没有交易对，显示 PSC/CRC）
@@ -522,7 +582,6 @@ namespace Decentralized
             {
                 l.AddHeader(L.T("poin.account.h"));
                 Holdings(l, w, a => true);
-                if (w.Taint > 0.5) l.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint)), "taint_note");
             }, r =>
             {
                 r.BeginRow(4f);
@@ -560,6 +619,9 @@ namespace Decentralized
                     else
                     {
                         r.AddLabel(L.T("poin.deposit", d.Address("poinbase")), "deposit_dim");
+                        // 只收干净的币：连着的钱包里有脏币时，写明每种币能充多少
+                        if (d.Connected && Exchange.Listed.Any(a => d.Hot.DirtyOf(a) > 1e-9))
+                            r.AddLabel(L.T("poin.deposit.clean", WalletWindow.NameOf(d.Hot), string.Join("　", Exchange.Listed.Where(a => d.Hot.Get(a) > 1e-9).Select(a => Fmt.Num(d.Hot.CleanAvail(a)) + " " + a))), "taint_note");
                         r.AddButton(L.T("hw.copy"), () => { Clipboard.Copy(d.Address("poinbase")); _message = L.T("hw.copied.addr", d.Address("poinbase")); Open(); });
                     }
                     return;
@@ -567,7 +629,6 @@ namespace Decentralized
                 if (_fundsBank)
                 {
                     AmountRow(r);
-                    AmlPreview(r);
                     r.AddButton(L.T("trade.withdraw"), Withdraw);
                     return;
                 }
@@ -1247,13 +1308,12 @@ namespace Decentralized
                 Summary = L.T("predict.sum.sell", PredictGame.Question(m)),
                 Execute = pw =>
                 {
-                    var res = d.Predict.SellAll(pw, m, StoreStation.GetDayCounter(), d.Rng, out double got, out double fraud);
+                    var res = d.Predict.SellAll(pw, m, StoreStation.GetDayCounter(), Session.Price, out double got, out double taint);
                     _message = res == PredictResult.Ok ? L.T("predict.sold", Fmt.Num(got)) : L.T("predict.err." + res);
-                    if (fraud > 0)
+                    if (res == PredictResult.Ok && taint > 1e-9)
                     {
-                        PlayerStore.Instance.secData.CommitCrime("FRAUD", (int)Math.Round(fraud));
-                        _message = L.T("predict.sold.caught", Fmt.Num(got));
-                        Log.Info($"内幕卖出被查：只退本金 {got:0}，罪证 {fraud:0}");
+                        _message = L.T("predict.sold.caught", Fmt.Num(got), Fmt.Num(taint));
+                        Log.Info($"内幕卖出：收回 {got:0}，其中 {taint:0.##} CRC 记为脏的");
                     }
                     if (res == PredictResult.Ok) Session.Save();
                     Open();
@@ -1292,18 +1352,17 @@ namespace Decentralized
             double margin = pos.Margin;
             CandleChart.Trade(_perpProduct, pos.Notional(PerpSpot(_perpProduct)));
             double paid = d.Perps.Close(d.Poinbase, _perpProduct, PerpSpot(_perpProduct), StoreStation.GetDayCounter(), out double deficit);
-            // 操纵：平仓盈利，而且盈利方向和玩家自己推价的方向一致，按推价幅度被查：盈利没收，记诈骗罪证，永续账户冻结几天
+            // 操纵：平仓盈利，而且盈利方向和玩家自己推价的方向一致，按推价幅度被查：盈利照常留在 Poinbase 账户，只记诈骗罪证
             double push = d.Market.PlayerPush, profit = paid - margin;
             bool aligned = _perpProduct == "PSC" && profit > 0 && (pos.Long ? push > 0 : push < 0);
             if (aligned && d.Rng.Chance(Math.Min(1, Market.ManipChance(push) * StoryMods.Current.Enforce(StoreStation.GetDayCounter()))))
             {
                 int day = StoreStation.GetDayCounter();
-                d.Poinbase.Add(Assets.CRC, -Math.Min(profit, d.Poinbase.Avail(Assets.CRC)));
-                d.Perps.BannedUntil = day + Tuning.ManipFreezeDays;
-                PlayerStore.Instance.secData.CommitCrime("FRAUD", (int)Math.Round(Math.Min(Tuning.PredictFraudCap, profit * Tuning.PredictFraudShare)));
+                int fraud = (int)Math.Round(Wallet.FraudFor(profit));
+                if (fraud > 0) PlayerStore.Instance.secData.CommitCrime("FRAUD", fraud);
                 News.Show("pd_news_manip_" + day, L.T("news.manip.title"), L.T("news.manip.desc"), 3);
-                _message = L.T("perp.manip", Fmt.Credits(profit), Tuning.ManipFreezeDays);
-                Log.Info($"永续操纵被查：盈利 {profit:0} 没收，推价 {push:0.000}");
+                _message = L.T("perp.manip", Fmt.Credits(profit), fraud);
+                Log.Info($"永续操纵被查：盈利 {profit:0}，记诈骗罪证 {fraud}，推价 {push:0.000}");
                 Session.Save();
                 Open();
                 return;
@@ -1351,7 +1410,7 @@ namespace Decentralized
                 Cell(b, cols[0], (isCurrent ? "● " : "") + WalletWindow.NameOf(w), false, TextAnchor.MiddleLeft);
                 Cell(b, cols[1], w.Address, false, TextAnchor.MiddleLeft);
                 Cell(b, cols[2], Fmt.Credits(w.Value(Session.Price)), false, TextAnchor.MiddleRight);
-                Cell(b, cols[3], Fmt.Credits(w.Taint), false, TextAnchor.MiddleRight);
+                Cell(b, cols[3], Fmt.Credits(w.Taint(Session.Price)), false, TextAnchor.MiddleRight);
                 b.End();
                 b.End();
                 b.BeginPanel(cols[4] - btnCut * k, 32f * F, TextAnchor.MiddleLeft, 0f, 0f);
@@ -1478,19 +1537,21 @@ namespace Decentralized
             b.End();
         }
 
-        private static bool GrayAvailable => Unlock.MixerUnlocked || Unlock.BlackUnlocked;
-        private enum GrayTab { Mixer, Black }
+        private static bool GrayAvailable => Unlock.MixerUnlocked || Unlock.BlackUnlocked || Unlock.OtcUnlocked;
+
+        private static bool GrayTabOn(GrayTab t) => t == GrayTab.Mixer ? Unlock.MixerUnlocked : t == GrayTab.Black ? Unlock.BlackUnlocked : Unlock.OtcUnlocked;
+        private enum GrayTab { Mixer, Black, Own }
         private static GrayTab _grayTab = GrayTab.Mixer;
 
         /// <summary>灰网：混币器和商店，各自在人脉网络里解锁，解锁了哪个就有哪个。</summary>
         private static void GrayPage(CustomUIBuilder b)
         {
-            if (_grayTab == GrayTab.Mixer && !Unlock.MixerUnlocked) _grayTab = GrayTab.Black;
-            if (_grayTab == GrayTab.Black && !Unlock.BlackUnlocked) _grayTab = GrayTab.Mixer;
-            if (Unlock.MixerUnlocked && Unlock.BlackUnlocked)
-                TabRows(b, Enum.GetValues(typeof(GrayTab)).Cast<GrayTab>().Select(t => { var tab = t; return new TabDef { Name = L.T("gray.sub." + t.ToString().ToLowerInvariant()), On = tab == _grayTab, Click = () => { _grayTab = tab; _message = null; Open(); } }; }).ToList(), false);
+            var tabs = Enum.GetValues(typeof(GrayTab)).Cast<GrayTab>().Where(GrayTabOn).ToList();
+            if (!GrayTabOn(_grayTab) && tabs.Count > 0) _grayTab = tabs[0];
+            if (tabs.Count > 1)
+                TabRows(b, tabs.Select(t => { var tab = t; return new TabDef { Name = L.T("gray.sub." + t.ToString().ToLowerInvariant()), On = tab == _grayTab, Click = () => { _grayTab = tab; _message = null; Open(); } }; }).ToList(), false);
             if (!Session.Data.Connected) b.AddLabel(L.T("web3.err.noconn"), "term_note");
-            if (_grayTab == GrayTab.Mixer) MixerPage(b); else BlackPage(b);
+            if (_grayTab == GrayTab.Mixer) MixerPage(b); else if (_grayTab == GrayTab.Own) OwnMixPage(b); else BlackPage(b);
         }
 
         /// <summary>Web3：链上钱包与去中心化交易。</summary>
@@ -1512,7 +1573,7 @@ namespace Decentralized
                 Holdings(l, w, a => true);
                 l.AddSeparator();
                 l.AddLabel(L.T("wallet.total", Fmt.Credits(w.Value(Session.Price))));
-                if (w.Taint > 0.5) l.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint)), "taint_note");
+                if (w.Taint(Session.Price) > 0.5) l.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint(Session.Price))), "taint_note");
                 PriceTable(l);
                 l.AddSeparator();
                 CandleChart.AddPicker(l, "web3", Assets.PSC, Open, _picked);
@@ -1579,9 +1640,11 @@ namespace Decentralized
             if (key != null)
             {
                 if (key.StartsWith("airdrop:") || key.StartsWith("yield:")) return key.Substring(key.IndexOf(':') + 1);
+                if (key.StartsWith("otc:")) return L.T("otc.name");
                 switch (key)
                 {
-                    case "mixer": return L.T("explorer.mixer");
+                    case "mixer": return d.Story.MixerRebranded ? L.T("mixer.brand") : L.T("explorer.mixer");
+                    case "mixer_old": return L.T("explorer.mixer");
                     case "platform": return L.T("merchant.Platform");
                     case "desk": return L.T("explorer.desk");
                     case "dex": return "DEX";
@@ -1591,6 +1654,7 @@ namespace Decentralized
                     case "intel": return L.T("intel.h");
                     case "ponzi": return L.T("ponzi.h");
                     case "tumbler": return "Tumbler";
+                    case "ownmix": return L.T("gray.sub.own");
                 }
             }
             var sl = d.Black.Sellers.FirstOrDefault(x => ChainAddress.Same(x.Name, a));
@@ -1703,7 +1767,7 @@ namespace Decentralized
             var sellers = d.Black.Sellers;
             if (_merchant >= sellers.Count) _merchant = -1;
             bool platform = _merchant < 0;
-            b.AddLabel(L.T("black.rep", rep, BlackMarket.MaxLevel(rep)) + (w.Taint > 0.5 ? "　" + L.T("wallet.taint", Fmt.Credits(w.Taint)) : ""), "black_rep_dim");
+            b.AddLabel(L.T("black.rep", rep, BlackMarket.MaxLevel(rep)) + (w.Taint(Session.Price) > 0.5 ? "　" + L.T("wallet.taint", Fmt.Credits(w.Taint(Session.Price))) : ""), "black_rep_dim");
             b.BeginRow(8f, TextAnchor.UpperLeft);
             b.BeginPanel(SellerW + 8f, -1f, TextAnchor.UpperLeft, 0f, 2f);
             _clear.Add(b.Last.image);
@@ -2214,7 +2278,7 @@ namespace Decentralized
                 {
                     if (pw.Avail(src) + 1e-9 < needSrc) { Finish(L.T("msg.balance")); return; }
                     double got = credits / Session.Price(coin) * 1.002;
-                    pw.Add(src, -needSrc); pw.Add(coin, got); pw.RecordBuy(coin, got, credits);
+                    pw.Convert(src, needSrc, coin, got); pw.RecordBuy(coin, got, credits);
                     CandleChart.Trade(src, credits); CandleChart.Trade(coin, credits);
                     Log.Info($"自动换币：{needSrc:0.####} {src} → {got:0.####} {coin}（{credits:0} 信用点等值）");
                     // 一次签名两步：经 DEX 换币，再付给这家商家；分别记账
@@ -2347,7 +2411,7 @@ namespace Decentralized
             b.AddLabel(L.T("black.pay.amount", WalletWindow.Amt(p.Amount), p.Asset, Fmt.Credits(p.Amount * Session.Price(p.Asset))));
             b.BeginRow(6f);
             b.AddButton(L.T("black.pay.wallet"), () => WalletWindow.OpenForBill(p));
-            b.AddButton(L.T("black.pay.cancel"), () => { WalletWindow.Pending = null; _message = null; Open(); });
+            b.AddButton(L.T("black.pay.cancel"), () => { if (OtcClient.IsBill(p)) OtcClient.Void(); else WalletWindow.Pending = null; _message = null; Open(); });
             b.End();
         }
 
@@ -2448,8 +2512,6 @@ namespace Decentralized
             double got = _deskIn ? d.Black.ToPonero(pw, _deskAsset, v, day, Session.Price) : d.Black.FromPonero(pw, _deskAsset, v, day, Session.Price);
             if (got < 0) { _message = L.T("black.desk.fail"); Open(); return; }
             { double cr = v * Session.Price(_deskIn ? _deskAsset : Assets.Ponero); CandleChart.Trade(Assets.Ponero, cr); CandleChart.Trade(_deskAsset, cr); }
-            // 从 Ponero 出来的币来源不明：出金审查按"来自混币器"加重
-            if (!_deskIn) d.Mixer.LastReturnDay = day;
             _message = _deskIn ? L.T("msg.trade", Fmt.Num(v), _deskAsset, Fmt.Num(got), Assets.Ponero) : L.T("msg.trade", Fmt.Num(v), Assets.Ponero, Fmt.Num(got), _deskAsset);
             Session.Save();
             Open();
@@ -2471,9 +2533,9 @@ namespace Decentralized
             int day = StoreStation.GetDayCounter();
             Columns(b, l =>
             {
-                l.AddHeader(L.T("mixer.h"));
+                l.AddHeader(d.Story.MixerRebranded ? L.T("mixer.brand") : L.T("mixer.h"));
                 l.AddLabel(d.Story.MixerClosed ? L.T("mixer.status.closed") : d.Mixer.Sanctioned(day) ? L.T("mixer.sanctioned", d.Mixer.SanctionedUntil - day + 1) : L.T("mixer.ok"), d.Story.MixerClosed || d.Mixer.Sanctioned(day) ? "mixer_status_note" : "mixer_status_dim");
-                if (w.Taint > 0.5) l.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint)), "taint_note");
+                if (w.Taint(Session.Price) > 0.5) l.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint(Session.Price))), "taint_note");
                 l.AddSeparator();
                 l.AddHeader(L.T("mixer.pending"));
                 if (d.Mixer.Pending.Count == 0) l.AddLabel(L.T("mixer.none"), "mixer_none_dim");
@@ -2481,7 +2543,7 @@ namespace Decentralized
                 {
                     TableHeader(l, MixW.Sum() + 8f, MixW, MixAligns, L.T("col.asset"), L.T("col.amount"), L.T("mixer.col.taint"), L.T("mixer.col.ready"));
                     foreach (var p in d.Mixer.Pending)
-                        TableRow(l, MixW.Sum() + 8f, MixW, MixAligns, new[] { p.Asset, Fmt.Num(p.Amount), Fmt.Credits(p.Taint), L.T("mixer.day", p.ReadyDay) });
+                        TableRow(l, MixW.Sum() + 8f, MixW, MixAligns, new[] { p.Asset, Fmt.Num(p.Amount), p.Dirty > 1e-9 ? Fmt.Num(p.Dirty) : "—", L.T("mixer.day", p.ReadyDay) });
                 }
             }, r =>
             {
@@ -2506,7 +2568,7 @@ namespace Decentralized
                 r.End();
                 if (double.TryParse((_amount ?? "").Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out double v) && v > 0)
                 {
-                    double rate = Mixer.RoundRate(v * Session.Price(_mixAsset));
+                    double rate = Mixer.RoundRate(v * Session.Price(_mixAsset), day);
                     r.AddLabel(L.T("mixer.preview", Fmt.Num(v * Math.Pow(1 - Mixer.Fee, _mixRounds)), _mixAsset, (int)Math.Round((1 - Math.Pow(1 - rate, _mixRounds)) * 100), day + _mixRounds), "mixer_preview_dim");
                 }
                 r.AddButton(L.T("mixer.go"), () =>
@@ -2631,7 +2693,7 @@ namespace Decentralized
                         if (pw.Avail(coin) + 1e-9 < v) { _message = L.T("msg.balance"); Open(); return; }
                         double spent = v * Session.Price(coin);
                         cra = d.Market.Swap(coin, Assets.CRA, v);
-                        pw.Add(coin, -v); pw.Add(Assets.CRA, cra); pw.RecordBuy(Assets.CRA, cra, spent);
+                        pw.Convert(coin, v, Assets.CRA, cra); pw.RecordBuy(Assets.CRA, cra, spent);
                         CandleChart.Trade(coin, spent); CandleChart.Trade(Assets.CRA, spent);
                     }
                     bool ok = into ? d.Staking.Stake(pw, cra, Session.Price) : d.Staking.RequestUnstake(pw.Address, v, day);
@@ -2720,16 +2782,10 @@ namespace Decentralized
             var d = Session.Data;
             if (d.Perps.Debt > 0) { _message = L.T("perp.debt.block"); Open(); return; }
             if (d.Poinbase.Avail(Assets.CRC) + 1e-9 < v) { _message = L.T("msg.balance"); Open(); return; }
-            var r = d.Exchange.Cashout(d.Poinbase, v, Session.Price, StoreStation.GetDayCounter(), Session.Rent(), d.Mixer.RecentlyMixed(StoreStation.GetDayCounter()), d.Rng);
+            var r = d.Exchange.Cashout(d.Poinbase, v, Session.Price);
             int got = (int)Math.Floor(r.Received - r.Tax);
             ModHelper.AddCredit(got, true);
             _message = L.T("msg.cashout", got, Fmt.Credits(r.Tax));
-            if (r.Outcome == AmlOutcome.Light) _message += "\n" + L.T("msg.aml_light", Fmt.Credits(r.Confiscated));
-            if (r.Outcome == AmlOutcome.Heavy)
-            {
-                _message += "\n" + L.T("msg.aml_heavy", Fmt.Credits(r.Confiscated));
-                PlayerStore.Instance.secData.CommitCrime("FENCING", (int)Math.Round(r.Crime));
-            }
             Session.Save();
             Open();
         }

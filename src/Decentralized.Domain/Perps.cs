@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +10,9 @@ namespace Decentralized.Domain
     {
         public string Product;
         public bool Long;
-        public double Size, Entry, Margin, Taint, Basis;
+        public double Size, Entry, Margin, Basis;
+        /// <summary>旧存档（数据版本 5 之前）保证金带的污点额：读档迁移时挪到 1 号钱包，之后为 0（Poinbase 没有污点）。</summary>
+        [JsonProperty("Taint")] public double LegacyTaint;
 
         public double Notional(double price) => Size * price;
         public double Pnl(double price) => (Long ? 1 : -1) * Size * (price - Entry);
@@ -97,13 +100,13 @@ namespace Decentralized.Domain
             double eq0 = (pos?.Margin ?? 0) + margin + (isLong ? 1 : -1) * sizeAll * (spot - entryAll);
             if (eq0 < (Tuning.PerpMaint + Tuning.PerpOpenBuffer) * sizeAll * spot) return PerpResult.Thin;
             double share = Share(acct, margin, pr);
-            double taint = acct.Taint * share, basis = acct.Basis * share;
-            acct.Add(Assets.CRC, -(margin + fee)); acct.Taint -= taint; acct.Basis -= basis;
+            double basis = acct.Basis * share;
+            acct.Add(Assets.CRC, -(margin + fee)); acct.Basis -= basis;
             InsuranceFund += fee * Tuning.PerpFeeToFund;
             if (pos == null) Positions.Add(pos = new PerpPosition { Product = product, Long = isLong, Entry = price });
             double size = notional / price;
             pos.Entry = (pos.Size * pos.Entry + size * price) / (pos.Size + size);
-            pos.Size += size; pos.Margin += margin; pos.Taint += taint; pos.Basis += basis;
+            pos.Size += size; pos.Margin += margin; pos.Basis += basis;
             return PerpResult.Ok;
         }
 
@@ -115,13 +118,13 @@ namespace Decentralized.Domain
             if (amount <= 0) return PerpResult.Margin;
             if (acct.Avail(Assets.CRC) + 1e-9 < amount) return PerpResult.Funds;
             double share = Share(acct, amount, pr);
-            double taint = acct.Taint * share, basis = acct.Basis * share;
-            acct.Add(Assets.CRC, -amount); acct.Taint -= taint; acct.Basis -= basis;
-            pos.Margin += amount; pos.Taint += taint; pos.Basis += basis;
+            double basis = acct.Basis * share;
+            acct.Add(Assets.CRC, -amount); acct.Basis -= basis;
+            pos.Margin += amount; pos.Basis += basis;
             return PerpResult.Ok;
         }
 
-        /// <summary>平仓（按白天的现价）：权益减手续费回到账户，污点按剩下的比例退回，盈利是干净的新币。权益不够付时缺口按穿仓处理。返回回到账户的 CRC。</summary>
+        /// <summary>平仓（按白天的现价）：权益减手续费回到账户，成本按剩下的比例退回。权益不够付时缺口按穿仓处理。返回回到账户的 CRC。</summary>
         public double Close(Wallet acct, string product, double price, int day, out double deficit)
         {
             deficit = 0;
@@ -140,7 +143,7 @@ namespace Decentralized.Domain
         private void Return(Wallet acct, PerpPosition pos, double payout)
         {
             double keep = pos.Margin > 0 ? Math.Min(1, payout / pos.Margin) : 0;
-            acct.Add(Assets.CRC, payout); acct.Taint += pos.Taint * keep; acct.Basis += pos.Basis * keep;
+            acct.Add(Assets.CRC, payout); acct.Basis += pos.Basis * keep;
         }
 
         /// <summary>穿仓缺口：保险基金先垫，不够的记成欠款。</summary>
@@ -223,8 +226,8 @@ namespace Decentralized.Domain
                 if (repay > 1e-9)
                 {
                     double share = Share(acct, repay, pr);
-                    double taint = acct.Taint * share, basis = acct.Basis * share;
-                    acct.Add(Assets.CRC, -repay); acct.Taint -= taint; acct.Basis -= basis;
+                    double basis = acct.Basis * share;
+                    acct.Add(Assets.CRC, -repay); acct.Basis -= basis;
                     Debt -= repay;
                     evs.Add(new PerpEvent { Kind = "repaid", Amount = repay });
                 }

@@ -139,6 +139,7 @@ namespace Decentralized
         {
             if (!Available(day)) return;
             ForceKnown(d, day);
+            OpenTrial(d, day);
             var made = d.Predict.Refill(day, d.Rng, Candidates(day));
             foreach (var m in made) Log.Info($"预测盘口 #{m.Id}：{m.Kind} {m.Key} {m.Title} 阈值 {m.Param} 窗口 {m.FromDay}-{m.ToDay} 先验 {m.P0:0.000}");
         }
@@ -172,6 +173,18 @@ namespace Decentralized
             }
         }
 
+        /// <summary>举报 Tumbler 后的审判盘：开盘日起强制开（不进候选池），宣判那天结算，先验 = 定罪概率。</summary>
+        public static void OpenTrial(SaveData d, int day)
+        {
+            var a = d.Story.After;
+            if (a.Verdict < 0 || a.TrialMarket || day < a.TrialOpenDay || day >= a.TrialDay) return;
+            a.TrialMarket = true;
+            var bk = d.Predict;
+            var m = PredictMarket.Create(++bk.Seq, PredictKind.Trial, "tumbler", "Tumbler", 0, day, a.TrialDay, a.TrialDay, Tuning.TumblerTrialConvict);
+            bk.Markets.Add(m);
+            Log.Info($"审判盘开盘 #{m.Id}：第 {a.TrialDay} 天宣判");
+        }
+
         // ——— 公开信息下的合理概率（盘口夜里向它靠拢） ———
 
         /// <summary>
@@ -203,6 +216,8 @@ namespace Decentralized
                     return PredictMath.CraWarnProb(d.Stable.Cushion, CraDrain(d), day + 1, m.FromDay, m.ToDay, CraHazard);
                 case PredictKind.Era:
                     return PredictMath.EraProb(day, m.FromDay, m.ToDay, d.Network.EraWarned ? d.Network.EraWarnDay : -1);
+                case PredictKind.Trial:
+                    return d.Story.After.TrialPublic();
             }
             return null;
         }
@@ -222,6 +237,7 @@ namespace Decentralized
                 case PredictKind.Gas: return CloseGas >= m.Param;
                 case PredictKind.Cra: return d.Stable.CraWarnDay >= m.FromDay && d.Stable.CraWarnDay <= m.ToDay;
                 case PredictKind.Era: return d.Network.EraDay < 0 ? (bool?)null : d.Network.EraDay >= m.FromDay && d.Network.EraDay <= m.ToDay;
+                case PredictKind.Trial: return d.Story.After.Verdict < 0 ? (bool?)null : d.Story.After.Verdict == 1;
             }
             return null;
         }
@@ -234,6 +250,7 @@ namespace Decentralized
             var d = Session.Data;
             if (m.Kind == PredictKind.Faction) return QueuedStart(m, false) != null;
             if (m.Kind == PredictKind.Era) return d.Network.EraDay > 0 ? d.Network.EraDay >= m.FromDay && d.Network.EraDay <= m.ToDay : (bool?)null;
+            if (m.Kind == PredictKind.Trial) return d.Story.After.Verdict < 0 ? (bool?)null : d.Story.After.Verdict == 1;
             return null;
         }
 
@@ -258,6 +275,7 @@ namespace Decentralized
                 case PredictKind.Gas: return L.T("predict.q.gas", win, Fmt.Num(m.Param));
                 case PredictKind.Cra: return L.T("predict.q.cra", win);
                 case PredictKind.Era: return L.T("predict.q.era", win);
+                case PredictKind.Trial: return L.T("predict.q.trial", win);
                 default: return L.T("predict.q.price", win, m.Title, Fmt.Num(m.Param));
             }
         }
@@ -312,6 +330,12 @@ namespace Decentralized
                     list.Add(L.T("predict.clue.subsidy", (d.Stable.Cushion / Stablecoins.Cushion0 * 100).ToString("0")));
                     list.Add(L.T("predict.clue.drain", Fmt.Num(CraDrain(d))));
                     break;
+                case PredictKind.Trial:
+                    {
+                        var a = d.Story.After;
+                        if (a.Hints.Count > 0) list.Add(L.T("predict.clue.trial", a.Hints.Count(h => h), a.Hints.Count(h => !h)));
+                        break;
+                    }
                 case PredictKind.Era:
                     list.Add(d.Network.EraWarned ? L.T("predict.clue.era.warned", d.Network.EraWarnDay + Tuning.EraWarnMin, d.Network.EraWarnDay + Tuning.EraWarnMax) : L.T("predict.clue.era", Tuning.EraMin, Tuning.EraMax));
                     break;

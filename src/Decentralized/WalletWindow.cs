@@ -29,6 +29,8 @@ namespace Decentralized
             public string Address, Asset, Summary;
             public double Amount;
             public bool Contract;
+            /// <summary>收款地址直接填好（换币客户就在柜台前，当面给地址），不用玩家手输。</summary>
+            public bool Prefill;
             /// <summary>合约调用时钱包里实际要花掉的数量（默认等于 Amount；取出质押这类不花币的调用为 0）和付手续费的币（默认用 Asset）。</summary>
             public double? Spend;
             public string FeeAsset;
@@ -37,8 +39,12 @@ namespace Decentralized
             public Action<Wallet> Execute;
         }
 
-        /// <summary>当前待付的账单（同一时间一张，新的覆盖旧的）。任何一台钱包都可以付。</summary>
-        public static Bill Pending;
+        /// <summary>
+        /// 当前待付的账单（终端开的同一时间一张，新的覆盖旧的）。任何一台钱包都可以付。
+        /// 没有终端账单时回落到换币客户的账单（<see cref="OtcClient.Standing"/>）：它不会被换币、混币这些终端账单覆盖掉。
+        /// </summary>
+        public static Bill Pending { get => _pending ?? OtcClient.Standing; set => _pending = value; }
+        private static Bill _pending;
 
         private sealed class Tx
         {
@@ -129,6 +135,7 @@ namespace Decentralized
                 if (IsOpen(dev)) CustomUIManager.Instance.CloseWindow(dev.Id);
             Devices.Clear();
             Pending = null;
+            OtcClient.Void();
         }
 
         /// <summary>终端"打开钱包转账" / DEX 签名请求：在当前连接的钱包上打开。转账填好币种和金额，地址留给玩家手输。</summary>
@@ -143,7 +150,7 @@ namespace Decentralized
             else
             {
                 dev.Screen = Screen.Send;
-                dev.To = "";
+                dev.To = bill.Prefill ? bill.Address : "";
                 dev.Asset = bill.Asset;
                 dev.Amount = Amt(bill.Amount);
             }
@@ -248,7 +255,8 @@ namespace Decentralized
                 b.End();
                 b.BeginPanel(130f, 26f, TextAnchor.MiddleRight, 0f, 0f);
                 _clear.Add(b.Last.image);
-                b.AddLabel(Amt(q) + (w.Frozen.TryGetValue(a, out var fz) && fz > 0 ? L.T("hw.balance.frozen", Amt(fz)) : ""));
+                double dq = w.DirtyOf(a);
+                b.AddLabel(Amt(q) + (w.Frozen.TryGetValue(a, out var fz) && fz > 0 ? L.T("hw.balance.frozen", Amt(fz)) : "") + (dq > 1e-9 ? L.T("hw.balance.dirty", Amt(dq)) : ""));
                 b.End();
                 b.BeginPanel(RowW - 12f - 90f - 130f, 26f, TextAnchor.MiddleRight, 0f, 0f);
                 _clear.Add(b.Last.image);
@@ -259,7 +267,7 @@ namespace Decentralized
             }
             b.AddSeparator();
             b.AddLabel(L.T("hw.total", Fmt.Credits(w.Value(Session.Price))));
-            if (w.Taint > 0.5) b.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint)));
+            if (w.Taint(Session.Price) > 0.5) b.AddLabel(L.T("wallet.taint", Fmt.Credits(w.Taint(Session.Price))));
             if (Pending != null) b.AddLabel(Pending.Contract ? L.T("hw.pending.sign", Pending.Summary) : L.T("hw.pending.bill", Pending.Summary));
             if (Congested) b.AddLabel(L.T("hw.congested"), "congest_note");
             b.AddSpace(6f);
@@ -338,9 +346,22 @@ namespace Decentralized
                 if (bill.Asset != dev.Asset) return L.T("hw.err.asset", bill.Asset);
                 if (v + 1e-9 < bill.Amount) return L.T("hw.err.short", Amt(bill.Amount), bill.Asset);
             }
-            else if (IsPoinbase(to)) { if (!Exchange.Listed.Contains(dev.Asset)) return L.T("hw.err.poinbase", dev.Asset); }
+            else if (IsPoinbase(to))
+            {
+                if (!Exchange.Listed.Contains(dev.Asset)) return L.T("hw.err.poinbase", dev.Asset);
+                // Poinbase 只收干净的币：这种币最多充干净的枚数（手续费同币种时先扣掉）
+                double clean = CleanAfterFee(w, dev.Asset, dev.Asset == FeeAssetOf(dev) ? FeeIn(dev.Asset, dev.Tier) : 0);
+                if (v > clean + 1e-6) return L.T("hw.err.tainted", Amt(w.DirtyOf(dev.Asset)), dev.Asset, Amt(clean));
+            }
             else if (Session.Data.Own(to) == null && Known(to)) return L.T("hw.err.nobill");
             return null;
+        }
+
+        /// <summary>扣掉同币种的手续费（按脏比例带走一点脏的）之后，这种币干净、能动用的枚数。</summary>
+        private static double CleanAfterFee(Wallet w, string asset, double fee)
+        {
+            double r = w.DirtyRatio(asset);
+            return Math.Max(0, Math.Min(w.Avail(asset) - fee, (w.Get(asset) - fee) * (1 - r)));
         }
 
         private static Bill Match(string to) => Pending != null && !Pending.Contract && ChainAddress.Same(Pending.Address, to) ? Pending : null;
@@ -522,13 +543,17 @@ namespace Decentralized
             dev.Tx.Confs = TxRules.Confirmations(ValueOf(dev));
             dev.Tx.Dropped = d.Rng.Chance(TxRules.DropChance(dev.Tier, cong));
             dev.Tx.Times = Timeline(dev.Tx.Confs, TxRules.Slowdown(dev.Tier, cong), dev.Tx.Dropped);
-            if (dev.Tx.Bill != null) Pending = null;
+            if (dev.Tx.Bill != null)
+            {
+                if (dev.Tx.Bill == OtcClient.Standing) OtcClient.Standing = null;   // 签了名就不再挂着，免得重复付
+                Pending = null;
+            }
             dev.Screen = Screen.Broadcast;
             dev.Note = null;
             Open(dev);
         }
 
-        /// <summary>动画走完（或点了跳过）：交易落地。付账单的执行终端那边的动作；转给自己的钱包或 Poinbase 的按比例带上污点；没人用的地址，币就没了。</summary>
+        /// <summary>动画走完（或点了跳过）：交易落地。付账单的执行终端那边的动作；转给自己的钱包的按比例带上污点，转给 Poinbase 的只转干净的、污点留在钱包；没人用的地址，币就没了。</summary>
         private static void Finish(Device dev)
         {
             var tx = dev.Tx;
@@ -544,12 +569,15 @@ namespace Decentralized
                 if (tx.Dropped)
                 {
                     // 没成交：账单还在，可以重新付
-                    if (tx.Bill != null && Pending == null) Pending = tx.Bill;
+                    if (tx.Bill != null && OtcClient.IsBill(tx.Bill)) OtcClient.Standing = tx.Bill;
+                    else if (tx.Bill != null && Pending == null) Pending = tx.Bill;
                     TerminalWindow.Refresh(L.T("hw.tx.dropped"));
                     return;
                 }
                 int day = StoreStation.GetDayCounter();
                 double amt = tx.To != null ? Math.Min(tx.Amount, w.Avail(tx.Asset)) : 0;
+                // Poinbase 只收干净的币：落地时价格可能变了，超出干净部分的不转（留在钱包）
+                if (tx.To != null && tx.Bill == null && IsPoinbase(tx.To)) amt = Math.Min(amt, w.CleanAvail(tx.Asset));
                 if (tx.To != null)
                 {
                     d.Chain(w.Address, tx.To, tx.Asset, amt, tx.FeeAsset == tx.Asset ? tx.Fee : 0, tx.Block);
@@ -574,7 +602,9 @@ namespace Decentralized
                 if (tx.To == null) return;
                 var own = d.Own(tx.To);
                 Wallet target = own ?? (IsPoinbase(tx.To) ? d.Poinbase : new Wallet());
-                Wallet.Transfer(w, target, tx.Asset, amt, Session.Price);
+                // Poinbase 只收干净的币：污点留在钱包里
+                if (target == d.Poinbase) Wallet.TransferClean(w, target, tx.Asset, amt, Session.Price);
+                else Wallet.Transfer(w, target, tx.Asset, amt, Session.Price);
                 if (own == null && target != d.Poinbase) Log.Info($"转进没人用的地址 {tx.To}：{amt} {tx.Asset}");
                 if (own == null && d.Scams.ScamAddrs.Any(a => ChainAddress.Same(a, tx.To))) PlayerStore.Instance.AddNightLog(L.T("nightlog.scam.sent", Fmt.Num(amt), tx.Asset), "cc7755");
                 TerminalWindow.Refresh(null);

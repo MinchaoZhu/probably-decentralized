@@ -68,9 +68,8 @@ namespace Decentralized.Domain
     }
 
     /// <summary>
-    /// 矿架上游戏模块的效果。机器汇总的三项百分比（性能、效率、品质）各除以 <see cref="Tuning.ModuleRatio"/> 后生效，
-    /// 并有上限，避免模块把挖矿收益放大到破坏经济：算力最多 +20%，省电最多 25%，损耗最多降 30%。
-    /// 性能加成同时按比例提高损耗与暴毙率。负数（例如节能模块的负性能、超频模块的负效率）照常生效，耗电增加不设上限。
+    /// 矿架上游戏模块的效果。机器汇总的三项百分比（性能、效率、品质）各除以 <see cref="Tuning.ModuleRatio"/> 后生效，不设上限（强力模块是玩家自己拿到的）。
+    /// 性能加成同时按比例提高损耗与暴毙率。三个乘数各有防出错的下限：算力不低于 <see cref="Tuning.ModuleHashFloor"/>，耗电不低于 <see cref="Tuning.ModuleKjFloor"/>，损耗不低于 <see cref="Tuning.ModuleWearFloor"/>。
     /// </summary>
     public struct ModuleBonus
     {
@@ -84,14 +83,17 @@ namespace Decentralized.Domain
         public static ModuleBonus From(int performance, int efficiency, int quality)
         {
             double r = Tuning.ModuleRatio * 100.0;
-            double hash = Clamp(performance / r, -0.5, Tuning.ModuleHashCap);
-            double save = Clamp(efficiency / r, -1.0, Tuning.ModuleKjCap);
-            double wearCut = Clamp(quality / r, -1.0, Tuning.ModuleWearCap);
+            double hash = performance / r, save = efficiency / r, wearCut = quality / r;
             double heat = 1 + Math.Max(0, hash);
-            return new ModuleBonus { Hash = 1 + hash, Kj = 1 - save, Wear = (1 - wearCut) * heat, Death = heat };
+            return new ModuleBonus
+            {
+                Hash = Math.Max(Tuning.ModuleHashFloor, 1 + hash),
+                Kj = Math.Max(Tuning.ModuleKjFloor, 1 - save),
+                Wear = Math.Max(Tuning.ModuleWearFloor, (1 - wearCut) * heat),
+                Death = heat,
+            };
         }
 
-        private static double Clamp(double v, double lo, double hi) => Math.Max(lo, Math.Min(hi, v));
     }
 
     /// <summary>一张显卡或一台矿机的实例状态（存进物品标签）。</summary>

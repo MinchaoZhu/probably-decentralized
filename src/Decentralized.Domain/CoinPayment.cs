@@ -33,13 +33,12 @@ namespace Decentralized.Domain
             }
         }
 
-        /// <summary>收款：返回收到的币数。heatPct 是物品的赃物热度（0–100）。多付的溢价是顾客给的额外收入，不带污点。</summary>
+        /// <summary>收款：返回收到的币数。heatPct 是物品的赃物热度（0–100）：按货值 × 热度那部分的币是脏的；多付的溢价是顾客给的额外收入，干净。</summary>
         public static double Receive(Wallet w, string asset, double credits, double price, double heatPct)
         {
             if (credits <= 0 || price <= 0) return 0;
             double qty = credits * (1 + Tuning.CoinPayPremium) / price;   // 溢价只加在币数上，污点与成本仍按货值算
-            w.Add(asset, qty);
-            w.Taint += credits * Math.Max(0, Math.Min(100, heatPct)) / 100.0;
+            w.AddDirty(asset, qty, credits * Math.Max(0, Math.Min(100, heatPct)) / 100.0 / price);
             w.Basis += credits;
             return qty;
         }

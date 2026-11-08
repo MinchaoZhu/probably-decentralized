@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,12 +10,29 @@ namespace Decentralized.Domain
     {
         public string Asset;
         public double Amount;
-        /// <summary>存入时一并带走的污点与成本（信用点）。</summary>
-        public double Taint, Basis;
+        /// <summary>存入的币里脏的枚数，和一并带走的成本（信用点）。</summary>
+        public double Dirty, Basis;
+        /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
+        [JsonProperty("Taint")] public double LegacyTaint;
         public int Rounds;
         public int ReadyDay;
         /// <summary>存入的钱包地址：到期提回这里。</summary>
         public string Wallet;
+    }
+
+    /// <summary>一笔到期提回的出款记录（泄露时按它记罪证）：Cleaned 是这笔洗掉的污点，按提回时的价格折成信用点。</summary>
+    public sealed class MixReturn
+    {
+        public int Day;
+        public string Wallet, Asset;
+        public double Amount, Cleaned;
+    }
+
+    /// <summary>泄露的结果：最近几笔出款，一共洗掉了多少污点（信用点），折成的诈骗罪证。</summary>
+    public sealed class MixLeak
+    {
+        public int Count;
+        public double Cleaned, Fraud;
     }
 
     /// <summary>一笔混币结束时的结果，供夜间日志使用。</summary>
@@ -23,6 +41,7 @@ namespace Decentralized.Domain
         public bool Rugged;
         public string Asset;
         public double Amount, TaintBefore, TaintAfter;
+        /// <summary>被标记（制裁期间提出、从钓鱼混币器提出）：不洗，整笔都是脏的。</summary>
         public bool Flagged;
     }
 
@@ -35,21 +54,44 @@ namespace Decentralized.Domain
     {
         public List<MixDeposit> Pending = new List<MixDeposit>();
         public int SanctionedUntil = -1;
-        /// <summary>提回的币最近一次从混币器出来的天数，用来给出金审查加重。</summary>
-        public int LastReturnDay = -999;
+        /// <summary>最近的出款记录（Tumbler 的密钥落到治安部时用来还原）。</summary>
+        public List<MixReturn> Returns = new List<MixReturn>();
+
+        /// <summary>
+        /// 泄露：最近 <see cref="Tuning.TumblerLeakDays"/> 天的出款被还原，按这些出款洗掉的污点记诈骗罪证（<see cref="Wallet.FraudFor"/>）。记录清空。
+        /// </summary>
+        public MixLeak Leak(int day)
+        {
+            var recent = Returns.Where(x => day - x.Day <= Tuning.TumblerLeakDays).ToList();
+            double cleaned = recent.Sum(x => x.Cleaned);
+            Returns.Clear();
+            return new MixLeak { Count = recent.Count, Cleaned = cleaned, Fraud = Wallet.FraudFor(cleaned) };
+        }
+
+        private void Remember(MixReturn ret)
+        {
+            Returns.Add(ret);
+            Returns.RemoveAll(x => ret.Day - x.Day > Tuning.TumblerLeakDays);
+            while (Returns.Count > Tuning.TumblerReturnsMax) Returns.RemoveAt(0);
+        }
+
+        /// <summary>黑市卷款跑路：在途的存入全部丢失。</summary>
+        public List<MixResult> RugAll()
+        {
+            var list = Pending.Select(p => new MixResult { Rugged = true, Asset = p.Asset, Amount = p.Amount }).ToList();
+            Pending.Clear();
+            return list;
+        }
 
         public bool Sanctioned(int day) => day <= SanctionedUntil;
-
-        /// <summary>资金来自混币器：最近 AML 窗口内提回过币，或者被标记。</summary>
-        public bool RecentlyMixed(int day) => day - LastReturnDay <= Tuning.AmlWindowDays;
 
         /// <summary>一轮的清洗率：基准 × 匿名集系数。</summary>
         /// <summary>每轮手续费（剧情可能改动）。</summary>
         public static double Fee => Math.Min(0.5, Tuning.MixerFee * StoryMods.Current.MixerFee);
 
-        public static double RoundRate(double depositValue) => Tuning.MixerCleanRate * Tuning.MixerNpcVolume * StoryMods.Current.MixerVolume / (Tuning.MixerNpcVolume * StoryMods.Current.MixerVolume + Math.Max(0, depositValue));
+        public static double RoundRate(double depositValue, int day = -1) => Tuning.MixerCleanRate * (day >= 0 ? StoryMods.Current.MixClean(day) : 1) * Tuning.MixerNpcVolume * StoryMods.Current.MixerVolume / (Tuning.MixerNpcVolume * StoryMods.Current.MixerVolume + Math.Max(0, depositValue));
 
-        /// <summary>存入：从钱包按价值比例带走污点与成本。轮数超出范围或余额不足返回 null。</summary>
+        /// <summary>存入：按这种币的脏比例带走脏枚数，按价值比例带走成本。轮数超出范围或余额不足返回 null。</summary>
         public MixDeposit Deposit(Wallet w, string asset, double amount, int rounds, int day, Func<string, double> price)
         {
             if (rounds < 1 || rounds > Tuning.MixerMaxRounds || amount <= 0 || w.Avail(asset) + 1e-9 < amount) return null;
@@ -57,11 +99,10 @@ namespace Decentralized.Domain
             if (value < Tuning.MixerMin) return null;
             double total = w.Value(price);
             double share = total > 0 ? Math.Min(1, value / total) : 0;
-            double taint = w.Taint * share, basis = w.Basis * share;
+            double dirty = amount * w.DirtyRatio(asset), basis = w.Basis * share;
             w.Add(asset, -amount);
-            w.Taint -= taint;
             w.Basis -= basis;
-            var d = new MixDeposit { Asset = asset, Amount = amount, Taint = taint, Basis = basis, Rounds = rounds, ReadyDay = day + rounds, Wallet = w.Address };
+            var d = new MixDeposit { Asset = asset, Amount = amount, Dirty = dirty, Basis = basis, Rounds = rounds, ReadyDay = day + rounds, Wallet = w.Address };
             Pending.Add(d);
             return d;
         }
@@ -89,17 +130,17 @@ namespace Decentralized.Domain
                 }
                 if (day < d.ReadyDay) continue;
                 Pending.Remove(d);
-                double rate = RoundRate(d.Amount * price(d.Asset));
-                double taint = d.Taint * Math.Pow(1 - rate, d.Rounds);
+                // 制裁期间提出的、从治安部的钓鱼混币器提出的，都被标记：不洗，这笔币按全额污点带回
+                bool flagged = Sanctioned(day) || StoryMods.Current.MixerHoneypot;
+                double rate = flagged ? 0 : RoundRate(d.Amount * price(d.Asset), day);
                 double amount = d.Amount * Math.Pow(1 - Fee, d.Rounds);
-                bool flagged = Sanctioned(day);
+                double dirty = flagged ? amount : Math.Min(amount, d.Dirty * Math.Pow(1 - rate, d.Rounds));
                 var w = wallet(d.Wallet);
-                w.Add(d.Asset, amount);
-                w.Taint += taint;
+                w.AddDirty(d.Asset, amount, dirty);
                 w.Basis += d.Basis;
-                if (flagged) w.Flagged = true;
-                LastReturnDay = day;
-                results.Add(new MixResult { Asset = d.Asset, Amount = amount, TaintBefore = d.Taint, TaintAfter = taint, Flagged = flagged });
+                double p = price(d.Asset);
+                Remember(new MixReturn { Day = day, Wallet = d.Wallet, Asset = d.Asset, Amount = amount, Cleaned = Math.Max(0, d.Dirty - dirty) * p });
+                results.Add(new MixResult { Asset = d.Asset, Amount = amount, TaintBefore = d.Dirty * p, TaintAfter = dirty * p, Flagged = flagged });
             }
             return results;
         }

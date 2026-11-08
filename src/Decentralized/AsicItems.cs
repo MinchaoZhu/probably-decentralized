@@ -137,6 +137,7 @@ namespace Decentralized
 
         private static void NightDraw(GameItem m, GameSlotInventory battery, GameInventory modules)
         {
+            if (TurboMine.Boosting) { Boost(m, battery, modules); return; }
             if (!Session.TonightDrawn.Add(m.uniqueId)) return;
             var u = Items.ToUnit(m);
             Session.TonightRigs++;
@@ -148,6 +149,18 @@ namespace Decentralized
             Session.TonightKj += kj;
             Session.TonightCards.Add(new KeyValuePair<GameItem, ModuleBonus>(m, b));
             Session.TonightMachine[m] = m;
+            Update(m, modules);
+        }
+
+        /// <summary>涡轮增压：扣一晚的电，立刻挖一轮（不影响今晚照常挖矿）。</summary>
+        private static void Boost(GameItem m, GameSlotInventory battery, GameInventory modules)
+        {
+            var u = Items.ToUnit(m);
+            if (u.Dead) return;
+            var b = Items.Bonus(m, modules);
+            int kj = (int)Math.Ceiling(u.Kj(b));
+            if (battery.childItems.Count == 0 || !PowerHelper.DrawPowerSource(battery.childItem, kj)) { Log.Info("涡轮增压：矿机电池电量不够，这一轮没挖"); return; }
+            TurboMine.Round(m, new List<KeyValuePair<GameItem, ModuleBonus>> { new KeyValuePair<GameItem, ModuleBonus>(m, b) });
             Update(m, modules);
         }
 

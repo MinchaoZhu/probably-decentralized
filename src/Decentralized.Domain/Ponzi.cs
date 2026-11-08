@@ -75,7 +75,7 @@ namespace Decentralized.Domain
         {
             if (!Open) return 0;
             double take = Pool;
-            acct.Add(Assets.CRC, take); acct.Taint += take;
+            acct.AddDirty(Assets.CRC, take, take);
             Open = false; Done = true; Pool = 0;
             return take;
         }

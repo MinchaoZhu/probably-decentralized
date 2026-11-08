@@ -44,6 +44,9 @@ C = {
     'P': (0xD8, 0xDA, 0xD0),  # 墨水屏
     'K': (0x3C, 0x3F, 0x48),  # 石墨机身
     'E': (0x5A, 0x5E, 0x6A),  # 机身受光边
+    # 换币灯的黄绿色霓虹（带透明度：光晕由外向内 20% / 40% / 60% / 80%，灯芯不透明）
+    'N1': (0xB6, 0xF0, 0x5A, 52), 'N2': (0xB6, 0xF0, 0x5A, 103), 'N3': (0xB6, 0xF0, 0x5A, 153), 'N4': (0xB6, 0xF0, 0x5A, 204),
+    'N5': (0xD8, 0xFF, 0x7A), 'N6': (0x6E, 0xA8, 0x2E), 'N7': (0x3E, 0x6A, 0x1E),
 }
 
 
@@ -73,7 +76,7 @@ class Canvas:
         for row in self.px:
             line = bytearray()
             for c in row:
-                r, g, b, a = (0, 0, 0, 0) if c is None else C[c] + (255,)
+                r, g, b, a = (0, 0, 0, 0) if c is None else (C[c] + (255,))[:4]
                 if bg is not None:
                     r, g, b = (round(v * a / 255 + w * (255 - a) / 255) for v, w in zip((r, g, b), bg))
                     a = 255
@@ -665,8 +668,31 @@ def key_drive():
     return c
 
 
+def otc_lamp_on():
+    """换币灯的点亮叠加图（32×48，和原版暗灯同尺寸，(0,0) 对齐）：只画灯罩下面的光晕和灯芯，叠在熄灭的暗灯上。
+    光晕是灯罩下沿的椭圆（第 25–40 行），越靠中心越不透明；灯芯是中间一根竖条，底下一圈灯座光。"""
+    c = Canvas(32, 48)
+    rows = {  # 每行光晕的左右边界（含）
+        25: (5, 26), 26: (4, 27), 27: (4, 27), 28: (3, 28), 29: (3, 28), 30: (3, 28), 31: (2, 29), 32: (2, 29),
+        33: (2, 29), 34: (3, 28), 35: (3, 28), 36: (4, 27), 37: (5, 26), 38: (6, 25), 39: (9, 22), 40: (13, 18),
+    }
+    for y, (x0, x1) in rows.items():
+        for x in range(x0, x1 + 1):
+            if y == 25 and 7 <= x <= 24:
+                continue                                   # 灯罩下沿正中还是灯罩
+            d = (((x - 15.5) / 14) ** 2 + ((y - 32) / 8.5) ** 2) ** 0.5
+            c.put(x, y, 'N4' if d < 0.45 else 'N3' if d < 0.65 else 'N2' if d < 0.85 else 'N1')
+    for y in range(27, 37):                                # 灯芯
+        c.put(15, y, 'N5'); c.put(16, y, 'N6')
+    for y, (x0, x1) in {37: (13, 18), 38: (11, 20), 39: (11, 20), 40: (13, 18)}.items():
+        for x in range(x0, x1 + 1):                        # 灯座反光
+            c.put(x, y, 'N6' if y < 40 else 'N7')
+    for x in range(14, 18):
+        c.put(x, 38, 'N5')
+    return c
+
+
 SPRITES = {
-    'gpu_guide': guide,
     'gpu_burnt_f': lambda: gpu_front('e', 'c', burnt=True),
     'gpu_burnt_b': lambda: gpu_back('e', 'c', burnt=True),
     'gpu_probidia_b': lambda: gpu_back('G', 'g2'),
@@ -779,6 +805,7 @@ OVERLAYS = {
     'gpu_ov_fin1': lambda: ov_fingers(1), 'gpu_ov_fin2': lambda: ov_fingers(2),
     'gpu_ov_brk1': lambda: ov_bracket(1),
     'gpu_ov_stk2': lambda: ov_sticker(2),
+    'otc_lamp_on': otc_lamp_on,
 }
 for _n in (1, 2, 3):
     OVERLAYS['gpu_ov_fan1_%d' % _n] = (lambda n=_n: ov_fan(1, n))

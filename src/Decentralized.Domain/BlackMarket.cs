@@ -116,7 +116,7 @@ namespace Decentralized.Domain
             return true;
         }
 
-        /// <summary>买一件：付 asset 币。钱包里按价值比例带走的污点和成本留在卖家那边。成功返回 true，库存减一。</summary>
+        /// <summary>买一件：付 asset 币。付出的币按它的脏比例带走脏枚数，成本按价值比例留在卖家那边。成功返回 true，库存减一。</summary>
         public bool Buy(BmOffer o, Wallet w, string asset, Func<string, double> price)
         {
             if (o == null || o.Qty <= 0 || asset == Assets.CRC) return false;
@@ -126,7 +126,6 @@ namespace Decentralized.Domain
             if (w.Avail(asset) + 1e-9 < qty) return false;
             double total = w.Value(price);
             double share = total > 0 ? Math.Min(1, o.Price / total) : 0;
-            w.Taint -= w.Taint * share;
             w.Basis -= w.Basis * share;
             w.Add(asset, -qty);
             o.Qty--;
@@ -139,14 +138,11 @@ namespace Decentralized.Domain
 
         public double DeskLeft(int day) => Math.Max(0, Tuning.PoneroDailyCap - (DeskDay == day ? DeskToday : 0));
 
-        /// <summary>兑入 Ponero：from 币 amount 个，扣手续费后按 Ponero 价到账；这部分价值带的污点被清除（不跟着 Ponero）。返回到账数量，额度或余额不足返回 -1。</summary>
+        /// <summary>兑入 Ponero：from 币 amount 个，扣手续费后按 Ponero 价到账；兑掉的币连同其中的脏枚数一起消失，换来的 Ponero 是干净的。返回到账数量，额度或余额不足返回 -1。</summary>
         public double ToPonero(Wallet w, string from, double amount, int day, Func<string, double> price)
         {
             double value = amount * price(from);
             if (from == Assets.Ponero || amount <= 0 || value <= 0 || w.Avail(from) + 1e-9 < amount || value > DeskLeft(day) + 1e-9) return -1;
-            double total = w.Value(price);
-            double share = total > 0 ? Math.Min(1, value / total) : 0;
-            w.Taint -= w.Taint * share;
             w.Add(from, -amount);
             double got = value * (1 - Tuning.PoneroFee) / price(Assets.Ponero);
             w.Add(Assets.Ponero, got);

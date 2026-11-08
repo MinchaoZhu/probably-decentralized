@@ -1,10 +1,11 @@
 using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Decentralized.Domain
 {
-    public enum PredictKind { Event, Faction, Purity, Price, Gas, Cra, Era }
+    public enum PredictKind { Event, Faction, Purity, Price, Gas, Cra, Era, Trial }
 
     public enum PredictResult { Ok, Closed, Amount, Funds, Cap, Opposite, NoPosition }
 
@@ -77,7 +78,10 @@ namespace Decentralized.Domain
         /// <summary>持仓所在的钱包地址（下注签名的钱包，结算和卖出都回到它）。</summary>
         public string Wallet;
         public bool Yes;
-        public double Shares, Cost, Taint, Basis, Insider;
+        /// <summary>Dirty：下注付出的 CRC 里脏的枚数（兑付时按比例带回）。</summary>
+        public double Shares, Cost, Dirty, Basis, Insider;
+        /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
+        [JsonProperty("Taint")] public double LegacyTaint;
     }
 
     /// <summary>情报贩子卖的内幕消息：对某个盘口给出"是 / 否"的说法，三档准确率，可能是假的（与真相相反）。</summary>
@@ -113,12 +117,13 @@ namespace Decentralized.Domain
         public bool Held;
     }
 
-    /// <summary>夜间结算发生的事。Kind：win / lose / void / caught。</summary>
+    /// <summary>夜间结算发生的事。Kind：win / lose / void / insider（内幕份额对应的兑付记成脏币）/ manip（被判操纵，整笔兑付记成脏币）。
+    /// Amount 是兑付或本金；Taint 是因此记成脏的 CRC 枚数。</summary>
     public sealed class PredictEvent
     {
         public string Kind, Title;
         public PredictMarket Market;
-        public double Amount, Fraud;
+        public double Amount, Taint;
     }
 
     /// <summary>候选盘口（接入层按游戏当前状态给出）：先验概率按窗口算。</summary>
@@ -156,7 +161,7 @@ namespace Decentralized.Domain
         }
 
         /// <summary>
-        /// 买入：花 spend（含手续费）的 CRC。污点与成本按花掉的价值比例随资金进持仓。insider：这笔单下单时玩家已经知道答案（传闻纸条、派系特权）。
+        /// 买入：花 spend（含手续费）的 CRC。CRC 的脏枚数按比例、成本按花掉的价值比例随资金进持仓。insider：这笔单下单时玩家已经知道答案（传闻纸条、派系特权）。
         /// </summary>
         public PredictResult Buy(Wallet acct, PredictMarket m, bool yes, double spend, int day, Func<string, double> pr, bool insider, out double shares)
         {
@@ -171,53 +176,64 @@ namespace Decentralized.Domain
             shares = m.SharesFor(yes, cost);
             if (all.Sum(x => x.Shares) + shares > m.ShareCap + 1e-9) { shares = 0; return PredictResult.Cap; }
             double share = Share(acct, spend, pr);
-            double taint = acct.Taint * share, basis = acct.Basis * share;
-            acct.Add(Assets.CRC, -spend); acct.Taint -= taint; acct.Basis -= basis;
+            double dirty = spend * acct.DirtyRatio(Assets.CRC), basis = acct.Basis * share;
+            acct.Add(Assets.CRC, -spend); acct.Basis -= basis;
             if (yes) m.QYes += shares; else m.QNo += shares;
             if (pos == null) Positions.Add(pos = new PredictPos { Market = m.Id, Yes = yes, Wallet = acct.Address });
-            pos.Shares += shares; pos.Cost += cost; pos.Taint += taint; pos.Basis += basis;
+            pos.Shares += shares; pos.Cost += cost; pos.Dirty += dirty; pos.Basis += basis;
             if (insider) pos.Insider += shares;
             return PredictResult.Ok;
         }
 
-        /// <summary>全部卖出这个钱包在盘口里的持仓（盘口关闭前）：收回 LMSR 的卖价减手续费，污点按比例退回，赚的部分是干净的。返回收回的 CRC。</summary>
-        public PredictResult SellAll(Wallet acct, PredictMarket m, int day, out double got) => SellAll(acct, m, day, null, out got, out _);
+        /// <summary>全部卖出这个钱包在盘口里的持仓（盘口关闭前）：收回 LMSR 的卖价减手续费，脏枚数按比例带回，赚的部分是干净的。返回收回的 CRC。</summary>
+        public PredictResult SellAll(Wallet acct, PredictMarket m, int day, Func<string, double> price, out double got) => SellAll(acct, m, day, price, out got, out _);
 
         /// <summary>
-        /// 全部卖出；内幕持仓（这个盘口合计）达到查处线、而且卖出有赚，按查处概率被查：本金和收益全部没收，收益的一半记罪证（fraud &gt; 0）。
-        /// 先买后卖、赶在结算前离场，同样会被查。
+        /// 全部卖出；持仓里的内幕份额（下单时已经知道答案）对应的那部分卖出所得记成脏的 CRC，taint 是记成脏的枚数。先买后卖、赶在结算前离场也一样。
         /// </summary>
-        public PredictResult SellAll(Wallet acct, PredictMarket m, int day, Rng rng, out double got, out double fraud)
+        public PredictResult SellAll(Wallet acct, PredictMarket m, int day, Func<string, double> price, out double got, out double taint)
         {
-            got = 0; fraud = 0;
+            got = 0; taint = 0;
             var pos = PosOf(m.Id, acct.Address);
             if (pos == null) return PredictResult.NoPosition;
             if (!m.IsOpen(day)) return PredictResult.Closed;
             double value = m.SellValue(pos.Yes, pos.Shares);
             got = value * (1 - Tuning.PredictFee);
-            bool insider = PosAll(m.Id).Sum(x => x.Insider) >= Tuning.PredictInsiderShare * m.ShareCap;
             if (pos.Yes) m.QYes -= pos.Shares; else m.QNo -= pos.Shares;
             Positions.Remove(pos);
-            if (rng != null && insider && pos.Insider > 0 && got > pos.Cost && rng.Chance(Math.Min(1, Tuning.PredictInsiderCatch * StoryMods.Current.Enforce(day))))
-            {
-                fraud = Math.Min(Tuning.PredictFraudCap, (got - pos.Cost) * Tuning.PredictFraudShare);
-                got = 0;
-            }
-            Pay(acct, pos, got);
+            double back = Pay(acct, pos, got);
+            taint = MarkInsider(acct, pos, got, back);
             return PredictResult.Ok;
         }
 
-        private static void Pay(Wallet acct, PredictPos pos, double payout)
+        /// <summary>兑付进钱包：下注时带进来的脏枚数按兑付占成本的比例带回（不超过兑付）。返回带回的脏枚数。</summary>
+        private static double Pay(Wallet acct, PredictPos pos, double payout)
         {
             double keep = pos.Cost > 0 ? Math.Min(1, payout / pos.Cost) : 0;
-            acct.Add(Assets.CRC, payout); acct.Taint += pos.Taint * keep; acct.Basis += pos.Basis * keep;
+            double dirty = Math.Min(payout, pos.Dirty * keep);
+            acct.AddDirty(Assets.CRC, payout, dirty); acct.Basis += pos.Basis * keep;
+            return dirty;
+        }
+
+        /// <summary>这笔兑付里还干净的部分（兑付 − 已经带回的脏枚数）里，再记 qty 枚为脏的。返回记上的枚数。</summary>
+        private static double MarkPayout(Wallet acct, double payout, double alreadyDirty, double qty)
+        {
+            double mark = Math.Max(0, Math.Min(qty, payout - alreadyDirty));
+            return mark - acct.MarkDirty(Assets.CRC, mark);
+        }
+
+        /// <summary>内幕份额对应的兑付记成脏的 CRC。返回记上的枚数。</summary>
+        private static double MarkInsider(Wallet acct, PredictPos pos, double payout, double alreadyDirty)
+        {
+            if (pos.Insider <= 0 || pos.Shares <= 0 || payout <= 0) return 0;
+            return MarkPayout(acct, payout, alreadyDirty, payout * Math.Min(1, pos.Insider / pos.Shares));
         }
 
         /// <summary>
         /// 夜间：先登记今晚的观测，再结算 ToDay 到了的盘口（赢的钱回到下注的钱包，wallet 按地址找）。outcome 由接入层给出（事件 / 派系读观测，纯度和行情读游戏数值），null 表示拿不到数据。
-        /// 赢家每份兑付 1 信用点；内幕持仓达到份额上限的 <see cref="Tuning.PredictInsiderShare"/> 后，有概率被查：本金和收益全部没收，收益的一半记罪证。
+        /// 赢家每份兑付 1 信用点，照常兑付；内幕份额对应的兑付记成脏的 CRC，行情盘被判操纵时整笔兑付都记成脏的。
         /// </summary>
-        public List<PredictEvent> Night(int day, IEnumerable<string> activeNow, Func<PredictMarket, bool?> outcome, Func<string, Wallet> wallet, Rng rng, double push = 0)
+        public List<PredictEvent> Night(int day, IEnumerable<string> activeNow, Func<PredictMarket, bool?> outcome, Func<string, Wallet> wallet, Func<string, double> price, Rng rng, double push = 0)
         {
             var now = activeNow.Distinct().ToList();
             if (Prev != null) Started[day] = now.Where(x => !Prev.Contains(x)).ToList();
@@ -243,14 +259,6 @@ namespace Decentralized.Domain
                 if (!Stats.TryGetValue(sk, out var st)) Stats[sk] = st = new PredictStat();
                 st.Count++; st.SumP0 += m.P0; if (res.Value) st.Hits++;
                 var winners = all.Where(x => x.Yes == res.Value).ToList();
-                // 操纵：行情盘上，赢家的方向和玩家推价的方向一致时按推价幅度被查——本金和收益都没收，收益的一半记罪证
-                if (m.Kind == PredictKind.Price && winners.Count > 0 && winners.Any(x => x.Yes ? push > 0 : push < 0) && rng.Chance(Math.Min(1, Market.ManipChance(push) * StoryMods.Current.Enforce(day))))
-                {
-                    double profitM = winners.Sum(x => x.Shares) - cost;
-                    evs.Add(new PredictEvent { Kind = "manip", Title = m.Title, Market = m, Amount = cost, Fraud = Math.Min(Tuning.PredictFraudCap, Math.Max(0, profitM) * Tuning.PredictFraudShare) });
-                    Record(day, m, m.Outcome, -cost, true);
-                    continue;
-                }
                 if (all.Count > 0 && winners.Count == 0)
                 {
                     evs.Add(new PredictEvent { Kind = "lose", Title = m.Title, Market = m, Amount = cost });
@@ -259,19 +267,21 @@ namespace Decentralized.Domain
                 else if (winners.Count > 0)
                 {
                     double payout = winners.Sum(x => x.Shares), profit = payout - cost;
-                    // 内幕持仓按盘口合计（拆到几个钱包里也一样）
-                    if (all.Sum(x => x.Insider) >= Tuning.PredictInsiderShare * m.ShareCap && rng.Chance(Math.Min(1, Tuning.PredictInsiderCatch * StoryMods.Current.Enforce(day))))
+                    // 操纵：行情盘上，赢家的方向和玩家推价的方向一致时按推价幅度被查——照常兑付，整笔兑付记成脏的
+                    bool manip = m.Kind == PredictKind.Price && winners.Any(x => x.Yes ? push > 0 : push < 0) && rng.Chance(Math.Min(1, Market.ManipChance(push) * StoryMods.Current.Enforce(day)));
+                    double taint = 0;
+                    bool insider = false;
+                    foreach (var pos in winners)
                     {
-                        // 查实：本金和收益全部没收
-                        evs.Add(new PredictEvent { Kind = "caught", Title = m.Title, Market = m, Amount = payout, Fraud = Math.Min(Tuning.PredictFraudCap, Math.Max(0, profit) * Tuning.PredictFraudShare) });
-                        Record(day, m, m.Outcome, -cost, true);
+                        var w = wallet(pos.Wallet);
+                        double back = Pay(w, pos, pos.Shares);
+                        // 内幕份额（下单时已经知道答案）对应的兑付记成脏的，每个钱包各算各的
+                        if (manip) taint += MarkPayout(w, pos.Shares, back, pos.Shares);
+                        else if (pos.Insider > 0) { insider = true; taint += MarkInsider(w, pos, pos.Shares, back); }
                     }
-                    else
-                    {
-                        foreach (var pos in winners) Pay(wallet(pos.Wallet), pos, pos.Shares);
-                        evs.Add(new PredictEvent { Kind = "win", Title = m.Title, Market = m, Amount = payout });
-                        Record(day, m, m.Outcome, profit, true);
-                    }
+                    string kind = manip ? "manip" : insider ? "insider" : "win";
+                    evs.Add(new PredictEvent { Kind = kind, Title = m.Title, Market = m, Amount = payout, Taint = taint });
+                    Record(day, m, m.Outcome, profit, true);
                 }
                 else Record(day, m, m.Outcome, 0, false);
             }

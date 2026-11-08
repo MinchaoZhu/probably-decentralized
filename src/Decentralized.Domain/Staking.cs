@@ -1,16 +1,19 @@
 using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Decentralized.Domain
 {
-    /// <summary>一个钱包在革命军质押池里的仓位：计息的本金、排队等解锁的部分，以及存入时带来的污点与成本。</summary>
+    /// <summary>一个钱包在革命军质押池里的仓位：计息的本金、排队等解锁的部分，以及存入时带来的脏枚数与成本（利息是干净的）。</summary>
     public sealed class StakeLot
     {
         public string Wallet;
         public double Amount;
         public List<KeyValuePair<int, double>> Unlocking = new List<KeyValuePair<int, double>>();
-        public double Taint, Basis;
+        public double Dirty, Basis;
+        /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
+        [JsonProperty("Taint")] public double LegacyTaint;
 
         public double Total => Amount + Unlocking.Sum(u => u.Value);
     }
@@ -36,16 +39,16 @@ namespace Decentralized.Domain
         /// <summary>全部计息中的质押量，补贴池按它算支出。</summary>
         public double Earning => Lots.Sum(l => l.Amount);
 
-        /// <summary>质押：从钱包取出 CRA，污点与成本按价值比例随币留在仓位里。余额不足返回 false。</summary>
+        /// <summary>质押：从钱包取出 CRA，脏枚数按 CRA 的脏比例、成本按价值比例随币留在仓位里。余额不足返回 false。</summary>
         public bool Stake(Wallet w, double amount, Func<string, double> price)
         {
             if (amount <= 0 || w.Avail(Assets.CRA) + 1e-9 < amount) return false;
             double total = w.Value(price);
             double share = total > 0 ? Math.Min(1, amount * price(Assets.CRA) / total) : 0;
-            double taint = w.Taint * share, basis = w.Basis * share;
-            w.Add(Assets.CRA, -amount); w.Taint -= taint; w.Basis -= basis;
+            double dirty = amount * w.DirtyRatio(Assets.CRA), basis = w.Basis * share;
+            w.Add(Assets.CRA, -amount); w.Basis -= basis;
             var lot = Of(w.Address) ?? AddLot(w.Address);
-            lot.Amount += amount; lot.Taint += taint; lot.Basis += basis;
+            lot.Amount += amount; lot.Dirty += dirty; lot.Basis += basis;
             return true;
         }
 
@@ -74,11 +77,11 @@ namespace Decentralized.Domain
                 {
                     double total = lot.Total;
                     double share = total > 0 ? Math.Min(1, u.Value / total) : 0;
-                    double taint = lot.Taint * share, basis = lot.Basis * share;
-                    lot.Taint -= taint; lot.Basis -= basis;
+                    double dirty = lot.Dirty * share, basis = lot.Basis * share;
+                    lot.Dirty -= dirty; lot.Basis -= basis;
                     lot.Unlocking.Remove(u);
                     var w = wallet(lot.Wallet);
-                    w.Add(Assets.CRA, u.Value); w.Taint += taint; w.Basis += basis;
+                    w.AddDirty(Assets.CRA, u.Value, dirty); w.Basis += basis;
                     ev.Released += u.Value;
                 }
                 if (lot.Total < 1e-9) Lots.Remove(lot);

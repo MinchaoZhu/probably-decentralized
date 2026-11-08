@@ -25,8 +25,8 @@ namespace Decentralized
     /// <summary>一局的 mod 状态。整体序列化成 JSON 存进游戏的 mod 存档数据；显卡的健康度等存在显卡物品的标签上。</summary>
     public sealed class SaveData
     {
-        /// <summary>存档数据的版本：2 起保险基金用新的数值，3 起 Poinbase 主池是订单簿。</summary>
-        public int Version = 3;
+        /// <summary>存档数据的版本：2 起保险基金用新的数值，3 起 Poinbase 主池是订单簿，4 起出块奖励和 NPC 算力 ×10（第十一阶段），5 起 Poinbase 没有污点。</summary>
+        public int Version = 5;
         public int Day;
         public Rng Rng = new Rng((ulong)DateTime.UtcNow.Ticks);
         public Market Market;
@@ -88,6 +88,10 @@ namespace Decentralized
         public double ChainValue(Func<string, double> price) { double v = 0; foreach (var w in Wallets) v += w.Value(price); return v; }
         public Exchange Exchange = new Exchange();
         public Mixer Mixer = new Mixer();
+        /// <summary>换币台的累计成交与客户地址编号。</summary>
+        public OtcDesk Otc = new OtcDesk();
+        /// <summary>自营混币器（买下场外换币台就开放）。</summary>
+        public OwnMixer OwnMix = new OwnMixer();
         public BlackMarket Black = new BlackMarket();
         public List<MarketEvent> ActiveEvents = new List<MarketEvent>();
         public NightReport LastNight;
@@ -189,9 +193,27 @@ namespace Decentralized
             Data.Market.AddPoinSpark(Data.Stable.Spark, StoreStation.GetDayCounter());
             Data.Market.UpgradeDexPools(StoreStation.GetDayCounter());
             if (Data.Version < 3) { Data.Version = 3; Log.Info("存档数据升级到版本 3：保险基金、Poinbase 订单簿"); }
+            // 第十一阶段：出块奖励和 NPC 算力同乘 10（均衡时每 H 收入不变，玩家算力占比变低）；旧存档按当时的减半进度一起放大
+            if (Data.Version < 4)
+            {
+                Data.Network.Reward *= Tuning.MiningScale;
+                Data.Network.NpcHash *= Tuning.MiningScale;
+                Data.Version = 4;
+                Log.Info($"存档数据升级到版本 4：出块奖励 {Data.Network.Reward:0}、NPC 算力 {Data.Network.NpcHash:0}");
+            }
+            // 第十一阶段 stage 5：污点按币种记脏枚数、只在钱包里。旧的污点额按当前价格摊成脏枚数；Poinbase 账户和永续仓位的挪到 1 号钱包
+            if (Data.Version < 5)
+            {
+                double was = TaintMigration.Run(Data.Wallets, Data.Poinbase, Data.Perps.Positions, Data.Mixer, Data.Black, Data.Staking, Data.Scams, Data.Predict, Data.OwnMix ?? new OwnMixer(), Price);
+                Data.Version = 5;
+                Log.Info($"存档数据升级到版本 5：旧污点 {was:0} 摊成各币的脏枚数，现在按现价共 {Data.Wallets.Sum(w => w.Taint(Price)):0}");
+            }
+            if (Data.Otc == null) Data.Otc = new OtcDesk();
+            if (Data.OwnMix == null) Data.OwnMix = new OwnMixer();
             if (Data.Story == null) Data.Story = new StoryMods();
             StoryMods.Current = Data.Story;
             Log.Info($"状态已载入（第 {Data.Day} 天，PSC {Data.Market.Price:0.00}）");
+            Log.Guard("换币灯", OtcLamp.Attach);
         }
 
         public static void Save()

@@ -58,6 +58,7 @@ namespace Decentralized
             dir.Add(Rig, CreateRig);
             WrapElectronics(dir);
             WrapTurbos(dir);
+            OtcLamp.Wrap(dir);
             dir.Add(Guide, CreateGuide);
             dir.Add(HwWallet, CreateHwWallet);
             dir.Add(KeyDrive, CreateKeyDrive);
@@ -540,8 +541,8 @@ namespace Decentralized
         }
 
         /// <summary>
-        /// 涡轮增压器不能作用于矿架和 ASIC 矿机：它们带"标准机器"标签，原版涡轮只看这个标签，还会手动触发目标的夜间结算（等于白天多扣一次电）。
-        /// 在原版涡轮工厂外包一层，对这两类目标返回否；是替换判断函数而不是追加（追加是"或"，原来的"是"还会生效）。
+        /// 涡轮增压器作用于矿架和 ASIC 矿机：照原版机器的规则多跑一轮，这一轮是立刻挖一晚（见 <see cref="TurboMine"/>）。
+        /// 原版增压器调用机器的夜间周期回调，所以在它的作用函数外包一层，作用于矿机时打上标记，回调据此改为立刻结算；判断、消耗、充电都照原版。
         /// </summary>
         private static void WrapTurbos(ModItemDirectory dir)
         {
@@ -552,10 +553,13 @@ namespace Decentralized
                 dir.Set(id, () =>
                 {
                     var it = make();
-                    var may = it.mayThisTargetItemFunc;
-                    var can = it.canThisTargetItemFunc;
-                    it.mayThisTargetItemFunc = (s, t) => !IsMiner(t) && (may?.Invoke(s, t) ?? false);
-                    it.canThisTargetItemFunc = (s, t) => !IsMiner(t) && (can?.Invoke(s, t) ?? false);
+                    var on = it.onThisTargetItemFunc;
+                    it.onThisTargetItemFunc = (s, t) =>
+                    {
+                        if (!IsMiner(t)) { on?.Invoke(s, t); return; }
+                        TurboMine.Boosting = true;
+                        try { on?.Invoke(s, t); } finally { TurboMine.Boosting = false; }
+                    };
                     return it;
                 });
             }
@@ -640,6 +644,7 @@ namespace Decentralized
         /// <summary>夜间早段：按矿架上的显卡总耗电（含模块效果）从电池扣电；扣电成功，登记今晚参与挖矿的显卡和模块效果。</summary>
         private static void NightDraw(GameItem rig, GameSlotInventory battery, GameInventory modules, GameInventory cards)
         {
+            if (TurboMine.Boosting) { Boost(rig, battery, modules, cards); return; }
             if (!Session.TonightDrawn.Add(rig.uniqueId)) return;
             var list = Cards(cards).Where(c => !c.IsTag(DeadTag)).ToList();
             Session.TonightRigs++;
@@ -650,6 +655,18 @@ namespace Decentralized
             Session.TonightPoweredRigs++;
             Session.TonightKj += kj;
             foreach (var c in list) { Session.TonightCards.Add(new KeyValuePair<GameItem, ModuleBonus>(c, b)); Session.TonightMachine[c] = rig; }
+            UpdateRig(rig, modules, cards);
+        }
+
+        /// <summary>涡轮增压：扣一晚的电，立刻挖一轮（不影响今晚照常挖矿）。</summary>
+        private static void Boost(GameItem rig, GameSlotInventory battery, GameInventory modules, GameInventory cards)
+        {
+            var list = Cards(cards).Where(c => !c.IsTag(DeadTag)).ToList();
+            if (list.Count == 0) return;
+            var b = Bonus(rig, modules);
+            int kj = RigKj(cards, b);
+            if (battery.childItems.Count == 0 || !PowerHelper.DrawPowerSource(battery.childItem, kj)) { Log.Info("涡轮增压：矿架电池电量不够，这一轮没挖"); return; }
+            TurboMine.Round(rig, list.Select(c => new KeyValuePair<GameItem, ModuleBonus>(c, b)).ToList());
             UpdateRig(rig, modules, cards);
         }
 

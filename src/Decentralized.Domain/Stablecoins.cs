@@ -18,6 +18,8 @@ namespace Decentralized.Domain
         public string Wallet;
         public bool Mint;
         public double Cra, Crc, Spark, C;
+        /// <summary>付出去的币的脏比例（按价值加权）：到期换回的币按这个比例是脏的。</summary>
+        public double DirtyRatio;
     }
 
     public sealed class CraOrderEvent
@@ -114,8 +116,10 @@ namespace Decentralized.Domain
             if (cra <= 0) return null;
             Collateral(cra, out double crc, out double spark);
             if (w.Avail(Assets.CRC) + 1e-9 < crc || w.Avail(Assets.SPARK) + 1e-9 < spark) return null;
+            double sv = spark * Spark, total = crc + sv;
+            double ratio = total > 0 ? (crc * w.DirtyRatio(Assets.CRC) + sv * w.DirtyRatio(Assets.SPARK)) / total : 0;
             w.Add(Assets.CRC, -crc); w.Add(Assets.SPARK, -spark);
-            var o = new CraOrder { Id = ++OrderSeq, Wallet = w.Address, Mint = true, Cra = cra, Crc = crc, Spark = spark, C = C, Due = day + rng.Range(Tuning.CraMintDaysMin, Tuning.CraMintDaysMax) };
+            var o = new CraOrder { Id = ++OrderSeq, Wallet = w.Address, Mint = true, Cra = cra, Crc = crc, Spark = spark, C = C, DirtyRatio = ratio, Due = day + rng.Range(Tuning.CraMintDaysMin, Tuning.CraMintDaysMax) };
             Orders.Add(o);
             return o;
         }
@@ -124,8 +128,9 @@ namespace Decentralized.Domain
         public CraOrder RequestBurn(Wallet w, double cra, int day)
         {
             if (cra <= 0 || w.Avail(Assets.CRA) + 1e-9 < cra) return null;
+            double ratio = w.DirtyRatio(Assets.CRA);
             w.Add(Assets.CRA, -cra);
-            var o = new CraOrder { Id = ++OrderSeq, Wallet = w.Address, Mint = false, Cra = cra, C = C, Due = day + Tuning.CraUnlockDays };
+            var o = new CraOrder { Id = ++OrderSeq, Wallet = w.Address, Mint = false, Cra = cra, C = C, DirtyRatio = ratio, Due = day + Tuning.CraUnlockDays };
             Orders.Add(o);
             return o;
         }

@@ -144,11 +144,74 @@ namespace Decentralized
                 var t = Session.Data.Story.Tumbler; int day = StoreStation.GetDayCounter();
                 if (t.StartDay < 0) t.StartDay = day;
                 t.StartDay = day - Tumbler.Offsets[System.Math.Min(t.Stage, Tumbler.Offsets.Length - 1)]; t.VisitedDay = -1;
+                var af = Session.Data.Story.After;
+                if (af.AgentDay >= day) af.AgentDay = day - 1;
+                if (af.SearchDay >= day) af.SearchDay = day - 1;
                 PlayerStore.Instance.currentClientInstance = null;
                 var m = PlayerStore.Instance.storeClientManager;
                 TumblerStory.ForceVisit(m);
                 PlayerStore.Instance.TryCallNextClient();
             }));
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Tumbler: restart story (test)", () =>
+            {
+                var st = Session.Data.Story;
+                Log.Info($"测试：Tumbler 剧情重来（原进度 {st.Tumbler.Stage}，选择 {st.Tumbler.Choice}，结束 {st.Tumbler.Done}）");
+                st.Tumbler = new Tumbler(); st.After = new TumblerAfter();
+                st.Applied.RemoveAll(k => k.StartsWith("tumbler_"));
+                st.MixerClosed = st.MixerRebranded = st.MixerHoneypot = false; st.MixerFee = st.MixerVolume = st.MixerRug = 1;
+            });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Hot wallet +2000 CRC (test)", () =>
+            {
+                var w = Session.Data.Hot; w.Add(Assets.CRC, 2000); w.Basis += 2000;
+                Log.Info($"测试：钱包 CRC {w.Get(Assets.CRC):0}，污点 {w.Taint:0}");
+            });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "My mixer: max heat (test)", () =>
+            {
+                var m = Session.Data.OwnMix; m.Heat = 1e4;
+                Log.Info($"测试：自营混币器风声拉满，今晚查封概率 {m.SeizeChance(1, false):P0}");
+            });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Mixer: honeypot now (test)", () =>
+            {
+                var d = Session.Data;
+                d.Story.Rebrand(true); d.Story.After.Rebranded = true;
+                d.Addresses["mixer_old"] = d.Address("mixer"); d.Addresses["mixer"] = ChainAddress.Make(d.Rng.NextUInt());
+                Log.Info($"测试：混币器换成钓鱼混币器，费率 {Mixer.Fee:P1}");
+            });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Tumbler: contact, crackdown tomorrow (test)", () => Log.Guard("联系人测试", () =>
+            {
+                Session.Data.Story.After.Contact = true;
+                StoreStation.Instance.storeEventManager.QueueFuturEvent(OperationListSec.Crackdown(), 1, false);
+                Log.Info("测试：Tumbler 成为联系人，镇压排到明天（玩家不知道）");
+            }));
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Tumbler: leak tonight (test)", () =>
+            {
+                var a = Session.Data.Story.After; a.Leaked = false; a.LeakDay = StoreStation.GetDayCounter();
+                Log.Info($"测试：今晚泄露，出款记录 {Session.Data.Mixer.Returns.Count} 条");
+            });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Tumbler: trial market now (test)", () => Log.Guard("审判盘测试", () =>
+            {
+                var d = Session.Data; var a = d.Story.After; int day = StoreStation.GetDayCounter();
+                a.Verdict = -1; a.TrialMarket = a.TrialDone = false; a.Hints.Clear(); a.HintDay = -1;
+                a.StartTrial(day - Tuning.TumblerTrialOpen, d.Rng);
+                PredictGame.OpenTrial(d, day);
+                Log.Info($"测试：审判盘开盘，第 {a.TrialDay} 天宣判，判决 {a.Verdict}");
+                Session.Save();
+            }));
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Tumbler: revenge tonight (test)", () =>
+            {
+                var a = Session.Data.Story.After; a.Revenged = false; a.RevengeDay = StoreStation.GetDayCounter();
+                Log.Info("测试：今晚报复");
+            });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Tumbler: BM rug tonight (test)", () =>
+            {
+                var a = Session.Data.Story.After; a.BmRugged = false; a.BmRugDay = StoreStation.GetDayCounter();
+                Log.Info($"测试：今晚黑市跑路，在途 {Session.Data.Mixer.Pending.Count} 笔");
+            });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Mixer: rebrand tonight (test)", () =>
+            {
+                var a = Session.Data.Story.After; a.Rebranded = false; a.ClosedDay = StoreStation.GetDayCounter() - Tuning.TumblerRebrandDays;
+                Log.Info("测试：今晚换皮重开");
+            });
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Lower-level rep +30 (test)", () => StoreReputation.ModReputation(StoreReputation.FACTION_LOWER_LEVEL, 30));
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Dump crimes and reputation (test)", () => Log.Guard("罪证与声望", () =>
             {

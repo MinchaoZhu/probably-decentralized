@@ -1,23 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Decentralized.Domain
 {
     /// <summary>
-    /// 一个链上地址：各币种余额，加上整个地址的污点额与成本（信用点等值）。
-    /// 污点和成本按转出的价值比例随币走。
+    /// 一个链上地址：各币种余额，每种币里有几枚是脏的（<see cref="Dirty"/>），加上整个地址的成本（信用点）。
+    /// 污点随具体的币进出：收到带污点的币时记下其中几枚脏；花掉、转出这种币时按它的脏比例带走；兑换成别的币时脏比例跟过去。
+    /// 成本按转出的价值比例随币走。
     /// </summary>
     public sealed class Wallet
     {
         public string Address;
         public Dictionary<string, double> Balances = new Dictionary<string, double>();
-        /// <summary>污点额（信用点等值）。</summary>
-        public double Taint;
+        /// <summary>每种币里脏的枚数（0 ≤ 脏 ≤ 余额）。</summary>
+        public Dictionary<string, double> Dirty = new Dictionary<string, double>();
+        /// <summary>旧存档（数据版本 5 之前）整个钱包的污点额（信用点）：只在读档迁移时读一次，之后为 0。</summary>
+        [JsonProperty("Taint")] public double LegacyTaint;
         /// <summary>成本（信用点）：出金时只对超出成本的部分征税。</summary>
         public double Basis;
-        /// <summary>被执法标记。</summary>
-        public bool Flagged;
         /// <summary>钱包编号（"钱包 n"），添加时定下，销毁别的钱包也不变。</summary>
         public string Name;
         /// <summary>玩家起的名字；空时用默认名。</summary>
@@ -43,7 +45,7 @@ namespace Decentralized.Domain
         {
             double v = Value(price);
             Balances.Clear(); Frozen.Clear(); FrozenUntil.Clear(); BuyQty.Clear(); BuyCost.Clear();
-            Taint = 0; Basis = 0;
+            Dirty.Clear(); Basis = 0;
             return v;
         }
 
@@ -101,40 +103,131 @@ namespace Decentralized.Domain
                 BuyQty[asset] = bq * keep; BuyCost[asset] *= keep;
                 if (BuyQty[asset] < 1e-9) { BuyQty.Remove(asset); BuyCost.Remove(asset); }
             }
-            double v = Get(asset) + amount;
+            double had = Get(asset), v = had + amount;
             if (v < -1e-9) throw new InvalidOperationException($"{Address}: {asset} 余额不足");
             if (Math.Abs(v) < 1e-12) Balances.Remove(asset);
             else Balances[asset] = v;
+            // 拿走的币按这种币的脏比例带走脏枚数
+            if (amount < 0 && Dirty.TryGetValue(asset, out var d)) SetDirty(asset, had > 1e-12 ? d * Math.Max(0, v) / had : 0);
         }
 
-        /// <summary>按价格表估值（信用点）。</summary>
-        /// <summary>花掉（销毁）一笔币：污点与成本按这笔币占钱包总价值的比例一起带走。</summary>
+        /// <summary>这种币里脏的枚数（不超过余额）。</summary>
+        public double DirtyOf(string asset) => Dirty.TryGetValue(asset, out var d) ? Math.Max(0, Math.Min(d, Get(asset))) : 0;
+
+        /// <summary>这种币的脏比例（0–1）。</summary>
+        public double DirtyRatio(string asset) { double g = Get(asset); return g > 1e-12 ? DirtyOf(asset) / g : 0; }
+
+        /// <summary>这种币里干净的、能动用的枚数（不超过可动用余额）。钱包往 Poinbase 最多只能充这么多。</summary>
+        public double CleanAvail(string asset) => Math.Max(0, Math.Min(Avail(asset), Get(asset) - DirtyOf(asset)));
+
+        /// <summary>按现价算的脏币总价值（信用点）：钱包总表、日志用。</summary>
+        public double Taint(Func<string, double> price) => Balances.Keys.Sum(a => DirtyOf(a) * price(a));
+
+        private void SetDirty(string asset, double d)
+        {
+            d = Math.Max(0, Math.Min(d, Get(asset)));
+            if (d < 1e-9) Dirty.Remove(asset); else Dirty[asset] = d;
+        }
+
+        /// <summary>收到 amount 枚币，其中 dirty 枚是脏的（不超过 amount）。</summary>
+        public void AddDirty(string asset, double amount, double dirty)
+        {
+            if (amount <= 0) return;
+            Add(asset, amount);
+            if (dirty > 0) SetDirty(asset, DirtyOf(asset) + Math.Min(dirty, amount));
+        }
+
+        /// <summary>把这种币里干净的 qty 枚记成脏的（刚收到的兑付被判内幕、操纵时用）；不够的部分不记，返回没记上的枚数。</summary>
+        public double MarkDirty(string asset, double qty)
+        {
+            if (qty <= 0) return 0;
+            double clean = Math.Max(0, Get(asset) - DirtyOf(asset)), mark = Math.Min(qty, clean);
+            SetDirty(asset, DirtyOf(asset) + mark);
+            return qty - mark;
+        }
+
+        /// <summary>余额按比例缩水（CRC 托管银行减记）：脏枚数同比例缩水。</summary>
+        public void Scale(string asset, double factor)
+        {
+            double g = Get(asset);
+            if (g <= 0) return;
+            double d = DirtyOf(asset);
+            Add(asset, g * Math.Max(0, factor) - g);
+            SetDirty(asset, d * Math.Max(0, factor));
+        }
+
+        /// <summary>兑换：付出 amount 枚 from（按它的脏比例带走脏枚数），收到 got 枚 to，脏比例跟过去；clean 为真时（兑入 Ponero）收到的是干净的。</summary>
+        public void Convert(string from, double amount, string to, double got, bool clean = false)
+        {
+            double r = DirtyRatio(from);
+            Add(from, -amount);
+            AddDirty(to, got, clean ? 0 : got * r);
+        }
+
+        /// <summary>花掉（销毁）一笔币：脏枚数按这种币的脏比例带走，成本按这笔币占钱包总价值的比例带走。</summary>
         public void Spend(string asset, double amount, Func<string, double> price)
         {
             double total = Value(price), share = total > 0 ? Math.Min(1, amount * price(asset) / total) : 0;
-            double taint = Taint * share, basis = Basis * share;
-            Add(asset, -amount); Taint -= taint; Basis -= basis;
+            double basis = Basis * share;
+            Add(asset, -amount); Basis -= basis;
         }
+
+        /// <summary>按价格表估值（信用点）。</summary>
 
         public double Value(Func<string, double> price) => Balances.Sum(kv => kv.Value * price(kv.Key));
 
+        /// <summary>按信用点额折成的诈骗罪证：额 × <see cref="Tuning.PredictFraudShare"/>，单次封顶 <see cref="Tuning.PredictFraudCap"/>（永续被判操纵、Tumbler 泄露用）。</summary>
+        public static double FraudFor(double credits) => Math.Min(Tuning.PredictFraudCap, Math.Max(0, credits) * Tuning.PredictFraudShare);
+
         /// <summary>
-        /// 转出：taint 和 basis 按转出价值占地址总价值的比例带走；被标记的地址转出可追踪的币，收款地址也被标记。
-        /// Ponero 等不可追踪资产转入时，污点和标记都不随之进入目标地址。
+        /// 只转干净的币（往 Poinbase 充值）：脏枚数全部留在原钱包，成本按价值比例带走。数量超过 <see cref="CleanAvail"/> 的部分不转，返回实际转的数量。
+        /// </summary>
+        public static double TransferClean(Wallet from, Wallet to, string asset, double amount, Func<string, double> price)
+        {
+            amount = Math.Min(amount, from.CleanAvail(asset));
+            if (amount <= 0) return 0;
+            double total = from.Value(price);
+            double share = total > 0 ? Math.Min(1.0, amount * price(asset) / total) : 0;
+            double basis = from.Basis * share, dirty = from.DirtyOf(asset);
+            from.Add(asset, -amount);
+            from.SetDirty(asset, dirty);
+            from.Basis -= basis;
+            to.Add(asset, amount);
+            to.Basis += basis;
+            return amount;
+        }
+
+        /// <summary>
+        /// 转出：这种币按它的脏比例把脏枚数带过去，成本按转出价值占地址总价值的比例带走。
+        /// Ponero 等不可追踪资产转入时，不带脏枚数。
         /// </summary>
         public static void Transfer(Wallet from, Wallet to, string asset, double amount, Func<string, double> price)
         {
             if (amount <= 0) return;
             double total = from.Value(price);
             double share = total > 0 ? Math.Min(1.0, amount * price(asset) / total) : 0;
-            double taint = from.Taint * share, basis = from.Basis * share;
+            double basis = from.Basis * share, dirty = amount * from.DirtyRatio(asset);
             from.Add(asset, -amount);
-            from.Taint -= taint;
             from.Basis -= basis;
-            to.Add(asset, amount);
             var spec = Assets.Get(asset);
-            if (spec == null || spec.Traceable) { to.Taint += taint; if (from.Flagged) to.Flagged = true; }
+            to.AddDirty(asset, amount, spec == null || spec.Traceable ? dirty : 0);
             to.Basis += basis;
+        }
+
+        /// <summary>
+        /// 存档迁移：旧的整钱包污点额（信用点）按当前价格摊成各币的脏枚数：脏比例 = min(1, 污点 / 可追踪币的价值)，每种可追踪的币按这个比例记脏。
+        /// extra 是另外挪进来的旧污点（Poinbase 账户、永续仓位），一起摊；超出的部分作废。旧字段清零。
+        /// </summary>
+        public void MigrateTaint(Func<string, double> price, double extra = 0)
+        {
+            double t = LegacyTaint + extra;
+            LegacyTaint = 0;
+            if (t <= 0) return;
+            var traceable = Balances.Keys.Where(a => Assets.Get(a) == null || Assets.Get(a).Traceable).ToList();
+            double v = traceable.Sum(a => Get(a) * price(a));
+            if (v <= 0) return;
+            double r = Math.Min(1, t / v);
+            foreach (var a in traceable) SetDirty(a, DirtyOf(a) + Get(a) * r);
         }
     }
 }
