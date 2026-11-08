@@ -20,7 +20,12 @@ namespace Decentralized
     public static class WalletWindow
     {
         private const string IdPrefix = "pd_wallet_";
-        private const float WinW = 452f, WinH = 694f, ScreenW = 384f, ScreenH = 540f, Bezel = 6f;
+        private const float WinW = 452f, WinH = 694f, ScreenW = 384f, ScreenH = 540f, Bezel = 6f, InputH = 32f, BalHeaderH = 24f;
+        /// <summary>主页余额表的列：币种、数量、脏币、估值。</summary>
+        private static readonly float[] BalW = { 66f, 100f, 104f, ScreenW - 40f - 270f };
+        private static readonly TextAnchor[] BalAligns = { TextAnchor.MiddleLeft, TextAnchor.MiddleRight, TextAnchor.MiddleLeft, TextAnchor.MiddleRight };
+        /// <summary>发送页的"最近"列表最多几条；有待付账单时多出账单和填入键两行，少列几条。</summary>
+        private const int RecentMax = 4, RecentMaxWithBill = 2;
         private enum Screen { Home, Send, Review, Broadcast, Done }
 
         /// <summary>终端开出的账单：转账（有收款地址）或合约调用（DEX 兑换，没有地址）。付清后用付款的钱包执行。</summary>
@@ -87,14 +92,18 @@ namespace Decentralized
         /// <summary>手续费折成币的数量。</summary>
         private static double FeeIn(string asset, FeeTier tier) { double p = Session.Price(asset); return p > 0 ? TxRules.FeeCredits(tier, Congested, Session.Data.Gas) / p : 0; }
 
-        /// <summary>出块动画的时间表：签名 0.8 秒，内存池 1.2 秒，打包 1 秒，每次确认 0.6 秒；拥堵时按档位放慢。</summary>
-        private static float[] Timeline(int confs, double slow, bool dropped)
+        /// <summary>出块动画的时间表：签名、内存池、打包、每次确认按 0.8 : 1.2 : 1 : 0.6 的比例分配，整条读条共 secs 秒；被挤出内存池时只有前两段再加一段等待。</summary>
+        private static float[] Timeline(int confs, double secs, bool dropped)
         {
-            var t = new List<float> { 0.8f * (float)slow, (0.8f + 1.2f) * (float)slow };
-            if (dropped) { t.Add(t[1] + 1.5f * (float)slow); return t.ToArray(); }
-            t.Add(t[1] + 1.0f * (float)slow);
-            for (int i = 0; i < confs; i++) t.Add(t[t.Count - 1] + 0.6f * (float)slow);
-            return t.ToArray();
+            var t = new List<float> { 0.8f, 0.8f + 1.2f };
+            if (dropped) t.Add(t[1] + 1.5f);
+            else
+            {
+                t.Add(t[1] + 1.0f);
+                for (int i = 0; i < confs; i++) t.Add(t[t.Count - 1] + 0.6f);
+            }
+            float k = (float)secs / t[t.Count - 1];
+            return t.Select(x => x * k).ToArray();
         }
 
 
@@ -242,26 +251,25 @@ namespace Decentralized
             b.AddButton(L.T("hw.copy"), () => { Clipboard.Copy(w.Address); dev.Note = L.T("hw.copied"); Open(dev); });
             b.End();
             b.AddSeparator();
-            // 余额：每个币一行，左边币种、右边数量与估值，全部显示（含 0）；点一行选中，发送时默认用它
+            // 余额：币种 | 数量 / 脏币 | 估值，全部显示（含 0）；数量右对齐、脏币左对齐，斜杠上下对齐；点一行选中，发送时默认用它
+            PledgerSkin.TableHeader(b, RowW, BalHeaderH, BalW, BalAligns, new[] { L.T("col.asset"), L.T("col.amount"), " / " + L.T("col.dirty"), L.T("col.value") }, _clear);
             foreach (var a in SendAssets)
             {
-                double q = w.Get(a);
+                double q = w.Get(a), dq = w.DirtyOf(a);
                 b.BeginPanel(RowW, 32f, TextAnchor.MiddleLeft, 6f, 0f);
                 _rows.Add((b.Last.root, b.Last.image, a));
                 b.BeginRow(0f, TextAnchor.MiddleLeft);
-                b.BeginPanel(90f, 26f, TextAnchor.MiddleLeft, 0f, 0f);
-                _clear.Add(b.Last.image);
-                b.AddLabel(a);
-                b.End();
-                b.BeginPanel(130f, 26f, TextAnchor.MiddleRight, 0f, 0f);
-                _clear.Add(b.Last.image);
-                double dq = w.DirtyOf(a);
-                b.AddLabel(Amt(q) + (w.Frozen.TryGetValue(a, out var fz) && fz > 0 ? L.T("hw.balance.frozen", Amt(fz)) : "") + (dq > 1e-9 ? L.T("hw.balance.dirty", Amt(dq)) : ""));
-                b.End();
-                b.BeginPanel(RowW - 12f - 90f - 130f, 26f, TextAnchor.MiddleRight, 0f, 0f);
-                _clear.Add(b.Last.image);
-                b.AddLabel(L.T("hw.balance.value", Fmt.Credits(q * Session.Price(a))));
-                b.End();
+                string dirty = dq > 1e-9 ? $"<color={(a == dev.Asset ? PledgerSkin.DirtyOnKey : PledgerSkin.DirtyOnPaper)}> / {Amt(dq)}</color>" : "";
+                string frozen = w.Frozen.TryGetValue(a, out var fz) && fz > 0 ? L.T("hw.balance.frozen", Amt(fz)) : "";
+                var cells = new[] { a, Amt(q), dirty + frozen, L.T("hw.balance.value", Fmt.Credits(q * Session.Price(a))) };
+                for (int i = 0; i < cells.Length; i++)
+                {
+                    b.BeginPanel(BalW[i], 26f, BalAligns[i], 0f, 0f);
+                    _clear.Add(b.Last.image);
+                    b.AddLabel(cells[i]);
+                    PledgerSkin.FitCurrent(b);
+                    b.End();
+                }
                 b.End();
                 b.End();
             }
@@ -305,13 +313,17 @@ namespace Decentralized
             b.AddLabel(L.T("hw.avail", dev.Asset, Amt(w.Avail(dev.Asset))), "avail_dim");
             b.AddLabel(L.T("hw.amount"));
             b.AddInput("0", dev.Amount, s => dev.Amount = s, "amount", s => dev.Amount = s);
-            if (Pending != null && !Pending.Contract)
+            // 输入框没有最小高度，屏幕放不下时会被纵向布局压扁
+            var amountLayout = b.Last.root.GetComponent<LayoutElement>() ?? b.Last.root.AddComponent<LayoutElement>();
+            amountLayout.minHeight = InputH; amountLayout.preferredHeight = InputH; amountLayout.flexibleHeight = 0f;
+            bool hasBill = Pending != null && !Pending.Contract;
+            if (hasBill)
             {
                 b.AddLabel(L.T("hw.bill", Pending.Summary, Amt(Pending.Amount), Pending.Asset), "bill_dim");
                 b.AddButton(L.T("hw.fill"), () => { dev.Asset = Pending.Asset; dev.Amount = Amt(Pending.Amount); Open(dev); });
             }
             // 最近转账：点一下填入地址（地址投毒的 0 币转入也混在这里，缩写看起来一样）
-            var recent = w.History.GroupBy(r => r.Addr + (r.In ? "<" : ">")).Select(g => g.First()).Take(4).ToList();
+            var recent = w.History.GroupBy(r => r.Addr + (r.In ? "<" : ">")).Select(g => g.First()).Take(hasBill ? RecentMaxWithBill : RecentMax).ToList();
             if (recent.Count > 0)
             {
                 b.AddLabel(L.T("hw.recent"), "recent_dim");
@@ -422,8 +434,6 @@ namespace Decentralized
             b.AddHeader(L.T("hw.tx.h"));
             b.AddLabel(StatusText(dev), "status");
             b.AddProgressBar(Progress(dev), "progress");
-            b.AddSpace(10f);
-            b.AddButton(L.T("hw.skip"), () => Finish(dev));
         }
 
         private static void DoneScreen(CustomUIBuilder b, Device dev)
@@ -542,7 +552,7 @@ namespace Decentralized
             dev.Tx.Fee = FeeIn(dev.Tx.FeeAsset, dev.Tier);
             dev.Tx.Confs = TxRules.Confirmations(ValueOf(dev));
             dev.Tx.Dropped = d.Rng.Chance(TxRules.DropChance(dev.Tier, cong));
-            dev.Tx.Times = Timeline(dev.Tx.Confs, TxRules.Slowdown(dev.Tier, cong), dev.Tx.Dropped);
+            dev.Tx.Times = Timeline(dev.Tx.Confs, Tuning.TxBarSecs * TxRules.Slowdown(dev.Tier, cong), dev.Tx.Dropped);
             if (dev.Tx.Bill != null)
             {
                 if (dev.Tx.Bill == OtcClient.Standing) OtcClient.Standing = null;   // 签了名就不再挂着，免得重复付
@@ -553,7 +563,7 @@ namespace Decentralized
             Open(dev);
         }
 
-        /// <summary>动画走完（或点了跳过）：交易落地。付账单的执行终端那边的动作；转给自己的钱包的按比例带上污点，转给 Poinbase 的只转干净的、污点留在钱包；没人用的地址，币就没了。</summary>
+        /// <summary>动画走完：交易落地。付账单的执行终端那边的动作；转给自己的钱包的按比例带上污点，转给 Poinbase 的只转干净的、污点留在钱包；没人用的地址，币就没了。</summary>
         private static void Finish(Device dev)
         {
             var tx = dev.Tx;
@@ -606,7 +616,6 @@ namespace Decentralized
                 if (target == d.Poinbase) Wallet.TransferClean(w, target, tx.Asset, amt, Session.Price);
                 else Wallet.Transfer(w, target, tx.Asset, amt, Session.Price);
                 if (own == null && target != d.Poinbase) Log.Info($"转进没人用的地址 {tx.To}：{amt} {tx.Asset}");
-                if (own == null && d.Scams.ScamAddrs.Any(a => ChainAddress.Same(a, tx.To))) PlayerStore.Instance.AddNightLog(L.T("nightlog.scam.sent", Fmt.Num(amt), tx.Asset), "cc7755");
                 TerminalWindow.Refresh(null);
                 if (own != null) RefreshDevice(own);
             });

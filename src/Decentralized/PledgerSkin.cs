@@ -28,6 +28,8 @@ namespace Decentralized
         public static readonly Color RowNormal = new Color(0f, 0f, 0f, 0.04f);
         public static readonly Color Transparent = new Color(0f, 0f, 0f, 0f);
         public static readonly Color MaskClear = new Color(0f, 0f, 0f, 0.004f);
+        /// <summary>余额里脏币数量的颜色：普通行在浅色墨水屏上用暗红，选中行在黑底上用黄色。</summary>
+        public const string DirtyOnPaper = "#A32A1F", DirtyOnKey = "#F2C14E";
         public static readonly Color Separator = new Color(0.12f, 0.12f, 0.14f, 0.18f);
 
         /// <summary>透明化底图：若附带 Mask 组件则保留极微小 alpha（0.004），避免 Mask 模板 alpha 为 0 导致子内容被整裁。</summary>

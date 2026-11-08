@@ -106,12 +106,11 @@ namespace Decentralized
             return c;
         }
 
-        /// <summary>客户地址的来历写进链上账本（Ponero 不上账本）：脏的来源是混币器、黑市平台和骗局地址，干净的是 Poinbase 和 DEX。</summary>
+        /// <summary>客户地址的来历写进链上账本（Ponero 不上账本）：脏的来源是混币器和黑市平台，干净的是 Poinbase 和 DEX。</summary>
         private static void WriteHistory(SaveData d, OtcOffer o, string addr)
         {
             if (o.Asset == Assets.Ponero) return;
             var dirty = new List<string> { d.Address("mixer"), d.Address("platform") };
-            dirty.AddRange(d.Scams.ScamAddrs);
             var clean = new List<string> { d.Address("poinbase"), d.Address("dex") };
             foreach (var kv in Otc.History(o, dirty, clean, d.Rng)) d.Chain(kv.Key, addr, o.Asset, o.Qty * kv.Value);
         }

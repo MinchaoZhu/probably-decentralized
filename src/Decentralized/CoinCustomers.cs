@@ -11,7 +11,7 @@ namespace Decentralized
     public static class CoinCustomers
     {
         private static readonly HashSet<StoreClient> Marked = new HashSet<StoreClient>();
-        private static int markDay = -1, supportDay = -1;
+        private static int markDay = -1;
 
         public static void Subscribe()
         {
@@ -177,12 +177,6 @@ namespace Decentralized
             {
                 int day = StoreStation.GetDayCounter();
                 if (day != markDay) { Marked.Clear(); markDay = day; }
-                // 假客服：一天最多一次
-                if (day >= Tuning.ScamMinDay && supportDay != day)
-                {
-                    supportDay = day;
-                    if (Session.Data.Rng.Chance(Tuning.FakeSupportChance)) manager.AddClient(FakeSupport());
-                }
                 foreach (var c in manager.clientStack)
                 {
                     if (c == null || c.isSecurity || Marked.Contains(c) || c.clientIntent != StoreClient.ClientIntent.BUY || c.isNoContributeToEvidence) continue;
@@ -225,30 +219,6 @@ namespace Decentralized
             ModHelper.AddCredit(-cost, false);
             Session.Data.FakePaidToday.Add(L.T("coinpay.fake.entry", client.displayName, item.name, cost));
             Log.Info($"伪造转账：{client.displayName} 拿走 {item.name}（{cost} 信用点），{asset} 不会到账");
-        }
-
-        /// <summary>假客服：自称 Poinbase 客服，说账户被风控，要把 CRC 转到"安全地址"。Poinbase 从不上门，也从不要求转账；转过去的币就没了。</summary>
-        public static StoreClient FakeSupportForTest() => FakeSupport();
-
-        private static StoreClient FakeSupport()
-        {
-            var d = Session.Data;
-            string addr = ChainAddress.Make(d.Rng.NextUInt());
-            d.Scams.ScamAddrs.Add(addr);
-            int amount = 100 * d.Rng.Range(3, 15);
-            var c = new StoreClient
-            {
-                identifier = "pd_fake_support", displayName = L.T("scam.support.name"), spriteName = SpriteDict.GetRandomUpperSpriteName(),
-                clientIntent = StoreClient.ClientIntent.DIALOGUE,
-            };
-            c.mainDialogue.SetText(c.displayName, L.T("scam.support.1")).NextDialogue()
-                .SetText(c.displayName, L.T("scam.support.2", amount, addr)).NextDialogue()
-                .SetText(c.displayName, L.T("scam.support.3"));
-            ModHelper.SetClientSource(c, ModInfo.Id);
-            c.AddBasicDialog();
-            c.CompleteClientCreation();
-            Log.Info($"假客服上门：要 {amount} CRC 转到 {addr}");
-            return c;
         }
 
         /// <summary>成交后顾客说的话：告诉玩家这单是币到账，不是信用点。</summary>

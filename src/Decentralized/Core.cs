@@ -7,7 +7,7 @@ namespace Decentralized
     {
         public const string Id = "probably_decentralized";
         public const string Name = "Probably Decentralized";
-        public const string Version = "2.0.0";
+        public const string Version = "2.1.0";
     }
 
     /// <summary>本地化：游戏的 mod 本地化表（ModFiles/Localization/*.csv），当前语言缺失时回退英文。</summary>

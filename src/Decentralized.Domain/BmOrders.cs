@@ -119,12 +119,28 @@ namespace Decentralized.Domain
 
         public double RugChance => Scales.R(Math.Min(Tuning.BmRugMax, Tuning.BmRugBase + Held / 10000.0 * Tuning.BmRugPerTenK));
 
-        /// <summary>每周必有的"矿工路线"商家类型（从中抽 2 家），其余按全部类型抽。</summary>
+        /// <summary>每次上新必有的"矿工路线"商家类型（从中抽 2 家），其余按全部类型抽。</summary>
         private static readonly MerchantType[] Core = { MerchantType.GpuNew, MerchantType.GpuUsed, MerchantType.Rigs, MerchantType.Modules };
         private static readonly MerchantType[] Others = { MerchantType.Arms, MerchantType.GunMods, MerchantType.Docs, MerchantType.Pharma, MerchantType.Chem, MerchantType.Brewer,
             MerchantType.Farm, MerchantType.Husbandry, MerchantType.Miner, MerchantType.Water, MerchantType.Storage, MerchantType.Tools, MerchantType.Luxury };
 
         private static double F(Rng rng, double lo, double hi) => lo + rng.NextDouble() * (hi - lo);
+
+        /// <summary>这类商家的价格系数范围。</summary>
+        private static (double Min, double Max) FactorRange(MerchantType t) =>
+            t == MerchantType.Bulk ? (Tuning.BmFactorBulkMin, Tuning.BmFactorBulkMax)
+            : t == MerchantType.Personal ? (Tuning.BmFactorPersonalMin, Tuning.BmFactorPersonalMax)
+            : t == MerchantType.GpuUsed ? (Tuning.BmFactorUsedMin, Tuning.BmFactorUsedMax)
+            : (Tuning.BmFactorMin, Tuning.BmFactorMax);
+
+        /// <summary>单件货的价格系数：个人卖家每件各自随机，其他商家在自家系数上小幅浮动，都不超出这类商家的范围。</summary>
+        private static double ListingFactor(BmSeller s, Rng rng)
+        {
+            var range = FactorRange(s.Type);
+            return s.Type == MerchantType.Personal
+                ? F(rng, range.Min, range.Max)
+                : Math.Max(range.Min, Math.Min(range.Max, s.Factor * F(rng, 1 - Tuning.BmPriceJitter, 1 + Tuning.BmPriceJitter)));
+        }
 
         private static List<BmEntry> AllEntries() => Merchants.Table.Values.SelectMany(x => x).GroupBy(x => x.Id).Select(g => g.First()).ToList();
 
@@ -146,7 +162,7 @@ namespace Decentralized.Domain
                     : s.Type == MerchantType.Elite ? rng.Range(1, Tuning.BmEliteQtyMax)
                     : s.Type == MerchantType.Personal ? rng.Range(1, Tuning.BmPersonalQtyMax)
                     : s.Type == MerchantType.GpuNew ? rng.Range(Math.Max(1, Tuning.BmQtyMin - Tuning.BmNewGpuQtyMinCut), Tuning.BmQtyMax - Tuning.BmNewGpuQtyMaxCut) : rng.Range(Tuning.BmQtyMin, Tuning.BmQtyMax);
-                double factor = s.Type == MerchantType.Personal ? F(rng, Tuning.BmPersonalFactorMin, Tuning.BmPersonalFactorMax) : s.Factor * F(rng, 1 - Tuning.BmPriceJitter, 1 + Tuning.BmPriceJitter);
+                double factor = ListingFactor(s, rng);
                 BmListing l = null;
                 bool eliteGpu = s.Type == MerchantType.Elite && rng.Chance(Tuning.BmEliteGpuChance);
                 bool personalGpu = s.Type == MerchantType.Personal && rng.Chance(Tuning.BmPersonalGpuChance);
@@ -168,7 +184,7 @@ namespace Decentralized.Domain
                         var e = entries[k];
                         long val = value(e.Id);
                         if (val <= 0) { entries.RemoveAt(k); continue; }
-                        bool ok = s.Type == MerchantType.Elite ? val >= Tuning.BmEliteMinValue : wantElite ? val > Tuning.BmMaxUnitValue : val <= Tuning.BmMaxUnitValue;
+                        bool ok = s.Type == MerchantType.Elite ? val >= Tuning.BmEliteMinValue : wantElite ? val > Tuning.BmPersonalEliteMinValue : val <= Tuning.BmMaxUnitValue;
                         if (!ok) continue;
                         pick = e; v = val; found = true; entries.RemoveAt(k);
                     }
@@ -194,7 +210,7 @@ namespace Decentralized.Domain
             foreach (var m in models) { roll -= AsicWeight(m); if (roll <= 0) { model = m; break; } }
             bool fresh = rng.Chance(Tuning.AsicNewShare);
             double health = fresh ? 100 : rng.Range(Tuning.AsicUsedHealthMin, Tuning.AsicUsedHealthMax);
-            double factor = s.Factor * F(rng, 1 - Tuning.BmPriceJitter, 1 + Tuning.BmPriceJitter);
+            double factor = ListingFactor(s, rng);
             return new List<BmListing>
             {
                 new BmListing { Seller = idx, Item = "gpu:" + model, Kind = GoodKind.Gpu, Level = 2, Model = model, Health = health, Qty = model == "M1" ? rng.Range(1, 2) : 1,
@@ -202,7 +218,7 @@ namespace Decentralized.Domain
             };
         }
 
-        /// <summary>每周重新生成商家、货架和论坛情报（与现货同一天刷新）：从 6 种类型里抽 BmMerchantCount 家，另有概率出现一家大宗商家。</summary>
+        /// <summary>每次上新重新生成商家、货架和论坛情报（与现货同一天刷新）：从 6 种类型里抽 BmMerchantCount 家，另有概率出现一家大宗商家。</summary>
         public void RefreshOrders(int day, int rep, Rng rng, Func<string, long> value, bool allTypes = false)
         {
             Sellers.Clear(); Catalog.Clear(); Forum.Clear();
@@ -222,12 +238,10 @@ namespace Decentralized.Domain
                 bool scam = rng.Chance(personal ? Tuning.BmPersonalScam : Tuning.BmScamSellerShare);
                 // 骗子多半是新号，也有刷过好评的老号；个人卖家都是新号
                 bool fresh = personal || (scam ? rng.Chance(Tuning.BmScamFresh) : rng.Chance(Tuning.BmHonestFresh));
-                double lo = t == MerchantType.Elite || t == MerchantType.Asic ? Tuning.BmFactorEliteMin : t == MerchantType.GpuNew ? Tuning.BmFactorNewMin : t == MerchantType.GpuUsed ? Tuning.BmFactorUsedMin : t == MerchantType.Bulk ? Tuning.BmFactorBulkMin : Tuning.BmFactorMin;
-                double hi = t == MerchantType.Elite || t == MerchantType.Asic ? Tuning.BmFactorEliteMax : t == MerchantType.GpuNew ? Tuning.BmFactorNewMax : t == MerchantType.GpuUsed ? Tuning.BmFactorUsedMax : t == MerchantType.Bulk ? Tuning.BmFactorBulkMax : Tuning.BmFactorMax;
                 var s = new BmSeller
                 {
                     Name = ChainAddress.Make(rng.NextUInt()),
-                    Scam = scam, Type = t, Factor = personal ? 1.0 : F(rng, lo, hi),
+                    Scam = scam, Type = t, Factor = F(rng, FactorRange(t).Min, FactorRange(t).Max),
                     Trades = fresh ? rng.Range(0, Tuning.BmFreshTradesMax) : rng.Range(Tuning.BmOldTradesMin, Tuning.BmOldTradesMax),
                     Rating = scam && !fresh ? rng.Range(Tuning.BmScamOldRatingMin, Tuning.BmScamOldRatingMax) : fresh ? rng.Range(Tuning.BmFreshRatingMin, Tuning.BmFreshRatingMax) : rng.Range(Tuning.BmOldRatingMin, Tuning.BmOldRatingMax),
                 };
@@ -238,7 +252,7 @@ namespace Decentralized.Domain
             if (RugChance > Scales.R(Tuning.BmRugBase * Tuning.BmForumRugFactor)) Forum.Add("rug");
         }
 
-        /// <summary>目录里全部货按订单价算的总值（信用点），用来核对每周周转量。</summary>
+        /// <summary>目录里全部货按订单价算的总值（信用点），用来核对每次上新的周转量。</summary>
         public double CatalogValue => Catalog.Sum(l => (double)l.Price * l.Qty);
 
         /// <summary>下单：钱包里的币按实付折算扣除，脏枚数与成本按比例留在卖家那边（记在订单上）。成功返回订单。</summary>

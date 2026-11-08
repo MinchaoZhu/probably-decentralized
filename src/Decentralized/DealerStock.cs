@@ -106,14 +106,6 @@ namespace Decentralized
                 d.Market.Wick = 0; double w = 0; for (int i = 0; i < 200 && w == 0; i++) w = d.Market.TryWick(d.Rng, day);
                 Log.Info($"测试：空投 {string.Join(",", d.Scams.Airdrops.Select(a => a.Name + (a.Scam ? "*" : "")))}；池子 {string.Join(",", d.Scams.Pools.Select(p => p.Name + (p.Scam ? "*" : "")))}；插针 {w:0.000} 回去 {d.Market.WickBack:0.00}");
             }));
-            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Scams: fake support now (test)", () => Log.Guard("假客服测试", () =>
-            {
-                var m = PlayerStore.Instance.storeClientManager;
-                var c = CoinCustomers.FakeSupportForTest();
-                PlayerStore.Instance.currentClientInstance = null;
-                m.clientStack.Insert(0, c);
-                PlayerStore.Instance.TryCallNextClient();
-            }));
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Chart: run market 30 days (test)", () => Log.Guard("K 线测试", () =>
             {
                 // 用真实的行情过程往前跑 30 天，记录蜡烛（会改动这一局的 PSC 价格，只在测试存档用）

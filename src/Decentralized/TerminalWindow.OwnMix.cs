@@ -28,7 +28,7 @@ namespace Decentralized
                 l.AddLabel(status, m.Closed || m.Seized(day) ? "ownmix_status_note" : "ownmix_status_dim");
                 var w = new[] { 220f, 200f };
                 TableRow(l, w, L.T("ownmix.k.fee"), (m.Fee * 100).ToString("0", CultureInfo.InvariantCulture) + "%");
-                TableRow(l, w, L.T("ownmix.k.rating"), (m.Rating * 100).ToString("0", CultureInfo.InvariantCulture) + "%");
+                TableRow(l, w, L.T("ownmix.k.rating"), ((1 - m.Rating) * 100).ToString("0", CultureInfo.InvariantCulture) + "%");
                 TableRow(l, w, L.T("ownmix.k.heat"), L.T("ownmix.heat." + m.HeatLevel(enforce)));
                 TableRow(l, w, L.T("ownmix.k.anon"), Fmt.Credits(m.Anonymity(Session.Price)));
                 TableRow(l, w, L.T("ownmix.k.fees"), Fmt.Credits(m.FeesTotal));

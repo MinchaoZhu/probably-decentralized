@@ -149,6 +149,7 @@ namespace Decentralized
             Session.TonightKj += kj;
             Session.TonightCards.Add(new KeyValuePair<GameItem, ModuleBonus>(m, b));
             Session.TonightMachine[m] = m;
+            MachineHelper.OnMachineActioned(m, modules);   // 算一次运转：自学习成长、过压烧毁、退化模块掉属性，今晚的加成按运转前算
             Update(m, modules);
         }
 
@@ -161,6 +162,7 @@ namespace Decentralized
             int kj = (int)Math.Ceiling(u.Kj(b));
             if (battery.childItems.Count == 0 || !PowerHelper.DrawPowerSource(battery.childItem, kj)) { Log.Info("涡轮增压：矿机电池电量不够，这一轮没挖"); return; }
             TurboMine.Round(m, new List<KeyValuePair<GameItem, ModuleBonus>> { new KeyValuePair<GameItem, ModuleBonus>(m, b) });
+            MachineHelper.OnMachineActioned(m, modules);
             Update(m, modules);
         }
 

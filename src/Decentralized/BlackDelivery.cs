@@ -5,7 +5,7 @@ using Decentralized.Domain;
 namespace Decentralized
 {
     /// <summary>
-    /// Web3 黑市的货物进出：每周刷新现货与订单目录，夜间推进订单并写夜间日志，
+    /// Web3 黑市的货物进出：每周一、周四上新现货与订单目录，夜间推进订单并写夜间日志，
     /// 上门（快递员当顾客上门）把到货交给玩家。
     /// </summary>
     public static class BlackDelivery
@@ -83,11 +83,12 @@ namespace Decentralized
 
         public static GoodKind KindOf(string id) => id.StartsWith("gpu:") ? GoodKind.Gpu : Merchants.Info(id).Kind;
 
-        /// <summary>每周刷新：现货与订单目录一起。返回是否刷新了。</summary>
+        /// <summary>上新：现货与订单目录一起。返回是否刷新了。</summary>
         public static bool Restock(SaveData d, int day, bool force = false)
         {
             int rep = StoreReputation.GetBMReputation();
-            if (d.Black.Closed(day)) return false;
+            // day 是今晚，货要赶在明早：重新开张的当晚就上货
+            if (d.Black.Closed(day + 1)) return false;
             if (force) d.Black.RefreshedDay = -999;
             if (!d.Black.Refresh(day, rep, d.Rng, Value)) return false;
             d.Black.RefreshOrders(day, rep, d.Rng, Value);
@@ -141,7 +142,13 @@ namespace Decentralized
                 }
                 if (e.Kind == "rug") Night_RugNews(day);
             }
-            if (Unlock.BlackUnlocked && !crackdown) Restock(d, day);
+            if (Unlock.BlackUnlocked && !crackdown)
+            {
+                // NPC 买家先买，当晚新上的货不受影响
+                int sold = d.Black.NpcBuys(d.Rng);
+                if (sold > 0) Log.Info($"黑市 NPC 买家：第 {day} 天夜里买走 {sold} 件，现货剩 {d.Black.Offers.Count} 种，货架剩 {d.Black.Catalog.Count} 种");
+                Restock(d, day);
+            }
         }
 
         private static void Night_RugNews(int day) => News.Show("pd_news_bmrug_" + day, L.T("news.bmrug.title"), L.T("news.bmrug.desc"), 4);

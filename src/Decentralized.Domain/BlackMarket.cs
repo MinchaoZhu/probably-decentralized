@@ -105,10 +105,18 @@ namespace Decentralized.Domain
             return goods;
         }
 
-        /// <summary>每周刷新一次（或首次开放时）：按声望开放的档次抽 StockCount 种货，每种 1–3 件（高档与显卡、高科技 1 件）。</summary>
+        /// <summary>最近一个该上新的夜晚（不晚于 day）：夜间结算时 day 还是当天，第二天早上才看到货，所以周一的货在周日夜里上。</summary>
+        public static int LastRefreshNight(int day)
+        {
+            for (int d = day; d > day - 7; d--)
+                if (Tuning.BmRefreshWeekdays.Contains((d + 1) % 7)) return d;
+            return day;
+        }
+
+        /// <summary>到了上新日（或首次开放时，错过的上新日在下一晚补上）：按声望开放的档次抽 StockCount 种货，每种 1–3 件（高档与显卡、高科技 1 件）。</summary>
         public bool Refresh(int day, int rep, Rng rng, Func<string, long> value)
         {
-            if (!Open(rep) || day - RefreshedDay < Tuning.BmRefreshDays) return false;
+            if (!Open(rep) || RefreshedDay >= LastRefreshNight(day)) return false;
             RefreshedDay = day;
             Offers.Clear();
             foreach (var g in Roll(StockCount(rep), day, rep, rng, value, PriceOf))
@@ -131,6 +139,24 @@ namespace Decentralized.Domain
             o.Qty--;
             if (o.Qty <= 0) Offers.Remove(o);
             return true;
+        }
+
+        /// <summary>夜间 NPC 买家：现货和商家货架上每件货各按 <see cref="Tuning.BmNpcBuyChance"/> 被买走，卖完下架。返回卖出的件数。</summary>
+        public int NpcBuys(Rng rng)
+        {
+            int total = 0;
+            foreach (var o in Offers) { int n = NpcSold(o.Qty, rng); o.Qty -= n; total += n; }
+            foreach (var l in Catalog) { int n = NpcSold(l.Qty, rng); l.Qty -= n; total += n; }
+            Offers.RemoveAll(o => o.Qty <= 0);
+            Catalog.RemoveAll(l => l.Qty <= 0);
+            return total;
+        }
+
+        private static int NpcSold(int qty, Rng rng)
+        {
+            int n = 0;
+            for (int i = 0; i < qty; i++) if (rng.Chance(Tuning.BmNpcBuyChance)) n++;
+            return n;
         }
 
         /// <summary>Ponero 对信用点的价格：跟随 PSC。</summary>

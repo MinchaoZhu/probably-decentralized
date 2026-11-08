@@ -66,8 +66,6 @@ namespace Decentralized.Domain
         public List<Approval> Approvals = new List<Approval>();
         public List<YieldPool> Pools = new List<YieldPool>();
         public int Seq;
-        /// <summary>骗子用过的收款地址（假客服、钓鱼）：转到这些地址时晨间日志说明被骗。</summary>
-        public List<string> ScamAddrs = new List<string>();
 
         private static readonly string[] AirdropNames = { "Poinbase", "PSC Foundation", "RatDigg", "Revolution DAO", "Gutter Labs", "Station Rewards" };
         private static readonly string[] PoolNames = { "Nebula Yield", "Rustwater Vault", "Orbit Farm", "Deck 9 Savings", "Gutterflow Pool", "Halo Staking", "Ironclad Earn" };

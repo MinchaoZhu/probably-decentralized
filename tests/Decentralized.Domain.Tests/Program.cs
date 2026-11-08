@@ -777,13 +777,36 @@ internal static class Program
             Check(low > 700 && low < 900 && high == 0, $"声望 0 约 40% 被冻：{low}/2000；声望 50 不会被冻：{high}");
         });
 
+        Test("黑市上新日与 NPC 买家", () =>
+        {
+            Func<int, BlackMarket, bool> go = (day, m) => m.Refresh(day, 45, new Rng(1), id => 100);
+            var sch = new BlackMarket();
+            Check(go(10, sch) && !go(11, sch) && !go(13, sch), "周四早上上新后，到周日夜里之前不再刷新");
+            Check(go(14, sch) && !go(16, sch) && go(17, sch), "周日夜里、周三夜里结算，周一、周四早上看到新货");
+            var late = new BlackMarket();
+            Check(go(10, late) && go(19, late), "错过的上新日在下一晚补上");
+            var npc = new BlackMarket();
+            int units = 20000;
+            npc.Catalog.Add(new BmListing { Item = "x", Qty = units });
+            npc.Offers.Add(new BmOffer { Item = "y", Qty = 1 });
+            npc.Catalog.Add(new BmListing { Item = "z", Qty = 1 });
+            int sold = npc.NpcBuys(new Rng(3));
+            Check(Near(sold / (double)units, Tuning.BmNpcBuyChance, 0.01), $"每件约 {Tuning.BmNpcBuyChance:P0} 被买走：{sold}/{units}");
+            var empty = new BlackMarket();
+            empty.Offers.Add(new BmOffer { Item = "y", Qty = 2 });
+            empty.Catalog.Add(new BmListing { Item = "z", Qty = 2 });
+            var r = new Rng(4);
+            for (int i = 0; i < 400; i++) empty.NpcBuys(r);
+            Check(empty.Offers.Count == 0 && empty.Catalog.Count == 0, "卖完下架");
+        });
+
         Test("Web3 黑市", () =>
         {
             Func<string, double> price = a => a == Assets.Ponero ? 50 : a == Assets.PSC ? 100 : 1;
             var bm = new BlackMarket();
             Check(!bm.Refresh(10, 5, new Rng(1), id => 100) && bm.Offers.Count == 0, "声望不够不开放");
             Check(bm.Refresh(10, 45, new Rng(1), id => 100) && bm.Offers.Count > 0 && bm.Offers.Where(o => o.Kind == GoodKind.Contraband).All(o => o.Level <= 2 && o.Price == 130), "声望 45 开放中档，溢价 30%");
-            Check(!bm.Refresh(12, 45, new Rng(2), id => 100) && bm.Refresh(17, 45, new Rng(2), id => 100), "每周刷新");
+            Check(!bm.Refresh(12, 45, new Rng(2), id => 100) && bm.Refresh(17, 45, new Rng(2), id => 100), "上新日才刷新");
             var w = new Wallet { Address = "t" };
             w.Add(Assets.PSC, 10); w.AddDirty(Assets.CRT, 1000, 400); w.Basis = 800;   // 总价值 2000
             var offer = new BmOffer { Item = "x", Qty = 1, Price = 500, Level = 1 };
@@ -1003,8 +1026,8 @@ internal static class Program
                 if (bm.Sellers.Where(x => x.Type != MerchantType.Bulk && x.Type != MerchantType.Personal).Select(x => x.Type).Distinct().Count() != bm.Sellers.Count(x => x.Type != MerchantType.Bulk && x.Type != MerchantType.Personal)) throw new Exception("同类型商家重复");
             }
             double avg = sum / n;
-            Check(avg > 8000 && avg < 40000, $"每周货架总值（游戏里实测平均约 1.4 万，这里用统一基础价 250）：平均 {avg:0}");
-            Check(bulk > n * 0.15 && bulk < n * 0.35 && types.Count >= 20, $"大宗商家约 {Tuning.BmBulkChance:P0} 的周出现：{bulk}/{n}；七种类型都出现过");
+            Check(avg > 13000 && avg < 67000, $"每次上新的货架总值（统一基础价 250）：平均 {avg:0}");
+            Check(bulk > n * 0.15 && bulk < n * 0.35 && types.Count >= 20, $"大宗商家约 {Tuning.BmBulkChance:P0} 的上新出现率：{bulk}/{n}；七种类型都出现过");
             // 批量下单：折扣、库存扣减
             Func<string, double> price = a => 1;
             var m = new BlackMarket(); m.Sellers.Add(new BmSeller { Name = "a", Trades = 100, Type = MerchantType.Modules, Factor = 0.8 });
@@ -1033,12 +1056,25 @@ internal static class Program
                 if (bm.Sellers.Any(x => x.Type == MerchantType.Elite)) elite++;
                 if (bm.Sellers.Count(x => x.Type == MerchantType.Personal) != Tuning.BmPersonalCount) throw new Exception("个人卖家数不对");
                 foreach (var l in bm.Catalog.Where(x => bm.Sellers[x.Seller].Type == MerchantType.Elite))
-                    if (l.Kind != GoodKind.Gpu && l.Price < Tuning.BmEliteMinValue * Tuning.BmFactorEliteMin * 0.97 - 1) throw new Exception("尖端店铺卖了便宜货：" + l.Item + " " + l.Price);
+                    if (l.Kind != GoodKind.Gpu && l.Price < Tuning.BmEliteMinValue * Tuning.BmFactorMin - 1) throw new Exception("尖端店铺卖了便宜货：" + l.Item + " " + l.Price);
                 foreach (var l in bm.Catalog.Where(x => bm.Sellers[x.Seller].Type == MerchantType.Personal && x.Kind == GoodKind.Contraband)) { personalListings++; double f = l.Price / 200.0; lo = Math.Min(lo, f); hi = Math.Max(hi, f); }
                 foreach (var s in bm.Sellers.Where(x => x.Type == MerchantType.Personal)) if (s.Advance) throw new Exception("个人卖家不该接受提前放款");
             }
             Check(elite > n * 0.08 && elite < n * 0.25, $"尖端店铺约 {Tuning.BmEliteChance:P0} 的周出现：{elite}/{n}");
-            Check(personalListings > 100 && lo < 0.65 && hi > 1.05, $"个人卖家每件价格系数分散：{lo:0.00}–{hi:0.00}");
+            Check(personalListings > 100 && lo >= Tuning.BmFactorPersonalMin - 0.01 && hi <= Tuning.BmFactorPersonalMax + 0.01 && hi - lo > (Tuning.BmFactorPersonalMax - Tuning.BmFactorPersonalMin) * 0.8, $"个人卖家每件价格系数分散：{lo:0.00}–{hi:0.00}");
+            var every = new BlackMarket();
+            every.RefreshOrders(20, 90, new Rng(5), id => 200, true);
+            var goods = every.Catalog.Where(x => x.Kind != GoodKind.Gpu).ToList();
+            Func<BmListing, bool> inRange = x =>
+            {
+                var t = every.Sellers[x.Seller].Type;
+                double min = t == MerchantType.Bulk ? Tuning.BmFactorBulkMin : t == MerchantType.Personal ? Tuning.BmFactorPersonalMin : Tuning.BmFactorMin;
+                double max = t == MerchantType.Bulk ? Tuning.BmFactorBulkMax : t == MerchantType.Personal ? Tuning.BmFactorPersonalMax : Tuning.BmFactorMax;
+                return x.Price >= 200 * min - 1 && x.Price <= 200 * max + 1;
+            };
+            Check(goods.Count > 20 && goods.All(inRange), "各类商家的价格都在自己的系数范围内");
+            var used = every.Catalog.Where(x => every.Sellers[x.Seller].Type == MerchantType.GpuUsed).ToList();
+            Check(used.Count > 0 && used.All(x => x.Price >= CardValue.Of(x.Model, x.Health) * Tuning.BmFactorUsedMin - 1 && x.Price <= CardValue.Of(x.Model, x.Health) * Tuning.BmFactorUsedMax + 1), "二手矿卡按自己的系数范围定价");
         });
 
         Test("链上地址校验位", () =>

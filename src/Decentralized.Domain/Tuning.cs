@@ -117,9 +117,12 @@ namespace Decentralized.Domain
         public const double SideArbRate = 0.75, SideDepthShare = 0.3, SparkDepthShare = 0.15;
         /// <summary>Poinbase 的 SPARK/CRC 订单簿深度占主池深度的比例。</summary>
         public const double PoinSparkDepthShare = 0.5;
-        /// <summary>Web3 黑市：开放所需黑市声望，中 / 高档货所需声望，现货每周刷新的天数与基础件数（每高 BmStockPerRep 声望多一件），现货溢价。</summary>
-        public const int BmOpenRep = 10, BmMidRep = 40, BmHighRep = 80, BmRefreshDays = 7, BmStockBase = 4;
+        /// <summary>Web3 黑市：开放所需黑市声望，中 / 高档货所需声望，现货基础件数（每高 BmStockPerRep 声望多一件），现货溢价。</summary>
+        public const int BmOpenRep = 10, BmMidRep = 40, BmHighRep = 80, BmStockBase = 4;
         public const double BmStockPerRep = 40, BmPremium = 0.30;
+        /// <summary>现货和商家货架在星期几的早上上新（游戏的天数 % 7：0 周日、1 周一……）；夜间 NPC 买家买走每件货的概率。</summary>
+        public static readonly int[] BmRefreshWeekdays = { 1, 4 };
+        public const double BmNpcBuyChance = 0.20;
         /// <summary>Ponero 兑换处：开放所需黑市声望、每次兑入 / 兑出的手续费、每天可兑换的额度（信用点）、对 PSC 的价格比。</summary>
         public const int PoneroOpenRep = 30;
         public const double PoneroFee = 0.06, PoneroDailyCap = 1000, PoneroPscRatio = 0.5;
@@ -127,7 +130,7 @@ namespace Decentralized.Domain
         /// 上门被截获的概率（镇压期间再加）、骗子卖家占比、每晚平台跑路基础概率与每万信用点托管资金加的概率（封顶）、跑路后关闭的天数。</summary>
         public const double BmEscrowFee = 0.05, BmAdvanceDiscount = 0.10, BmInterceptDoor = 0.08, BmInterceptCrackdown = 0.15;
         public const double BmScamSellerShare = 0.15, BmRugBase = 0.002, BmRugPerTenK = 0.004, BmRugMax = 0.05;
-        public const int BmAdvanceMinTrades = 30, BmDoorDays = 3, BmRugClosedDays = 10;
+        public const int BmAdvanceMinTrades = 30, BmDoorDays = 3, BmRugClosedDays = 5;
         /// <summary>蜜罐：每晚平台被执法接管的基础概率、每点治安声望加的概率、封顶、持续天数；之后订单被追查的延迟天数；
         /// 订单被截获时变成受控交付的概率；每晚某个近期卖家落网的概率。</summary>
         public const double BmHoneypotBase = 0.01, BmHoneypotPerSecRep = 0.0004, BmHoneypotMax = 0.06, BmControlled = 0.35, BmSellerBust = 0.008;
@@ -158,19 +161,20 @@ namespace Decentralized.Domain
         public const double BmWeightPsc = 0.8, BmWeightCrt = 1, BmWeightCra = 0.6, BmWeightPonero = 0.4;
         /// <summary>PLEDGER 区块高度每晚自然增长的范围（区块数，含两端）。</summary>
         public const int BlocksPerDayMin = 120, BlocksPerDayMax = 170;
-        /// <summary>商家货架：每周的商家数（其中 2 家从矿卡 / 矿架 / 模组 4 类里抽，其余从其他类型里抽）、每家的货种数、每种货的库存范围；大宗商家出现概率、库存范围、送货天数；
-        /// 各类商家的价格系数范围（订单价 = 基础价 × 系数）；批量折扣档（件数、折扣）。</summary>
-        public const int BmMerchantCount = 7, BmCoreMerchants = 2, BmMerchantListings = 3, BmQtyMin = 2, BmQtyMax = 6, BmBulkQtyMin = 10, BmBulkQtyMax = 25, BmBulkDays = 6;
-        public const double BmBulkChance = 0.25, BmFactorMin = 0.70, BmFactorMax = 0.95, BmFactorNewMin = 0.85, BmFactorNewMax = 1.00, BmFactorUsedMin = 0.65, BmFactorUsedMax = 0.90, BmFactorBulkMin = 0.55, BmFactorBulkMax = 0.75;
+        /// <summary>商家货架：每次上新的商家数（其中 2 家从矿卡 / 矿架 / 模组 4 类里抽，其余从其他类型里抽）、每家的货种数、每种货的库存范围；大宗商家出现概率、库存范围、送货天数；
+        /// 价格系数范围（订单价 = 基础价 × 系数）：普通商家（含全新矿卡、尖端店铺、矿机商）、大宗商家、个人卖家、二手矿卡商（有假卡风险，比全新卡便宜）；都已扣除等待期间平台跑路的期望损失（3 天的订单约 2%，大宗 6 天约 5%）；批量折扣档（件数、折扣）。</summary>
+        public const int BmMerchantCount = 7, BmCoreMerchants = 2, BmMerchantListings = 5, BmQtyMin = 2, BmQtyMax = 6, BmBulkQtyMin = 10, BmBulkQtyMax = 25, BmBulkDays = 6;
+        public const double BmBulkChance = 0.25, BmFactorMin = 0.88, BmFactorMax = 1.28, BmFactorBulkMin = 0.75, BmFactorBulkMax = 1.15, BmFactorPersonalMin = 0.98, BmFactorPersonalMax = 1.38, BmFactorUsedMin = 0.74, BmFactorUsedMax = 1.08;
         /// <summary>商家货架上单件基础价的上限（过贵的货不上，免得一件把周转量撑歪）。</summary>
-        public const long BmMaxUnitValue = 4000;
-        /// <summary>尖端店铺：每周出现概率、货种数、库存范围、单件基础价下限、价格系数范围、送货天数。</summary>
-        public const double BmEliteChance = 0.15, BmFactorEliteMin = 0.85, BmFactorEliteMax = 1.00;
+        public const long BmMaxUnitValue = 8000;
+        /// <summary>尖端店铺：每次上新的出现概率、货种数、库存范围、单件基础价下限、送货天数。</summary>
+        public const double BmEliteChance = 0.15;
         public const int BmEliteListings = 2, BmEliteQtyMax = 2, BmEliteDays = 5;
         public const long BmEliteMinValue = 2000;
-        /// <summary>个人卖家：每周家数、货种数、库存上限、每件的价格系数范围（各件独立随机）、是骗子的概率、混进尖端货的概率。</summary>
+        /// <summary>个人卖家：每次上新的家数、货种数、库存上限、是骗子的概率、混进尖端货的概率、尖端货的基础价下限。</summary>
         public const int BmPersonalCount = 2, BmPersonalListings = 3, BmPersonalQtyMax = 2;
-        public const double BmPersonalFactorMin = 0.50, BmPersonalFactorMax = 1.20, BmPersonalScam = 0.25, BmPersonalEliteShare = 0.10;
+        public const double BmPersonalScam = 0.25, BmPersonalEliteShare = 0.10;
+        public const long BmPersonalEliteMinValue = 4000;
         public const int BmBulk1Count = 5, BmBulk2Count = 10;
         public const double BmBulk1Discount = 0.05, BmBulk2Discount = 0.10;
         /// <summary>出售量越大货款越容易带污点：近 7 天成交额达到参考量时，污点概率与比例各加最多 BmVolumeTaintMax。</summary>
@@ -190,8 +194,10 @@ namespace Decentralized.Domain
         public const double TxFeeSlow = 0.5, TxFeeNormal = 1.5, TxFeeFast = 4, TxCongestedFeeMult = 4;
         /// <summary>Gas 档位的确认速度倍数（时间乘它）：Gas 越高确认越快、进度条走得越快；Poinbase 出金固定普通档。</summary>
         public const double TxSpeedSlow = 1.5, TxSpeedNormal = 1, TxSpeedFast = 0.5;
+        /// <summary>PLEDGER 广播读条的基础秒数（普通档），乘档位速度倍数和拥堵倍数：慢档 1.5 秒、快档 0.5 秒，不能跳过。</summary>
+        public const double TxBarSecs = 1;
         /// <summary>PLEDGER 按住 ✓ 签名的基础秒数（普通档），乘档位速度倍数：快档更短、慢档更长。</summary>
-        public const double TxHoldSecs = 1.2;
+        public const double TxHoldSecs = 1;
         /// <summary>Gas 价格指数：以 GasPeriod 天为周期正弦涨跌，振幅 GasAmp（0.5×–1.5×），每天再乘 1 ± GasNoise 的随机波动。</summary>
         public const int TxGasPeriod = 7;
         public const double TxGasAmp = 0.5, TxGasNoise = 0.15;
@@ -228,7 +234,7 @@ namespace Decentralized.Domain
         public const int PerpPscLev = 5, PerpSparkLev = 3;
         public const double PerpPscCap = 20000, PerpSparkCap = 5000;
 
-        /// <summary>RatDigg 矿机（ASIC）：黑市矿机商每周出现的概率；M1 / M2 / M3 需要的黑市声望与出现权重；新机占比与二手的健康度范围。</summary>
+        /// <summary>RatDigg 矿机（ASIC）：黑市矿机商每次上新的出现概率；M1 / M2 / M3 需要的黑市声望与出现权重；新机占比与二手的健康度范围。</summary>
         public const double AsicChance = 0.25, AsicNewShare = 0.7;
         public const int AsicRepM1 = 40, AsicRepM2 = 60, AsicRepM3 = 80;
         public const double AsicWeightM1 = 1.0, AsicWeightM2 = 0.6, AsicWeightM3 = 0.4;
@@ -292,12 +298,12 @@ namespace Decentralized.Domain
         /// <summary>卖币客户：有相关事件时出手事件里来的币（全额污点）的概率，Ponero 兑换处开放后出手 Ponero 的概率；币的市值（房租的倍数）；
         /// 其他币的污点比例范围；现金价占市值的比例（污点比例 0 时、1 时，之间线性；Ponero 单独一档）；便衣的概率与镇压期间的加成；客户地址来历的最多笔数。</summary>
         public const double OtcEventChance = 0.7, OtcPoneroChance = 0.15, OtcValueMinRents = 4, OtcValueMaxRents = 15;
-        public const double OtcTaintMin = 0.2, OtcTaintMax = 0.9, OtcCutClean = 0.80, OtcCutDirty = 0.45, OtcPoneroCutMin = 0.70, OtcPoneroCutMax = 0.80;
+        public const double OtcTaintMin = 0.2, OtcTaintMax = 0.9, OtcCutClean = 0.90, OtcCutDirty = 0.50, OtcPoneroCutMin = 0.70, OtcPoneroCutMax = 0.80;
         public const double OtcSting = 0.05, OtcStingCrackdown = 0.10;
         public const int OtcHistoryMax = 3;
         /// <summary>买币客户：要买的币的市值（房租的倍数）；出价相对市价的随机溢价范围（可能低于市价，成不成交由玩家决定）。</summary>
         public const double OtcBuyMinRents = 2, OtcBuyMaxRents = 8;
-        public const double OtcBidMin = -0.05, OtcBidMax = 0.30;
+        public const double OtcBidMin = 0.15, OtcBidMax = 0.30;
         /// <summary>
         /// 自营混币器（买下场外换币台就开放）：默认费率、可选费率；口碑（近期出款剩下的污点比例）跟出款走的速度、客户把剩下的污点比例折成费率的权重、Tumbler 关停时客户不混的额外成本、匿名集的半饱和值（每轮清洗率 = 基准 × 匿名集 /(匿名集 + 它)）、平均轮数、客户在途的币计入匿名集的比例；
         /// 基础需求（信用点，随天数增长）、黑市声望 0 时的需求系数、客流对成本差的灵敏度、每晚需求的随机幅度、单笔存入的平均额；
@@ -315,8 +321,8 @@ namespace Decentralized.Domain
         public const int OwnMixSeizeDays = 7, OwnMixRugRep = 25;
         public const double OwnMixRugCrime = 400;
 
-        /// <summary>假客服：每天上门的概率；伪造转账：用币付款的顾客里是骗子的比例；两者都从第几天起。</summary>
-        public const double FakeSupportChance = 0.04, FakeTransferShare = 0.08;
+        /// <summary>伪造转账：用币付款的顾客里是骗子的比例；从第几天起。</summary>
+        public const double FakeTransferShare = 0.08;
         public const int ScamMinDay = 10;
 
         /// <summary>Web3 内置自动换币：商家不收手里的币时，按这个比例多付（DEX 手续费 0.3% 加上高滑点），省得自己去换。</summary>
