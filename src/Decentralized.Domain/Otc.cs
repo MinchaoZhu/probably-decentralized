@@ -101,11 +101,10 @@ namespace Decentralized.Domain
             return new OtcOffer { Side = o.Side, Asset = o.Asset, Qty = o.Qty * f, Value = o.Value * f, TaintRatio = o.TaintRatio, Cash = (int)Math.Round(o.Cash * f), Sting = o.Sting };
         }
 
-        /// <summary>收下卖币客户的币：币进钱包，其中 数量 × 污点比例 枚是脏的；成本是付出的现金。</summary>
+        /// <summary>收下卖币客户的币：币进钱包，其中 数量 × 污点比例 枚是脏的。</summary>
         public static void Receive(Wallet w, OtcOffer o)
         {
             w.AddDirty(o.Asset, o.Qty, o.Qty * o.TaintRatio);
-            w.Basis += o.Cash;
         }
 
         /// <summary>

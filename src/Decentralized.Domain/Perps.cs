@@ -5,12 +5,12 @@ using System.Linq;
 
 namespace Decentralized.Domain
 {
-    /// <summary>永续合约的一个净仓位。Size 是标的数量，Margin 是保证金（CRC，信用点等值），Taint / Basis 是存入时带来的污点与成本。</summary>
+    /// <summary>永续合约的一个净仓位。Size 是标的数量，Margin 是保证金（CRC，信用点等值）。</summary>
     public sealed class PerpPosition
     {
         public string Product;
         public bool Long;
-        public double Size, Entry, Margin, Basis;
+        public double Size, Entry, Margin;
         /// <summary>旧存档（数据版本 5 之前）保证金带的污点额：读档迁移时挪到 1 号钱包，之后为 0（Poinbase 没有污点）。</summary>
         [JsonProperty("Taint")] public double LegacyTaint;
 
@@ -73,14 +73,8 @@ namespace Decentralized.Domain
         public bool Banned(int day) => day <= BannedUntil;
         public double Rate(string product) => Funding.TryGetValue(product, out var r) ? r : 0;
 
-        private static double Share(Wallet acct, double amount, Func<string, double> price)
-        {
-            double total = acct.Value(price);
-            return total > 0 ? Math.Min(1, amount * price(Assets.CRC) / total) : 0;
-        }
-
-        /// <summary>开仓（同一时间只有一个仓位，已有仓位时只能 <see cref="AddMargin"/>）：保证金 + 手续费从账户的 CRC 里扣，污点与成本按保证金的价值比例随保证金进仓位。</summary>
-        public PerpResult Open(Wallet acct, string product, bool isLong, double margin, int leverage, double price, int day, Func<string, double> pr)
+        /// <summary>开仓（同一时间只有一个仓位，已有仓位时只能 <see cref="AddMargin"/>）：保证金 + 手续费从账户的 CRC 里扣。</summary>
+        public PerpResult Open(Wallet acct, string product, bool isLong, double margin, int leverage, double price, int day)
         {
             if (Banned(day)) return PerpResult.Banned;
             if (Debt > 1e-9) return PerpResult.Debt;
@@ -99,32 +93,28 @@ namespace Decentralized.Domain
             double entryAll = ((pos?.Size ?? 0) * (pos?.Entry ?? 0) + sizeNew * price) / sizeAll;
             double eq0 = (pos?.Margin ?? 0) + margin + (isLong ? 1 : -1) * sizeAll * (spot - entryAll);
             if (eq0 < (Tuning.PerpMaint + Tuning.PerpOpenBuffer) * sizeAll * spot) return PerpResult.Thin;
-            double share = Share(acct, margin, pr);
-            double basis = acct.Basis * share;
-            acct.Add(Assets.CRC, -(margin + fee)); acct.Basis -= basis;
+            acct.Add(Assets.CRC, -(margin + fee));
             InsuranceFund += fee * Tuning.PerpFeeToFund;
             if (pos == null) Positions.Add(pos = new PerpPosition { Product = product, Long = isLong, Entry = price });
             double size = notional / price;
             pos.Entry = (pos.Size * pos.Entry + size * price) / (pos.Size + size);
-            pos.Size += size; pos.Margin += margin; pos.Basis += basis;
+            pos.Size += size; pos.Margin += margin;
             return PerpResult.Ok;
         }
 
         /// <summary>追加保证金（不收手续费），把强平价推远。</summary>
-        public PerpResult AddMargin(Wallet acct, string product, double amount, Func<string, double> pr)
+        public PerpResult AddMargin(Wallet acct, string product, double amount)
         {
             var pos = Of(product);
             if (pos == null) return PerpResult.NoPosition;
             if (amount <= 0) return PerpResult.Margin;
             if (acct.Avail(Assets.CRC) + 1e-9 < amount) return PerpResult.Funds;
-            double share = Share(acct, amount, pr);
-            double basis = acct.Basis * share;
-            acct.Add(Assets.CRC, -amount); acct.Basis -= basis;
-            pos.Margin += amount; pos.Basis += basis;
+            acct.Add(Assets.CRC, -amount);
+            pos.Margin += amount;
             return PerpResult.Ok;
         }
 
-        /// <summary>平仓（按白天的现价）：权益减手续费回到账户，成本按剩下的比例退回。权益不够付时缺口按穿仓处理。返回回到账户的 CRC。</summary>
+        /// <summary>平仓（按白天的现价）：权益减手续费回到账户。权益不够付时缺口按穿仓处理。返回回到账户的 CRC。</summary>
         public double Close(Wallet acct, string product, double price, int day, out double deficit)
         {
             deficit = 0;
@@ -136,14 +126,8 @@ namespace Decentralized.Domain
             double payout = pos.Equity(price) - fee;
             InsuranceFund += Math.Min(fee, Math.Max(0, pos.Equity(price))) * Tuning.PerpFeeToFund;
             if (payout < 0) { deficit = -payout; Cover(deficit, day); return 0; }
-            Return(acct, pos, payout);
+            acct.Add(Assets.CRC, payout);
             return payout;
-        }
-
-        private void Return(Wallet acct, PerpPosition pos, double payout)
-        {
-            double keep = pos.Margin > 0 ? Math.Min(1, payout / pos.Margin) : 0;
-            acct.Add(Assets.CRC, payout); acct.Basis += pos.Basis * keep;
         }
 
         /// <summary>穿仓缺口：保险基金先垫，不够的记成欠款。</summary>
@@ -175,7 +159,7 @@ namespace Decentralized.Domain
         /// 夜间结算。marks：各品种今天的标记价（日均价）。顺序：资金费 → NPC 爆仓与穿仓进出基金 → 强平 → 基金见底时自动减仓盈利仓位 →
         /// 欠款计息并用账户 CRC 偿还 → 逾期的触发没收。标记价涨跌达到 <see cref="Tuning.PerpNewsMove"/> 的品种另记一条 wipe（全网爆仓，含玩家）。
         /// </summary>
-        public List<PerpEvent> Night(int day, IDictionary<string, double> marks, Wallet acct, Func<string, double> pr)
+        public List<PerpEvent> Night(int day, IDictionary<string, double> marks, Wallet acct)
         {
             var evs = new List<PerpEvent>();
             var wipes = new Dictionary<string, PerpEvent>();
@@ -215,7 +199,7 @@ namespace Decentralized.Domain
                     if (!marks.TryGetValue(pos.Product, out var mark) || pos.Pnl(mark) <= 0) continue;
                     double pnl = pos.Pnl(mark), cut = pnl * Tuning.PerpAdlHaircut;
                     Positions.Remove(pos);
-                    Return(acct, pos, pos.Margin + pnl - cut);
+                    acct.Add(Assets.CRC, pos.Margin + pnl - cut);
                     evs.Add(new PerpEvent { Kind = "adl", Product = pos.Product, Long = pos.Long, Amount = cut });
                 }
             if (Debt > 1e-9)
@@ -225,9 +209,7 @@ namespace Decentralized.Domain
                 double repay = Math.Min(Debt, acct.Avail(Assets.CRC));
                 if (repay > 1e-9)
                 {
-                    double share = Share(acct, repay, pr);
-                    double basis = acct.Basis * share;
-                    acct.Add(Assets.CRC, -repay); acct.Basis -= basis;
+                    acct.Add(Assets.CRC, -repay);
                     Debt -= repay;
                     evs.Add(new PerpEvent { Kind = "repaid", Amount = repay });
                 }

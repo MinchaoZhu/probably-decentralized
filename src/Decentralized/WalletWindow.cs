@@ -575,7 +575,7 @@ namespace Decentralized
             {
                 if (w == null) return;
                 // 手续费先扣（被挤出内存池也照扣）
-                if (tx.Fee > 0 && tx.FeeAsset != null) Wallet.Transfer(w, new Wallet(), tx.FeeAsset, Math.Min(tx.Fee, w.Avail(tx.FeeAsset)), Session.Price);
+                if (tx.Fee > 0 && tx.FeeAsset != null) Wallet.Transfer(w, new Wallet(), tx.FeeAsset, Math.Min(tx.Fee, w.Avail(tx.FeeAsset)));
                 if (tx.Dropped)
                 {
                     // 没成交：账单还在，可以重新付
@@ -598,7 +598,7 @@ namespace Decentralized
                 {
                     // 多付的部分对方不退
                     double extra = amt - tx.Bill.Amount;
-                    if (extra > 1e-9) Wallet.Transfer(w, new Wallet(), tx.Asset, extra, Session.Price);
+                    if (extra > 1e-9) Wallet.Transfer(w, new Wallet(), tx.Asset, extra);
                 }
                 if (tx.Bill != null)
                 {
@@ -613,8 +613,8 @@ namespace Decentralized
                 var own = d.Own(tx.To);
                 Wallet target = own ?? (IsPoinbase(tx.To) ? d.Poinbase : new Wallet());
                 // Poinbase 只收干净的币：污点留在钱包里
-                if (target == d.Poinbase) Wallet.TransferClean(w, target, tx.Asset, amt, Session.Price);
-                else Wallet.Transfer(w, target, tx.Asset, amt, Session.Price);
+                if (target == d.Poinbase) Wallet.TransferClean(w, target, tx.Asset, amt);
+                else Wallet.Transfer(w, target, tx.Asset, amt);
                 if (own == null && target != d.Poinbase) Log.Info($"转进没人用的地址 {tx.To}：{amt} {tx.Asset}");
                 TerminalWindow.Refresh(null);
                 if (own != null) RefreshDevice(own);

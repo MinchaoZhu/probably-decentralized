@@ -37,9 +37,8 @@ namespace Decentralized.Domain
         public static double Receive(Wallet w, string asset, double credits, double price, double heatPct)
         {
             if (credits <= 0 || price <= 0) return 0;
-            double qty = credits * (1 + Tuning.CoinPayPremium) / price;   // 溢价只加在币数上，污点与成本仍按货值算
+            double qty = credits * (1 + Tuning.CoinPayPremium) / price;   // 溢价只加在币数上，污点仍按货值算
             w.AddDirty(asset, qty, credits * Math.Max(0, Math.Min(100, heatPct)) / 100.0 / price);
-            w.Basis += credits;
             return qty;
         }
     }

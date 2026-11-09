@@ -35,8 +35,8 @@ namespace Decentralized.Domain
         public double Rate, Reserve, Cap;
         public bool Timelock, Audited, Scam, Closed;
         public Dictionary<string, double> Deposits = new Dictionary<string, double>();
-        /// <summary>每个钱包存入的 CRC 里脏的枚数、成本：取出时带回。</summary>
-        public Dictionary<string, double> Dirty = new Dictionary<string, double>(), Basis = new Dictionary<string, double>();
+        /// <summary>每个钱包存入的 CRC 里脏的枚数：取出时带回。</summary>
+        public Dictionary<string, double> Dirty = new Dictionary<string, double>();
         /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
         [JsonProperty("Taint")] public Dictionary<string, double> LegacyTaint = new Dictionary<string, double>();
         /// <summary>时间锁池子的取款队列：钱包 → (到账日, 数额)。</summary>
@@ -47,7 +47,7 @@ namespace Decentralized.Domain
 
     public sealed class YieldWithdraw
     {
-        public string Wallet; public int Day; public double Amount, Dirty, Basis;
+        public string Wallet; public int Day; public double Amount, Dirty;
         /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
         [JsonProperty("Taint")] public double LegacyTaint;
     }
@@ -124,7 +124,7 @@ namespace Decentralized.Domain
             if (a.Claimed || day > a.Expire) return null;
             a.Claimed = true;
             got = a.Scam ? Math.Round(a.Reward * 0.05, 2) : a.Reward;
-            w.Add(Assets.CRC, got); w.Basis += got;
+            w.Add(Assets.CRC, got);
             if (a.Approve <= 0) return null;
             var ap = new Approval { Id = ++Seq, Wallet = w.Address, Asset = a.Asset, Spender = a.Name, Limit = a.Approve, Scam = a.Scam, DrainDay = a.Scam ? day + rng.Range(Tuning.AirdropDrainMin, Tuning.AirdropDrainMax) : -1 };
             Approvals.Add(ap);
@@ -154,15 +154,13 @@ namespace Decentralized.Domain
             return p2;
         }
 
-        public bool Deposit(YieldPool p, Wallet w, double amount, Func<string, double> pr)
+        public bool Deposit(YieldPool p, Wallet w, double amount)
         {
             if (p.Closed || amount <= 0 || w.Avail(Assets.CRC) + 1e-9 < amount || p.Total + amount > p.Cap + 1e-9) return false;
-            double total = w.Value(pr), share = total > 0 ? Math.Min(1, amount * pr(Assets.CRC) / total) : 0;
-            double dirty = amount * w.DirtyRatio(Assets.CRC), basis = w.Basis * share;
-            w.Add(Assets.CRC, -amount); w.Basis -= basis;
+            double dirty = amount * w.DirtyRatio(Assets.CRC);
+            w.Add(Assets.CRC, -amount);
             p.Deposits[w.Address] = p.Of(w.Address) + amount;
             p.Dirty[w.Address] = (p.Dirty.TryGetValue(w.Address, out var t) ? t : 0) + dirty;
-            p.Basis[w.Address] = (p.Basis.TryGetValue(w.Address, out var b) ? b : 0) + basis;
             return true;
         }
 
@@ -171,16 +169,16 @@ namespace Decentralized.Domain
         {
             double amt = p.Of(w.Address);
             if (amt <= 0 || p.Closed) return 0;
-            double dirty = p.Dirty.TryGetValue(w.Address, out var t) ? t : 0, basis = p.Basis.TryGetValue(w.Address, out var b) ? b : 0;
-            p.Deposits.Remove(w.Address); p.Dirty.Remove(w.Address); p.Basis.Remove(w.Address);
-            if (p.Timelock) { p.Pending.Add(new YieldWithdraw { Wallet = w.Address, Day = day + Tuning.YieldLockDays, Amount = amt, Dirty = dirty, Basis = basis }); return 0; }
-            Pay(w, amt, dirty, basis);
+            double dirty = p.Dirty.TryGetValue(w.Address, out var t) ? t : 0;
+            p.Deposits.Remove(w.Address); p.Dirty.Remove(w.Address);
+            if (p.Timelock) { p.Pending.Add(new YieldWithdraw { Wallet = w.Address, Day = day + Tuning.YieldLockDays, Amount = amt, Dirty = dirty }); return 0; }
+            Pay(w, amt, dirty);
             return amt;
         }
 
-        private static void Pay(Wallet w, double amt, double dirty, double basis)
+        private static void Pay(Wallet w, double amt, double dirty)
         {
-            w.AddDirty(Assets.CRC, amt, dirty); w.Basis += basis;
+            w.AddDirty(Assets.CRC, amt, dirty);
         }
 
         // ——— 夜间 ———
@@ -188,7 +186,7 @@ namespace Decentralized.Domain
         /// <summary>
         /// 夜间：钓鱼授权到期转走；收益池计息、储备耗尽的正规池退本金关闭、骗局池按概率跑路；时间锁取款到账；过期空投清掉；随机新空投和新收益池。
         /// </summary>
-        public List<ScamEvent> Night(int day, Rng rng, Func<string, Wallet> own, string[] airdropAssets, Func<string, double> pr = null)
+        public List<ScamEvent> Night(int day, Rng rng, Func<string, Wallet> own, string[] airdropAssets)
         {
             var evs = new List<ScamEvent>();
             foreach (var ap in Approvals.Where(x => x.Scam && x.DrainDay >= 0 && x.DrainDay <= day).ToList())
@@ -198,7 +196,7 @@ namespace Decentralized.Domain
                 if (w == null) continue;
                 double amt = Math.Min(ap.Limit, w.Avail(ap.Asset));
                 if (amt <= 1e-9) continue;
-                if (pr != null) w.Spend(ap.Asset, amt, pr); else w.Add(ap.Asset, -amt);
+                w.Add(ap.Asset, -amt);
                 evs.Add(new ScamEvent { Kind = "drain", Name = ap.Spender, Wallet = ap.Wallet, Asset = ap.Asset, Amount = amt });
             }
             foreach (var p in Pools.Where(x => !x.Closed).ToList())
@@ -216,7 +214,7 @@ namespace Decentralized.Domain
                     foreach (var kv in p.Deposits.ToList())
                     {
                         var w = own(kv.Key);
-                        if (w != null) Pay(w, kv.Value, p.Dirty.TryGetValue(kv.Key, out var t) ? t : 0, p.Basis.TryGetValue(kv.Key, out var b) ? b : 0);
+                        if (w != null) Pay(w, kv.Value, p.Dirty.TryGetValue(kv.Key, out var t) ? t : 0);
                         evs.Add(new ScamEvent { Kind = "dry", Name = p.Name, Wallet = kv.Key, Asset = Assets.CRC, Amount = kv.Value });
                     }
                     p.Deposits.Clear(); p.Closed = true;
@@ -230,7 +228,7 @@ namespace Decentralized.Domain
                 {
                     p.Pending.Remove(q);
                     var w = own(q.Wallet);
-                    if (w != null) Pay(w, q.Amount, q.Dirty, q.Basis);
+                    if (w != null) Pay(w, q.Amount, q.Dirty);
                     evs.Add(new ScamEvent { Kind = "paid", Name = p.Name, Wallet = q.Wallet, Asset = Assets.CRC, Amount = q.Amount });
                 }
             }

@@ -47,8 +47,8 @@ namespace Decentralized.Domain
         public double Qty;
         /// <summary>付款的钱包地址：退款回这里。</summary>
         public string Wallet;
-        /// <summary>付款的币里脏的枚数和成本：退款时一并还回，免得"付脏币再退款"洗钱。</summary>
-        public double Dirty, Basis;
+        /// <summary>付款的币里脏的枚数：退款时一并还回，免得"付脏币再退款"洗钱。</summary>
+        public double Dirty;
         /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
         [JsonProperty("Taint")] public double LegacyTaint;
         public int PlacedDay, DueDay;
@@ -255,7 +255,7 @@ namespace Decentralized.Domain
         /// <summary>目录里全部货按订单价算的总值（信用点），用来核对每次上新的周转量。</summary>
         public double CatalogValue => Catalog.Sum(l => (double)l.Price * l.Qty);
 
-        /// <summary>下单：钱包里的币按实付折算扣除，脏枚数与成本按比例留在卖家那边（记在订单上）。成功返回订单。</summary>
+        /// <summary>下单：钱包里的币按实付折算扣除，脏枚数按比例留在卖家那边（记在订单上）。成功返回订单。</summary>
         public BmOrder Place(BmListing l, int count, PayMode mode, Wallet w, string asset, int day, Func<string, double> price)
         {
             if (l == null || count < 1 || count > l.Qty || asset == Assets.CRC || Closed(day)) return null;
@@ -266,15 +266,12 @@ namespace Decentralized.Domain
             int credits = Pay(OrderTotal(l.Price, count), mode);
             double qty = credits / p;
             if (w.Avail(asset) + 1e-9 < qty) return null;
-            double total = w.Value(price);
-            double share = total > 0 ? Math.Min(1, credits / total) : 0;
-            double dirty = qty * w.DirtyRatio(asset), basis = w.Basis * share;
-            w.Basis -= basis;
+            double dirty = qty * w.DirtyRatio(asset);
             w.Add(asset, -qty);
             var o = new BmOrder
             {
                 Id = NextOrderId++, Item = l.Item, Seller = seller.Name, SellerScam = seller.Scam, Mode = mode, Count = count, Model = l.Model, FakeOf = l.FakeOf, Health = l.Health, Price = credits, Asset = asset, Qty = qty,
-                Dirty = dirty, Basis = basis, PlacedDay = day, DueDay = day + seller.Days, Wallet = w.Address,
+                Dirty = dirty, PlacedDay = day, DueDay = day + seller.Days, Wallet = w.Address,
             };
             l.Qty -= count;
             if (l.Qty <= 0) Catalog.Remove(l);
@@ -286,7 +283,6 @@ namespace Decentralized.Domain
         private static void Refund(Wallet w, BmOrder o)
         {
             w.AddDirty(o.Asset, o.Qty, o.Dirty);
-            w.Basis += o.Basis;
         }
 
         /// <summary>每晚推进订单：平台跑路、到期的订单（卖家跑路、被截获、死投被挖走）、转入可取状态。镇压期间到期顺延一天。</summary>

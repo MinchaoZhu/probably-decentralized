@@ -83,8 +83,6 @@ namespace Decentralized.Domain
         public const double SparkRaidShock = 1.15, SparkUnrestShock = 0.90;
         public static readonly double[] SparkSpiralPath = { 0.8, 0.3, 0.05 };
 
-        /// <summary>出金到银行：超出成本的部分征税。</summary>
-        public const double TaxRate = 0.08;
         /// <summary>混币器：每轮手续费、基准清洗率、NPC 背景量（信用点）、最大轮数、最小存入、制裁概率与天数、每晚跑路概率。</summary>
         public const double MixerFee = 0.03, MixerCleanRate = 0.35, MixerNpcVolume = 20000, MixerMin = 100, MixerSanctionChance = 0.5, MixerRugChance = 0.004;
         public const int MixerMaxRounds = 5, MixerSanctionDays = 5;

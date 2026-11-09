@@ -10,8 +10,8 @@ namespace Decentralized.Domain
     {
         public string Asset;
         public double Amount;
-        /// <summary>存入的币里脏的枚数，和一并带走的成本（信用点）。</summary>
-        public double Dirty, Basis;
+        /// <summary>存入的币里脏的枚数。</summary>
+        public double Dirty;
         /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
         [JsonProperty("Taint")] public double LegacyTaint;
         public int Rounds;
@@ -91,18 +91,15 @@ namespace Decentralized.Domain
 
         public static double RoundRate(double depositValue, int day = -1) => Tuning.MixerCleanRate * (day >= 0 ? StoryMods.Current.MixClean(day) : 1) * Tuning.MixerNpcVolume * StoryMods.Current.MixerVolume / (Tuning.MixerNpcVolume * StoryMods.Current.MixerVolume + Math.Max(0, depositValue));
 
-        /// <summary>存入：按这种币的脏比例带走脏枚数，按价值比例带走成本。轮数超出范围或余额不足返回 null。</summary>
+        /// <summary>存入：按这种币的脏比例带走脏枚数。轮数超出范围或余额不足返回 null。</summary>
         public MixDeposit Deposit(Wallet w, string asset, double amount, int rounds, int day, Func<string, double> price)
         {
             if (rounds < 1 || rounds > Tuning.MixerMaxRounds || amount <= 0 || w.Avail(asset) + 1e-9 < amount) return null;
             double value = amount * price(asset);
             if (value < Tuning.MixerMin) return null;
-            double total = w.Value(price);
-            double share = total > 0 ? Math.Min(1, value / total) : 0;
-            double dirty = amount * w.DirtyRatio(asset), basis = w.Basis * share;
+            double dirty = amount * w.DirtyRatio(asset);
             w.Add(asset, -amount);
-            w.Basis -= basis;
-            var d = new MixDeposit { Asset = asset, Amount = amount, Dirty = dirty, Basis = basis, Rounds = rounds, ReadyDay = day + rounds, Wallet = w.Address };
+            var d = new MixDeposit { Asset = asset, Amount = amount, Dirty = dirty, Rounds = rounds, ReadyDay = day + rounds, Wallet = w.Address };
             Pending.Add(d);
             return d;
         }
@@ -137,7 +134,6 @@ namespace Decentralized.Domain
                 double dirty = flagged ? amount : Math.Min(amount, d.Dirty * Math.Pow(1 - rate, d.Rounds));
                 var w = wallet(d.Wallet);
                 w.AddDirty(d.Asset, amount, dirty);
-                w.Basis += d.Basis;
                 double p = price(d.Asset);
                 Remember(new MixReturn { Day = day, Wallet = d.Wallet, Asset = d.Asset, Amount = amount, Cleaned = Math.Max(0, d.Dirty - dirty) * p });
                 results.Add(new MixResult { Asset = d.Asset, Amount = amount, TaintBefore = d.Dirty * p, TaintAfter = dirty * p, Flagged = flagged });

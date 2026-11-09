@@ -93,10 +93,10 @@ namespace Decentralized
                 var pb = d.Poinbase;
                 double amt = Math.Min(t.Amount, pb.Avail(t.Asset));
                 double fee = Math.Min(t.Fee, amt);
-                if (fee > 0) Wallet.Transfer(pb, new Wallet(), t.Asset, fee, Session.Price);
+                if (fee > 0) Wallet.Transfer(pb, new Wallet(), t.Asset, fee);
                 double net = amt - fee;
                 var own = d.Own(t.To);
-                Wallet.Transfer(pb, own ?? new Wallet(), t.Asset, net, Session.Price);
+                Wallet.Transfer(pb, own ?? new Wallet(), t.Asset, net);
                 d.Block += 1;
                 d.Chain(d.Address("poinbase"), t.To, t.Asset, net, fee);
                 if (own != null) WalletWindow.RefreshDevice(own, true);

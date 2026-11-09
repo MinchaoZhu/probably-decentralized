@@ -56,7 +56,7 @@ namespace Decentralized
         /// <summary>质押日息下调的新闻已经发过。</summary>
         public bool CraLowNews;
         public Network Network = new Network();
-        /// <summary>已加载的链上钱包（硬件钱包拖到终端上加载），各自的余额、污点、成本、冻结独立；没有主钱包这回事，销毁后里面的币永久丢失。</summary>
+        /// <summary>已加载的链上钱包（硬件钱包拖到终端上加载），各自的余额、污点、冻结独立；没有主钱包这回事，销毁后里面的币永久丢失。</summary>
         public List<Wallet> Wallets = new List<Wallet>();
         /// <summary>终端当前连接的钱包的编号，-1 是没有连接：Web3 页的交易、黑市、混币器都用它，用币付款的顾客也进它。</summary>
         public int Current = -1;

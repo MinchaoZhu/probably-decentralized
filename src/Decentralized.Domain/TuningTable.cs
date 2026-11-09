@@ -422,7 +422,6 @@ namespace Decentralized.Domain
             ["StorySerpicoSpark"] = Tuning.StorySerpicoSpark,
             ["StorySparkNights"] = Tuning.StorySparkNights,
             ["SupplyAdjust"] = Tuning.SupplyAdjust,
-            ["TaxRate"] = Tuning.TaxRate,
             ["TumblerAgentSecRep"] = Tuning.TumblerAgentSecRep,
             ["TumblerBmRep"] = Tuning.TumblerBmRep,
             ["TumblerBmRugMax"] = Tuning.TumblerBmRugMax,

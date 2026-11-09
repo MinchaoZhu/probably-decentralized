@@ -842,7 +842,7 @@ namespace Decentralized
                 Execute = pw =>
                 {
                     int day = StoreStation.GetDayCounter();
-                    if (deposit) _message = d.Scams.Deposit(p, pw, v, Session.Price) ? L.T("pool.done.in", Fmt.Num(v), p.Name) : L.T("msg.balance");
+                    if (deposit) _message = d.Scams.Deposit(p, pw, v) ? L.T("pool.done.in", Fmt.Num(v), p.Name) : L.T("msg.balance");
                     else
                     {
                         double amt = p.Of(pw.Address), got = d.Scams.Withdraw(p, pw, day);
@@ -1231,7 +1231,7 @@ namespace Decentralized
                 Execute = pw =>
                 {
                     if (pw.Avail(Assets.CRT) + 1e-9 < price) { _message = L.T("intel.err.funds"); Open(); return; }
-                    pw.Spend(Assets.CRT, price, Session.Price);
+                    pw.Add(Assets.CRT, -price);
                     int day = StoreStation.GetDayCounter();
                     bool fake = d.Rng.Chance(Tuning.IntelFake);
                     d.Brief = PredictGame.MakeBrief(fake, day); d.BriefDay = day;
@@ -1258,7 +1258,7 @@ namespace Decentralized
                     int day = StoreStation.GetDayCounter();
                     var truth = PredictGame.Truth(m);
                     if (pw.Avail(Assets.CRT) + 1e-9 < price || truth == null || !m.IsOpen(day) || d.Predict.TipFor(m.Id) != null) { _message = L.T("intel.err.funds"); Open(); return; }
-                    pw.Spend(Assets.CRT, price, Session.Price);
+                    pw.Add(Assets.CRT, -price);
                     var tip = PredictBook.MakeTip(m, truth.Value, tier, d.Rng);
                     d.Predict.Tips.Add(tip);
                     Log.Info($"内幕消息 #{m.Id} 第 {tier + 1} 档：说{(tip.Claim ? "是" : "否")}，真相{(truth.Value ? "是" : "否")}");
@@ -1287,7 +1287,7 @@ namespace Decentralized
                 {
                     int day = StoreStation.GetDayCounter();
                     bool insider = PredictGame.Known(m, yes);
-                    var res = d.Predict.Buy(pw, m, yes, v, day, Session.Price, insider, out double shares);
+                    var res = d.Predict.Buy(pw, m, yes, v, day, insider, out double shares);
                     _message = res == PredictResult.Ok ? L.T("predict.bought", side, Fmt.Num(shares), Fmt.Num(v)) : L.T("predict.err." + res);
                     if (res == PredictResult.Ok) { Log.Info($"预测下注 #{m.Id} {(yes ? "是" : "否")} {shares:0.0} 份，花 {v:0.##}，钱包 {pw.Address}，内幕 {insider}"); Session.Save(); }
                     Open();
@@ -1327,7 +1327,7 @@ namespace Decentralized
         {
             if (!ReadAmount(out double v)) return;
             var d = Session.Data;
-            var res = d.Perps.Open(d.Poinbase, _perpProduct, _perpLong, v, _perpLev, PerpSpot(_perpProduct), StoreStation.GetDayCounter(), Session.Price);
+            var res = d.Perps.Open(d.Poinbase, _perpProduct, _perpLong, v, _perpLev, PerpSpot(_perpProduct), StoreStation.GetDayCounter());
             if (res == PerpResult.Ok) CandleChart.Trade(_perpProduct, v * _perpLev);
             _message = res == PerpResult.Ok ? L.T("perp.opened", _perpProduct, L.T(_perpLong ? "perp.long" : "perp.short"), Fmt.Num(v), _perpLev) : PerpErr(res);
             if (res == PerpResult.Ok) Session.Save();
@@ -1338,7 +1338,7 @@ namespace Decentralized
         {
             if (!ReadAmount(out double v)) return;
             var d = Session.Data;
-            var res = d.Perps.AddMargin(d.Poinbase, _perpProduct, v, Session.Price);
+            var res = d.Perps.AddMargin(d.Poinbase, _perpProduct, v);
             _message = res == PerpResult.Ok ? L.T("perp.added", Fmt.Num(v)) : PerpErr(res);
             if (res == PerpResult.Ok) Session.Save();
             Open();
@@ -2696,7 +2696,7 @@ namespace Decentralized
                         pw.Convert(coin, v, Assets.CRA, cra); pw.RecordBuy(Assets.CRA, cra, spent);
                         CandleChart.Trade(coin, spent); CandleChart.Trade(Assets.CRA, spent);
                     }
-                    bool ok = into ? d.Staking.Stake(pw, cra, Session.Price) : d.Staking.RequestUnstake(pw.Address, v, day);
+                    bool ok = into ? d.Staking.Stake(pw, cra) : d.Staking.RequestUnstake(pw.Address, v, day);
                     _message = ok ? L.T(into ? "stake.done.in" : "stake.done.out", Fmt.Num(cra), day + Tuning.CraUnlockDays) : L.T("msg.balance");
                     Session.Save();
                     Open();
@@ -2770,7 +2770,6 @@ namespace Decentralized
             var w = Session.Data.Poinbase;
             w.Add(Assets.CRC, credits / Session.Data.Stable.Crc);
             w.RecordBuy(Assets.CRC, credits / Session.Data.Stable.Crc, credits);
-            w.Basis += credits;
             _message = L.T("msg.deposit", credits);
             Session.Save();
             Open();
@@ -2783,9 +2782,9 @@ namespace Decentralized
             if (d.Perps.Debt > 0) { _message = L.T("perp.debt.block"); Open(); return; }
             if (d.Poinbase.Avail(Assets.CRC) + 1e-9 < v) { _message = L.T("msg.balance"); Open(); return; }
             var r = d.Exchange.Cashout(d.Poinbase, v, Session.Price);
-            int got = (int)Math.Floor(r.Received - r.Tax);
+            int got = (int)Math.Floor(r.Received);
             ModHelper.AddCredit(got, true);
-            _message = L.T("msg.cashout", got, Fmt.Credits(r.Tax));
+            _message = L.T("msg.cashout", got);
             Session.Save();
             Open();
         }

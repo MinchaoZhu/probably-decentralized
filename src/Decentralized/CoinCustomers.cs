@@ -44,7 +44,7 @@ namespace Decentralized
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Tainted wallet (test)", () => Log.Guard("带污点的钱包（测试）", () =>
             {
                 var w = Session.Data.Hot;
-                w.AddDirty(Assets.PSC, 100, 30); w.AddDirty(Assets.CRT, 1000, 1000); w.Basis += 2000;
+                w.AddDirty(Assets.PSC, 100, 30); w.AddDirty(Assets.CRT, 1000, 1000);
                 Log.Info($"钱包：PSC {w.Get(Assets.PSC):0.##}（脏 {w.DirtyOf(Assets.PSC):0.##}），CRT {w.Get(Assets.CRT):0}（脏 {w.DirtyOf(Assets.CRT):0}）");
             }));
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Terminal (test)", () => Log.Guard("终端（测试）", TerminalWindow.Open));
@@ -55,7 +55,7 @@ namespace Decentralized
                 if (!Unlock.BlackUnlocked) ModHelper.GetNetworkUpgrade(Unlock.BlackId)?.Unlock();
                 if (!Unlock.MixerUnlocked) ModHelper.GetNetworkUpgrade(Unlock.MixerId)?.Unlock();
                 var d = Session.Data;
-                d.Hot.Add(Assets.PSC, 20); d.Hot.AddDirty(Assets.CRT, 3000, 2000); d.Hot.Basis += 1000;
+                d.Hot.Add(Assets.PSC, 20); d.Hot.AddDirty(Assets.CRT, 3000, 2000);
                 BlackDelivery.Restock(d, StoreStation.GetDayCounter(), true);
                 Log.Info($"黑市：声望 {StoreReputation.GetBMReputation()}，上架 {d.Black.Offers.Count} 种：{string.Join(", ", d.Black.Offers.Select(o => o.Item + "×" + o.Qty + "@" + o.Price))}，解锁 {Unlock.BlackUnlocked}");
             }));

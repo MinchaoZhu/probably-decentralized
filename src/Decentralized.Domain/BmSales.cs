@@ -113,9 +113,6 @@ namespace Decentralized.Domain
             if (p <= 0) return null;
             double qty = ListFee(listPrice) / p;
             if (w.Avail(feeAsset) + 1e-9 < qty) return null;
-            double total = w.Value(price);
-            double share = total > 0 ? Math.Min(1, ListFee(listPrice) / total) : 0;
-            w.Basis -= w.Basis * share;
             w.Add(feeAsset, -qty);
             var s = new BmSale { Item = item, Model = model, FakeOf = fakeOf, Health = health, Ref = refValue, Mult = m, ListPrice = listPrice, ListedDay = day, Wallet = w.Address, Heat = Math.Max(0, Math.Min(100, heat)) };
             Sales.Add(s);
@@ -166,7 +163,6 @@ namespace Decentralized.Domain
                 // 回款的币按 污点 / 回款额 的比例是脏的
                 double got = s.Proceeds / p;
                 w.AddDirty(pa, got, s.Proceeds > 0 ? got * Math.Min(1, s.Taint / s.Proceeds) : 0);
-                w.Basis += s.Proceeds;
                 s.State = SaleState.Paid;
                 ev.Add(new BmEvent { Kind = "sale_paid", Sale = s, Amount = s.Proceeds });
             }

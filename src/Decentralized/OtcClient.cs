@@ -210,7 +210,7 @@ namespace Decentralized
                 Address = ActiveAddress, Asset = asset, Amount = qty, Prefill = true, Summary = L.T("pay.otc", WalletWindow.Amt(qty), asset, Fmt.Credits(cash)),
                 Execute = pw => Log.Guard("换币客户到账", () =>
                 {
-                    pw.Spend(asset, qty, Session.Price);
+                    pw.Add(asset, -qty);
                     ModHelper.AddCredit(cash, true);
                     Session.Data.Otc.Record(cash);
                     if (pendingBill == bill) pendingBill = null;

@@ -85,12 +85,11 @@ namespace Decentralized.Domain
         }
 
         /// <summary>注资：币从钱包进本金，按这种币的脏比例带上脏枚数。</summary>
-        public bool Inject(Wallet w, string asset, double amount, Func<string, double> price)
+        public bool Inject(Wallet w, string asset, double amount)
         {
             if (amount <= 0 || w.Avail(asset) + 1e-9 < amount || !AssetsList.Contains(asset)) return false;
-            double total = w.Value(price), share = total > 0 ? Math.Min(1, amount * price(asset) / total) : 0;
-            double dirty = amount * w.DirtyRatio(asset), basis = w.Basis * share;
-            w.Add(asset, -amount); w.Basis -= basis;
+            double dirty = amount * w.DirtyRatio(asset);
+            w.Add(asset, -amount);
             var p = Pool(asset);
             p.Capital += amount; p.CapDirty += dirty;
             return true;

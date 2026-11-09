@@ -79,7 +79,7 @@ namespace Decentralized.Domain
         public string Wallet;
         public bool Yes;
         /// <summary>Dirty：下注付出的 CRC 里脏的枚数（兑付时按比例带回）。</summary>
-        public double Shares, Cost, Dirty, Basis, Insider;
+        public double Shares, Cost, Dirty, Insider;
         /// <summary>旧存档（数据版本 5 之前）的污点额（信用点），读档迁移时换成 <see cref="Dirty"/>。</summary>
         [JsonProperty("Taint")] public double LegacyTaint;
     }
@@ -154,16 +154,10 @@ namespace Decentralized.Domain
         public PredictPos PosOf(int id, string wallet) => Positions.Find(p => p.Market == id && p.Wallet == wallet);
         public List<PredictPos> PosAll(int id) => Positions.Where(p => p.Market == id).ToList();
 
-        private static double Share(Wallet acct, double amount, Func<string, double> price)
-        {
-            double total = acct.Value(price);
-            return total > 0 ? Math.Min(1, amount * price(Assets.CRC) / total) : 0;
-        }
-
         /// <summary>
         /// 买入：花 spend（含手续费）的 CRC。CRC 的脏枚数按比例、成本按花掉的价值比例随资金进持仓。insider：这笔单下单时玩家已经知道答案（传闻纸条、派系特权）。
         /// </summary>
-        public PredictResult Buy(Wallet acct, PredictMarket m, bool yes, double spend, int day, Func<string, double> pr, bool insider, out double shares)
+        public PredictResult Buy(Wallet acct, PredictMarket m, bool yes, double spend, int day, bool insider, out double shares)
         {
             shares = 0;
             if (!m.IsOpen(day)) return PredictResult.Closed;
@@ -175,12 +169,11 @@ namespace Decentralized.Domain
             double cost = spend / (1 + Tuning.PredictFee);
             shares = m.SharesFor(yes, cost);
             if (all.Sum(x => x.Shares) + shares > m.ShareCap + 1e-9) { shares = 0; return PredictResult.Cap; }
-            double share = Share(acct, spend, pr);
-            double dirty = spend * acct.DirtyRatio(Assets.CRC), basis = acct.Basis * share;
-            acct.Add(Assets.CRC, -spend); acct.Basis -= basis;
+            double dirty = spend * acct.DirtyRatio(Assets.CRC);
+            acct.Add(Assets.CRC, -spend);
             if (yes) m.QYes += shares; else m.QNo += shares;
             if (pos == null) Positions.Add(pos = new PredictPos { Market = m.Id, Yes = yes, Wallet = acct.Address });
-            pos.Shares += shares; pos.Cost += cost; pos.Dirty += dirty; pos.Basis += basis;
+            pos.Shares += shares; pos.Cost += cost; pos.Dirty += dirty;
             if (insider) pos.Insider += shares;
             return PredictResult.Ok;
         }
@@ -211,7 +204,7 @@ namespace Decentralized.Domain
         {
             double keep = pos.Cost > 0 ? Math.Min(1, payout / pos.Cost) : 0;
             double dirty = Math.Min(payout, pos.Dirty * keep);
-            acct.AddDirty(Assets.CRC, payout, dirty); acct.Basis += pos.Basis * keep;
+            acct.AddDirty(Assets.CRC, payout, dirty);
             return dirty;
         }
 

@@ -264,7 +264,7 @@ namespace Decentralized
             CandleChart.Close(d, day);
             PredictGame.ClosePrice = d.Market.Price; PredictGame.CloseGas = d.Gas; PredictGame.ClosePush = d.Market.PlayerPush;
             // 永续：用今天的标记价（当日均价）结算，要在今晚的价格更新之前
-            var perpEvents = d.Perps.Night(day, new Dictionary<string, double> { ["PSC"] = pscMark, ["SPARK"] = d.Stable.Spark }, d.Poinbase, Session.Price);
+            var perpEvents = d.Perps.Night(day, new Dictionary<string, double> { ["PSC"] = pscMark, ["SPARK"] = d.Stable.Spark }, d.Poinbase);
             foreach (var pp in d.Perps.Positions) Log.Info($"永续夜间：{pp.Product} {(pp.Long ? "多" : "空")} 保证金 {pp.Margin:0.00}，资金费率 {d.Perps.Rate(pp.Product) * 100:0.000}%，标记价 {(pp.Product == "PSC" ? pscMark : d.Stable.Spark):0.00}");
             if (perpEvents.Any(e => e.Kind == "seize")) SeizeForDebt(d, day);
             var stakeEvents = d.Staking.Night(day, d.Stable.CraRate, d.WalletAt);
@@ -276,7 +276,7 @@ namespace Decentralized
                 var ow = d.WalletAt(oe.Order.Wallet);
                 if (oe.Kind == CraOrderKind.Minted)
                 {
-                    ow.AddDirty(Assets.CRA, oe.Cra, oe.Cra * oe.Order.DirtyRatio); d.Staking.Stake(ow, oe.Cra, Session.Price);
+                    ow.AddDirty(Assets.CRA, oe.Cra, oe.Cra * oe.Order.DirtyRatio); d.Staking.Stake(ow, oe.Cra);
                     d.Chain(d.Address("cra"), ow.Address, Assets.CRA, oe.Cra);
                     d.Chain(ow.Address, d.Address("staking"), Assets.CRA, oe.Cra);
                 }
@@ -355,7 +355,7 @@ namespace Decentralized
                 News.Show("pd_news_ponzi_" + day, L.T("news.ponzi.title"), L.T("news.ponzi.desc"), 4);
                 Log.Info($"理财崩盘：{ponzi.Kind}，池子 {ponzi.Amount:0} 被没收");
             }
-            foreach (var e in d.Scams.Night(day, d.Rng, d.Own, new[] { Assets.CRT, Assets.PSC, Assets.CRC, Assets.CRA }, Session.Price))
+            foreach (var e in d.Scams.Night(day, d.Rng, d.Own, new[] { Assets.CRT, Assets.PSC, Assets.CRC, Assets.CRA }))
             {
                 var sw = d.Own(e.Wallet);
                 string wn = sw != null ? WalletWindow.NameOf(sw) : e.Wallet;

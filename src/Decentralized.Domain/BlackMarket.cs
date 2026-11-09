@@ -132,9 +132,6 @@ namespace Decentralized.Domain
             if (p <= 0) return false;
             double qty = o.Price / p;
             if (w.Avail(asset) + 1e-9 < qty) return false;
-            double total = w.Value(price);
-            double share = total > 0 ? Math.Min(1, o.Price / total) : 0;
-            w.Basis -= w.Basis * share;
             w.Add(asset, -qty);
             o.Qty--;
             if (o.Qty <= 0) Offers.Remove(o);

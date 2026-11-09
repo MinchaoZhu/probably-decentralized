@@ -71,7 +71,7 @@ namespace Decentralized
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Poinbase +5000 CRC, unlock (test)", () => Log.Guard("永续测试", () =>
             {
                 var d = Session.Data;
-                d.Poinbase.Add(Assets.CRC, 5000); d.Poinbase.Basis += 5000;
+                d.Poinbase.Add(Assets.CRC, 5000);
                 if (!Unlock.IsUnlocked) ModHelper.GetNetworkUpgrade(Unlock.Id)?.Unlock();
                 Log.Info($"测试：Poinbase CRC {d.Poinbase.Get(Assets.CRC):0}，解锁 {Unlock.IsUnlocked}");
             }));
@@ -154,7 +154,7 @@ namespace Decentralized
             });
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Hot wallet +2000 CRC (test)", () =>
             {
-                var w = Session.Data.Hot; w.Add(Assets.CRC, 2000); w.Basis += 2000;
+                var w = Session.Data.Hot; w.Add(Assets.CRC, 2000);
                 Log.Info($"测试：钱包 CRC {w.Get(Assets.CRC):0}，污点 {w.Taint:0}");
             });
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "My mixer: max heat (test)", () =>
@@ -221,7 +221,7 @@ namespace Decentralized
                 var bad = new YieldPool { Id = ++d.Scams.Seq, Name = "Test Scam", OpenDay = day - 1, Rate = 0.03, Reserve = 9999, Cap = 1e6, Scam = true };
                 var ok = new YieldPool { Id = ++d.Scams.Seq, Name = "Test Lock", OpenDay = day - 1, Rate = 0.01, Reserve = 9999, Cap = 1e6, Timelock = true };
                 d.Scams.Pools.Add(bad); d.Scams.Pools.Add(ok);
-                d.Scams.Deposit(bad, w, 500, Session.Price); d.Scams.Deposit(ok, w, 500, Session.Price); d.Scams.Withdraw(ok, w, day);
+                d.Scams.Deposit(bad, w, 500); d.Scams.Deposit(ok, w, 500); d.Scams.Withdraw(ok, w, day);
                 Log.Info($"测试：钓鱼授权 #{d.Scams.Approvals[0].Id}（明晚转走 CRT {w.Get(Assets.CRT):0}），骗局池存 500，时间锁池取款第 {day + Tuning.YieldLockDays} 天到账；CRC {w.Get(Assets.CRC):0}");
             }));
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Perp: PSC long 1000 x2 (test)", () => Log.Guard("永续测试", () =>
@@ -229,7 +229,7 @@ namespace Decentralized
                 var d = Session.Data; d.Poinbase.Add(Assets.CRC, 2000);
                 // 先让价格偏离 7 日均线，资金费才不为零：补几个历史标记价
                 d.Perps.Marks["PSC"] = new System.Collections.Generic.List<double> { d.Market.Price * 0.8, d.Market.Price * 0.8, d.Market.Price * 0.8 };
-                var res = d.Perps.Open(d.Poinbase, "PSC", true, 1000, 2, d.Market.Price, StoreStation.GetDayCounter(), Session.Price);
+                var res = d.Perps.Open(d.Poinbase, "PSC", true, 1000, 2, d.Market.Price, StoreStation.GetDayCounter());
                 Log.Info($"测试：永续开多 {res}，现价 {d.Market.Price:0.00}");
             }));
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Give key drive (test)", () => Items.Give(ModHelper.SpawnItem(Items.KeyDrive)));
@@ -237,8 +237,8 @@ namespace Decentralized
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Predict: window = tomorrow (test)", () => { foreach (var m in Session.Data.Predict.Markets) { m.FromDay = m.ToDay = StoreStation.GetDayCounter() + 1; } Log.Info("测试：所有盘口窗口改成明天"); });
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Perp fund 0 (test)", () => { Session.Data.Perps.InsuranceFund = 0; Log.Info("测试：保险基金清零"); });
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "SPARK x0.3 (test)", () => { var st = Session.Data.Stable; st.Spark *= 0.3; Log.Info($"测试：SPARK 价格 {st.Spark:0.00}"); });
-            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Wallet gift: CRC, CRA, PSC (test)", () => { var w = Session.Data.Hot; w.Add(Assets.CRA, 1000); w.Add(Assets.CRC, 1000); w.Add(Assets.CRT, 3000); w.Add(Assets.PSC, 20); w.Add(Assets.SPARK, 300); w.Basis += 5000; Log.Info($"测试：{WalletWindow.NameOf(w)} CRA {w.Get(Assets.CRA):0}"); });
-            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Poinbase gift: CRC, PSC (test)", () => { var pb = Session.Data.Poinbase; pb.Add(Assets.CRC, 5000); pb.Add(Assets.PSC, 30); pb.Basis += 8000; Log.Info($"测试：Poinbase CRC {pb.Get(Assets.CRC):0}"); });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Wallet gift: CRC, CRA, PSC (test)", () => { var w = Session.Data.Hot; w.Add(Assets.CRA, 1000); w.Add(Assets.CRC, 1000); w.Add(Assets.CRT, 3000); w.Add(Assets.PSC, 20); w.Add(Assets.SPARK, 300); Log.Info($"测试：{WalletWindow.NameOf(w)} CRA {w.Get(Assets.CRA):0}"); });
+            ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "Poinbase gift: CRC, PSC (test)", () => { var pb = Session.Data.Poinbase; pb.Add(Assets.CRC, 5000); pb.Add(Assets.PSC, 30); Log.Info($"测试：Poinbase CRC {pb.Get(Assets.CRC):0}"); });
             ModHelper.AddDebugFunction(ModInfo.Id, ModInfo.Name, "CRA spiral warning (test)", () =>
             {
                 var st = Session.Data.Stable; int day = StoreStation.GetDayCounter();

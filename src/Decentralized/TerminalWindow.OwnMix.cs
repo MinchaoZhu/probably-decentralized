@@ -76,7 +76,7 @@ namespace Decentralized
                     string asset = _ownAsset;
                     BillFor(d.Address("ownmix"), L.T("pay.ownmix", Fmt.Num(v), asset), asset, v, pw =>
                     {
-                        if (!m.Inject(pw, asset, v, Session.Price)) { _message = L.T("msg.balance"); Open(); return; }
+                        if (!m.Inject(pw, asset, v)) { _message = L.T("msg.balance"); Open(); return; }
                         _message = L.T("ownmix.injected", Fmt.Num(v), asset);
                         Log.Info($"自营混币器注资 {v} {asset}，匿名集 {m.Anonymity(Session.Price):0}");
                         Session.Save(); Open();

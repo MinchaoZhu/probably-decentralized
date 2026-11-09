@@ -7,12 +7,11 @@ namespace Decentralized.Domain
     {
         public double Requested;
         public double Received;
-        public double Tax;
     }
 
     /// <summary>
     /// 合规交易所 Poinbase：只收干净的币（钱包往充值地址最多转“价值 − 污点”，见 <see cref="Wallet.TransferClean"/>），账户没有污点。
-    /// 出金到银行把 CRC 兑回信用点，扣手续费，只对超出成本的部分计税，不做审查。
+    /// 出金到银行把 CRC 兑回信用点，扣手续费，不做审查。
     /// </summary>
     public sealed class Exchange
     {
@@ -29,23 +28,16 @@ namespace Decentralized.Domain
         }
 
         /// <summary>
-        /// 从账户里取出 amount 个 CRC 兑成信用点（按 CRC 当前价格，平时为 1；脱锚期间按市价），扣手续费。成本按取出部分的价值比例带走，
-        /// 只对超出成本的部分计税。
+        /// 从账户里取出 amount 个 CRC 兑成信用点（按 CRC 当前价格，平时为 1；脱锚期间按市价），扣手续费。
         /// </summary>
         public CashoutResult Cashout(Wallet account, double amount, Func<string, double> price)
         {
             amount = Math.Min(amount, account.Get(Assets.CRC));
             var r = new CashoutResult { Requested = amount };
             if (amount <= 0) return r;
-            double total = account.Value(price);
             double value = amount * price(Assets.CRC);
-            double share = total > 0 ? Math.Min(1, value / total) : 0;
-            double basis = account.Basis * share;
             account.Add(Assets.CRC, -amount);
-            account.Basis -= basis;
-            double got = value * (1 - Tuning.ExchangeFee);
-            r.Tax = Math.Max(0, got - basis) * Tuning.TaxRate;
-            r.Received = got;
+            r.Received = value * (1 - Tuning.ExchangeFee);
             return r;
         }
     }
