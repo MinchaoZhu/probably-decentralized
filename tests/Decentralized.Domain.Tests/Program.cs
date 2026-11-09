@@ -2052,6 +2052,7 @@ internal static class Program
                 Check(acc.Length >= 2 && acc.Distinct().Count() == acc.Length && acc.All(a => a == Assets.PSC || a == Assets.CRT || a == Assets.CRA || a == Assets.Ponero), $"{ty} 收 {string.Join("/", acc)}");
             }
             Check(Merchants.Accepts(MerchantType.Arms).Contains(Assets.Ponero) && !Merchants.Accepts(MerchantType.Rigs).Contains(Assets.Ponero), "违禁类收隐私币，硬件类不收");
+            Check(Merchants.Table[MerchantType.Rigs].Any(e => e.Id == "rare_electronic" && e.Kind == GoodKind.Goods), "矿架与能源商家卖稀有电子元件（升级矿架槽要用），按普通货计价");
             Check(Merchants.PlatformAccepts.Contains(Assets.CRT) && Tuning.BmAutoSwapSlip > Tuning.DexFee * 10, "自动换币的滑点远高于 DEX 手续费");
         });
 

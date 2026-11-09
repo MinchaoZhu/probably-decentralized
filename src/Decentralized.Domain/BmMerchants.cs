@@ -24,7 +24,7 @@ namespace Decentralized.Domain
 
         public static readonly Dictionary<MerchantType, BmEntry[]> Table = new Dictionary<MerchantType, BmEntry[]>
         {
-            [MerchantType.Rigs] = new[] { T("pd_rig"), T("energy_credit_ext"), T("energy_credit_hyp"), T("energy_credit_breeder"), T("powerblock"), T("recharger"), T("current_converter") },
+            [MerchantType.Rigs] = new[] { T("pd_rig"), T("energy_credit_ext"), T("energy_credit_hyp"), T("energy_credit_breeder"), T("powerblock"), T("recharger"), T("current_converter"), G("rare_electronic") },
             [MerchantType.Modules] = new[] { T("system_module_overclock"), T("system_module_performance"), T("system_module_quality"), T("system_module_eco"), T("system_module_efficiancy"),
                 T("system_module_fineness"), T("system_module_streamlining"), T("module_extractor_advanced"), T("module_bay_expansion_kit") },
             [MerchantType.Arms] = new[] { C("handmade_pistol", 1), C("printed_gun", 1), C("stun_baton", 1), C("revolver", 2), C("heavy_handmade_pistol", 2), C("flashbang_grenade", 2), C("smoke_grenade", 2),
