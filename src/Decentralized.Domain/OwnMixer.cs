@@ -33,7 +33,7 @@ namespace Decentralized.Domain
     /// 自营混币器：玩家注资开张，NPC 客户把带污点的币存进来，几天后出款，玩家收手续费。和普通混币器一样，每一轮按匿名集洗掉一部分污点：
     /// 匿名集主要是玩家的本金和没取走的收入（客户在途的币按一个比例折算），注资越多洗得越干净，客户越愿意来。
     /// 手续费是玩家的收入，留在池子里，取走时全额带污点；本金取回时带着它自己的污点（注资用脏币，取回的也脏）。
-    /// 客流 = 基础需求(天) × 黑市声望 × 和 Tumbler 比的吸引力（费率加上出款剩下的污点，近期出款的滑动平均就是口碑）。
+    /// 客流 = 基础需求(天) × 黑市声望 × 和 Tumbler 比的吸引力（费率加上出款剩下的污点，近期出款的滑动平均就是口碑）× 资金量带来的大单（<see cref="Capacity"/>）。
     /// 风声随客流累积（池子越大越难追查，累积得越慢）、每晚衰减，按风声有概率被查封：池子和在途的存入全部没收，记销赃罪证，停业若干天。营业的晚上可能有便衣存入，记销赃罪证。
     /// 玩家可以随时卷款跑路：池子连同客户的币全部进钱包、全额带污点，记诈骗罪证，混币器永久关闭。
     /// </summary>
@@ -123,6 +123,9 @@ namespace Decentralized.Domain
             return got;
         }
 
+        /// <summary>资金量带来的客流倍数：本金和未取走的收入越多，接得下的大单越多（按平方根增长，越往后越慢）。</summary>
+        public double Capacity(Func<string, double> price) => 1 + Math.Sqrt(Math.Max(0, AssetsList.Sum(a => Free(a) * price(a))) / Tuning.OwnMixCapitalScale);
+
         /// <summary>今晚的基础需求（信用点）：随天数增长。</summary>
         public static double Demand(int day) => Tuning.OwnMixDemand0 + Tuning.OwnMixDemandPerDay * day;
 
@@ -167,7 +170,7 @@ namespace Decentralized.Domain
             if (Open)
             {
                 double repF = Tuning.OwnMixRepMin + (1 - Tuning.OwnMixRepMin) * Math.Max(0, Math.Min(100, bmRep)) / 100.0;
-                double demand = Demand(day) * repF * Share(rivalFee, rivalRemain, rivalOpen);
+                double demand = Demand(day) * repF * Share(rivalFee, rivalRemain, rivalOpen) * Capacity(price);
                 double left = demand * rng.Range(1 - Tuning.OwnMixNoise, 1 + Tuning.OwnMixNoise);
                 while (left > Tuning.MixerMin)
                 {

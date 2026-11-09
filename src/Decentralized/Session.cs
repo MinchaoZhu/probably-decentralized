@@ -26,7 +26,7 @@ namespace Decentralized
     public sealed class SaveData
     {
         /// <summary>存档数据的版本：2 起保险基金用新的数值，3 起 Poinbase 主池是订单簿，4 起出块奖励和 NPC 算力 ×10（第十一阶段），5 起 Poinbase 没有污点。</summary>
-        public int Version = 5;
+        public int Version = 6;
         public int Day;
         public Rng Rng = new Rng((ulong)DateTime.UtcNow.Ticks);
         public Market Market;
@@ -208,6 +208,13 @@ namespace Decentralized
                 Data.Version = 5;
                 Log.Info($"存档数据升级到版本 5：旧污点 {was:0} 摊成各币的脏枚数，现在按现价共 {Data.Wallets.Sum(w => w.Taint(Price)):0}");
             }
+            // Tumbler 留下线的手续费从五折改成 3% → 2%：已经走过这条线、费率还是旧的五折的存档跟着改
+            if (Data.Version < 6)
+            {
+                if (Data.Story != null && Data.Story.Applied.Contains("tumbler_kept") && !Data.Story.MixerRebranded && Math.Abs(Data.Story.MixerFee - 0.5) < 1e-9) Data.Story.MixerFee = Tuning.TumblerKeptFee;
+                Data.Version = 6;
+                Log.Info("存档数据升级到版本 6：Tumbler 留下线的手续费");
+            }
             if (Data.Otc == null) Data.Otc = new OtcDesk();
             if (Data.OwnMix == null) Data.OwnMix = new OwnMixer();
             if (Data.Story == null) Data.Story = new StoryMods();
@@ -233,6 +240,9 @@ namespace Decentralized
             if (spec != null && spec.Stable) return Data.Stable.Price(asset);
             return 0;
         }
+
+        /// <summary>Ponero 兑换处的报价（信用点）。into：兑入 Ponero 为 true。</summary>
+        public static double DeskPrice(string asset, bool into) => BlackMarket.DeskQuote(asset, Price(asset), Data.Market.OpenPrice, into);
 
         public static double Rent() => PlayerStore.Instance != null ? PlayerStore.Instance.rentValue : 200;
     }

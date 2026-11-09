@@ -138,10 +138,10 @@ internal static class Program
             var net = new Network();
             double perH = net.Mine(1) * Tuning.PscStartPrice;
             Check(Near(perH, 26.9, 0.2), $"1 H 每晚约 26.9 信用点（抽成后）：{perH:0.00}");
-            for (int d = 1; d <= 89; d++) net.Night(d, 100, 0);
-            Check(net.Reward == Tuning.BlockReward, "第 89 天还没减半");
-            net.Night(90, 100, 0);
-            Check(net.Reward == Tuning.BlockReward / 2, "第 90 天减半");
+            for (int d = 1; d < Tuning.HalvingDays; d++) net.Night(d, 100, 0);
+            Check(net.Reward == Tuning.BlockReward, "减半日前一天还没减半");
+            net.Night(Tuning.HalvingDays, 100, 0);
+            Check(net.Reward == Tuning.BlockReward / 2, "减半日减半");
         });
 
         Test("挖矿：NPC 算力在有利可图时扩张，币价低时关机", () =>
@@ -289,7 +289,12 @@ internal static class Program
             var hi = Market.CreateDefault(1);
             hi.Main.SetPrice(1000, Tuning.PoolDepth(1));
             hi.Night(none, rng, 1, a => 1);
-            Check(hi.Price <= 300 + 1e-9, $"上限 3 倍：{hi.Price:0.0}");
+            Check(hi.Price <= hi.Anchor(none) * Tuning.PriceCeiling + 1e-9, $"上限是中枢的 3 倍：{hi.Price:0.0}");
+            var late = Market.CreateDefault(1);
+            late.Supply = 5;
+            late.Main.SetPrice(1000, Tuning.PoolDepth(1));
+            late.Night(none, rng, 1, a => 1);
+            Check(late.Price > 300, $"多次减半后币价不被固定价封住：{late.Price:0.0}");
         });
 
         Test("钱包：买入均价按买入记录算，卖出和转出按比例减少，挖出的币不计入", () =>
@@ -310,7 +315,7 @@ internal static class Program
         {
             var m = new Market();
             Check(Near(m.SupplyTarget(10), 1.0, 1e-9), "减半前很远：目标因子 1");
-            double before = m.SupplyTarget(89), start = m.SupplyTarget(83);
+            double before = m.SupplyTarget(Tuning.HalvingDays - 1), start = m.SupplyTarget(Tuning.HalvingDays - 7);
             Check(start > 1.0 && before > start && before <= 1 + Tuning.HalvingRamp + 1e-9, $"减半前 7 天逐日抬高，最多 +8%：{start:0.000} → {before:0.000}");
             double lo = 1e9, hi = 0;
             for (int seed = 1; seed <= 200; seed++)
@@ -320,7 +325,7 @@ internal static class Program
             }
             Check(lo >= Tuning.HalvingPassMin && hi <= Tuning.HalvingPassMax && hi - lo > 0.5, $"传导指数在区间内且确有变化：{lo:0.00}–{hi:0.00}");
             m.OnHalving(new Rng(7UL));
-            double after = m.SupplyTarget(91);
+            double after = m.SupplyTarget(Tuning.HalvingDays + 1);
             Check(Near(after, Math.Pow(2, m.HalvingLog), 1e-9), $"减半后目标因子 2^{m.HalvingLog:0.00} = {after:0.000}");
             var n = new Market { HalvingLog = m.HalvingLog };
             for (int i = 0; i < 7; i++) n.UpdateSupply(91 + i);
@@ -810,12 +815,33 @@ internal static class Program
             Check(bm.Buy(offer, w, Assets.CRT, price) && Near(w.Get(Assets.CRT), 500, 1e-9) && Near(w.DirtyOf(Assets.CRT), 200, 1e-6) && !bm.Offers.Contains(offer), "付币：付出的 CRT 按 40% 带走脏的，卖完下架");
             w = new Wallet { Address = "t" };
             w.AddDirty(Assets.PSC, 10, 5);   // 总价值 1000，PSC 价 100，一半脏
+            double loss = bm.DeskLoss(500, 0.5, 20);
             double got = bm.ToPonero(w, Assets.PSC, 5, 20, price);   // 价值 500
-            Check(Near(got, 500 * (1 - Tuning.PoneroFee) / 50, 1e-9) && Near(w.DirtyOf(Assets.PSC), 2.5, 1e-6) && w.DirtyOf(Assets.Ponero) == 0 && Near(w.Get(Assets.PSC), 5, 1e-9), "兑入 Ponero：扣手续费，兑掉的脏币消失，Ponero 干净");
-            Check(bm.ToPonero(w, Assets.PSC, 5.1, 20, price) < 0, "超过每日额度不能兑");
-            Check(bm.ToPonero(w, Assets.PSC, 5, 21, price) >= 0, "第二天额度恢复");
-            double back = bm.FromPonero(w, Assets.CRT, 10, 22, price);
-            Check(Near(back, 10 * 50 * (1 - Tuning.PoneroFee), 1e-9) && Near(w.Get(Assets.CRT), back, 1e-9), "兑出 Ponero");
+            Check(Near(got, 500 * (1 - loss) / 50, 1e-9) && loss > Tuning.PoneroFee + Tuning.PoneroDirtyFee && Near(w.DirtyOf(Assets.PSC), 2.5, 1e-6) && w.DirtyOf(Assets.Ponero) == 0 && Near(w.Get(Assets.PSC), 5, 1e-9), "兑入 Ponero：扣脏币附加费和流动性损耗，兑掉的脏币消失，Ponero 干净");
+            Check(Near(bm.DeskUsedNow(20), 500, 1e-9) && Near(bm.DeskUsedNow(21), 250, 1e-9), "累计兑换量每晚减半");
+            Check(bm.ToPonero(w, Assets.PSC, 5.1, 20, price) < 0, "余额不足不能兑");
+            var big = new BlackMarket(); var rich = new Wallet { Address = "r" }; rich.Add(Assets.CRT, 400000);
+            Check(big.ToPonero(rich, Assets.CRT, 300000, 20, price) > 0, "没有每日额度，一次可以兑很多");
+            Check(Near(BlackMarket.DeskFeeRate(0.049), Tuning.PoneroFee, 1e-9) && Near(BlackMarket.DeskFeeRate(0.05), Tuning.PoneroFee + Tuning.PoneroDirtyFee, 1e-9), "干净币只收基础费，带脏币另收附加费");
+            Check(BlackMarket.DeskQuote(Assets.PSC, 130, 100, true) == 100 && BlackMarket.DeskQuote(Assets.PSC, 80, 100, true) == 80, "兑入：PSC 取开盘价和现价里低的");
+            Check(BlackMarket.DeskQuote(Assets.PSC, 130, 100, false) == 130 && BlackMarket.DeskQuote(Assets.PSC, 80, 100, false) == 100, "兑出：PSC 取开盘价和现价里高的");
+            Check(Near(BlackMarket.DeskQuote(Assets.Ponero, 130, 100, true), 100 * Tuning.PoneroPscRatio, 1e-9), "Ponero 按开盘价，不跟现价");
+            double back = bm.FromPonero(w, Assets.CRT, 2, 22, price);
+            Check(back > 0 && back < 2 * 50 * (1 - Tuning.PoneroFee) + 1e-9 && Near(w.Get(Assets.CRT), back, 1e-9), "兑出 Ponero：只收基础费和流动性损耗");
+            // 100% 脏币当天兑入、次日兑出的总损耗，要高于混币器任意轮数洗掉同样污点的成本（单笔不超过 10 万）
+            foreach (double v in new[] { 1000.0, 5000, 10000, 30000, 100000 })
+                for (int rounds = 1; rounds <= Tuning.MixerMaxRounds; rounds++)
+                {
+                    var desk = new BlackMarket();
+                    double inL = desk.DeskLoss(v, 1, 50);
+                    var wl = new Wallet { Address = "d" }; wl.AddDirty(Assets.CRT, v, v);
+                    Func<string, double> px = a => a == Assets.CRT ? 1 : 50;
+                    double ponero = desk.ToPonero(wl, Assets.CRT, v, 50, px);
+                    double outCr = desk.FromPonero(wl, Assets.CRT, ponero, 51, px);
+                    double pLoss = 1 - outCr / v;
+                    double rem = Math.Pow(1 - Mixer.RoundRate(v), rounds), mixLoss = (1 - Math.Pow(1 - Tuning.MixerFee, rounds)) / (1 - rem);
+                    Check(pLoss > mixLoss && inL > 0, $"Ponero 损耗高于混币器：{v:0}、{rounds} 轮 {pLoss:P1} > {mixLoss:P1}");
+                }
         });
 
         Test("黑市订单", () =>
@@ -1004,7 +1030,6 @@ internal static class Program
                 }
             }
             Check(total > 300 && fresh > total * 0.08 && fresh < total * 0.25 && bad == 0, $"显卡里约 {Tuning.BmGpuNew:P0} 是全新卡，且不会是假卡：{fresh}/{total}，假 {bad}");
-            Check(Near(Tuning.PoneroFee, 0.06, 1e-9) && Near(1 - Math.Pow(1 - Tuning.PoneroFee, 2), 0.12, 0.01), "Ponero 一进一出约 12%");
         });
 
         Test("黑市商家", () =>
@@ -1491,8 +1516,12 @@ internal static class Program
             Check(Near(w4.Get(Assets.PSC), 800, 1e-9) && Near(w4.DirtyOf(Assets.PSC), 800, 1e-9) && m2.Closed && !m2.Open && got.Count == 1, "卷走全部、整笔脏、关闭");
             Check(m2.Night(100, pr, 60, Tuning.MixerFee, rr, true, 1, false, new Rng(1)).Count == 0, "关闭后不再有夜间事件");
             // 查封：风声足够大时被查封，停业若干天
-            var m3 = new OwnMixer { Heat = 1e6 }; m3.Inject(new Wallet { Address = "x", Balances = { [Assets.CRT] = 5000 } }, Assets.CRT, 5000); m3.Start(pr);
-            var ev = m3.Night(60, pr, 60, Tuning.MixerFee, rr, true, 1, false, new Rng(2));
+            OwnMixer m3 = null; List<OwnMixEvent> ev = null;
+            for (ulong seed = 1; seed <= 64 && (ev == null || !ev.Any(e => e.Kind == "seized")); seed++)   // 查封概率封顶 50%，换种子直到触发
+            {
+                m3 = new OwnMixer { Heat = 1e6 }; m3.Inject(new Wallet { Address = "x", Balances = { [Assets.CRT] = 5000 } }, Assets.CRT, 5000); m3.Start(pr);
+                ev = m3.Night(60, pr, 60, Tuning.MixerFee, rr, true, 1, false, new Rng(seed));
+            }
             Check(ev.Any(e => e.Kind == "seized" && e.Crime > 0 && e.Crime <= Tuning.CrimeEventCap) && m3.Seized(60 + Tuning.OwnMixSeizeDays) && !m3.Seized(61 + Tuning.OwnMixSeizeDays) && !m3.Open, "风声大时被查封、记罪证、停业");
         });
 

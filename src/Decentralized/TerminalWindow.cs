@@ -402,7 +402,22 @@ namespace Decentralized
         private static readonly float[] PriceWBase = new[] { 100f, 160f };
         private static float[] PriceW => Sc(PriceWBase);
         private static readonly string[] SwapCoins = { Assets.PSC, Assets.CRC, Assets.CRT, Assets.CRA, Assets.SPARK };
+        /// <summary>Ponero 只能和这些币互换（走兑换处，不经 DEX）。</summary>
+        private static readonly string[] DeskCoins = { Assets.PSC, Assets.CRT, Assets.CRA };
         private static string _swapFrom = Assets.CRC, _swapTo = Assets.PSC;
+        private static bool DeskOpen => Unlock.BlackUnlocked && BlackMarket.DeskOpen(StoreReputation.GetBMReputation());
+        private static bool DeskPair => _swapFrom == Assets.Ponero || _swapTo == Assets.Ponero;
+
+        /// <summary>选币：另一边选了同一种币、或选的组合兑换处不支持时，另一边换成可用的币。</summary>
+        private static void PickSwap(string coin, bool from)
+        {
+            string other = from ? _swapTo : _swapFrom;
+            bool clash = other == coin || (coin == Assets.Ponero && !DeskCoins.Contains(other)) || (other == Assets.Ponero && !DeskCoins.Contains(coin));
+            if (clash) other = coin == Assets.Ponero ? DeskCoins[0] : SwapCoins.First(x => x != coin);
+            _swapFrom = from ? coin : other;
+            _swapTo = from ? other : coin;
+            Open();
+        }
 
         /// <summary>币价表：各币在 DEX 池里以 CRC 计的价格。</summary>
         private static void PriceTable(CustomUIBuilder b)
@@ -414,31 +429,39 @@ namespace Decentralized
                 TableRow(b, PriceW, a, Fmt.Num(m.DexPool(a).Price));
         }
 
-        /// <summary>互换：任意币对任意币，实际经 CRC 路由；预览显示得到数量、经过几个池、损耗。</summary>
+        /// <summary>互换：任意币对任意币，实际经 CRC 路由；预览显示得到数量、经过几个池、损耗。兑换处开放后可选 Ponero，选中时显示价格和当日额度。</summary>
         private static void SwapBlock(CustomUIBuilder b)
         {
             var m = Session.Data.Market;
+            bool deskOpen = DeskOpen;
+            if (!deskOpen && DeskPair) { _swapFrom = Assets.CRC; _swapTo = Assets.PSC; }
+            var coins = deskOpen ? SwapCoins.Concat(new[] { Assets.Ponero }).ToArray() : SwapCoins;
             Action<string, string, bool> picker = (label, cur, from) =>
             {
                 b.AddLabel(label);
                 b.BeginRow(4f);
-                foreach (var c in SwapCoins)
+                foreach (var c in coins)
                 {
                     var coin = c;
-                    PledgerSkin.Pick(b, coin, coin == cur, () =>
-                    {
-                        if (from) { _swapFrom = coin; if (_swapTo == coin) _swapTo = SwapCoins.First(x => x != coin); }
-                        else { _swapTo = coin; if (_swapFrom == coin) _swapFrom = SwapCoins.First(x => x != coin); }
-                        Open();
-                    }, _picked);
+                    PledgerSkin.Pick(b, coin, coin == cur, () => PickSwap(coin, from), _picked);
                 }
                 b.End();
             };
             AmountRow(b);
             picker(L.T("swap.pay"), _swapFrom, true);
             picker(L.T("swap.get"), _swapTo, false);
+            if (DeskPair) b.AddLabel(L.T("black.desk.pair", Fmt.Num(Session.DeskPrice(Assets.Ponero, true))));
             LiveLabel(b, () =>
             {
+                if (DeskPair)
+                {
+                    if (!ParseAmount(out double dv)) return "";
+                    var desk = Session.Data.Black;
+                    int today = StoreStation.GetDayCounter();
+                    bool into = _swapTo == Assets.Ponero;
+                    double px = Session.DeskPrice(_swapFrom, into), dirty = into ? Session.Data.Hot.DirtyRatio(_swapFrom) : 0;
+                    return L.T("swap.preview.desk", Fmt.Num(desk.DeskOut(dv, px, Session.DeskPrice(_swapTo, into), dirty, today)), _swapTo, (desk.DeskLoss(dv * px, dirty, today) * 100).ToString("0.##", CultureInfo.InvariantCulture));
+                }
                 var q = ParseAmount(out double v) ? m.Quote(_swapFrom, _swapTo, v) : null;
                 return q == null ? "" : L.T("swap.preview", Fmt.Num(q.Out), _swapTo, q.Hops, (q.Impact * 100).ToString("0.00", CultureInfo.InvariantCulture));
             }, "swap_preview_dim");
@@ -450,6 +473,7 @@ namespace Decentralized
         {
             if (!ReadAmount(out double v)) return;
             string from = _swapFrom, to = _swapTo;
+            if (DeskPair) { DeskBill(v, from, to); return; }
             var q = Session.Data.Market.Quote(from, to, v);
             if (q == null) { _message = L.T("swap.same"); Open(); return; }
             var w = Session.Data.Hot;
@@ -1581,7 +1605,6 @@ namespace Decentralized
             {
                 r.AddHeader(L.T("trade.h"));
                 SwapBlock(r);
-                if (Unlock.BlackUnlocked && BlackMarket.DeskOpen(StoreReputation.GetBMReputation())) PoneroBlock(r);
             });
         }
 
@@ -1714,8 +1737,6 @@ namespace Decentralized
         private enum BlackTab { Buy, Sell, Orders }
         private static BlackTab _blackTab = BlackTab.Buy;
         private static PayMode _mode = PayMode.Escrow;
-        private static string _deskAsset = Assets.PSC;
-        private static bool _deskIn = true;
         private static readonly System.Collections.Generic.Dictionary<string, Sprite> IconCache = new System.Collections.Generic.Dictionary<string, Sprite>();
 
         /// <summary>货架上的商品图：游戏物品自己的贴图（本 mod 的显卡用本 mod 的贴图）。</summary>
@@ -2474,45 +2495,24 @@ namespace Decentralized
             b.End();
         }
 
-        /// <summary>隐私币兑换：Web3 交易页里的一个通用兑换块，带"隐私币"标签。要黑市声望，有每日额度；兑入时这部分价值的污点被清除。</summary>
-        private static void PoneroBlock(CustomUIBuilder r)
+        /// <summary>Ponero 兑换处的账单：和 DEX 互换共用一个界面，但走收款地址 + 手输签名的流程。</summary>
+        private static void DeskBill(double v, string from, string to)
         {
             var d = Session.Data;
-            var w = d.Hot;
-            int day = StoreStation.GetDayCounter();
-            r.AddSeparator();
-            r.AddLabel(L.T("black.desk.pair", Fmt.Num(Session.Price(Assets.Ponero))));
-            r.AddLabel(L.T("black.desk.left", Fmt.Credits(d.Black.DeskLeft(day)), Fmt.Credits(Tuning.PoneroDailyCap)), "desk_left_dim");
-            r.BeginRow(4f);
-            foreach (var a in new[] { Assets.PSC, Assets.CRT, Assets.CRA })
-            {
-                var asset = a;
-                PledgerSkin.Pick(r, asset, asset == _deskAsset, () => { _deskAsset = asset; Open(); }, _picked);
-            }
-            r.End();
-            r.BeginRow(6f);
-            r.AddButton(L.T("black.desk.in"), () => { _deskIn = true; Swap(); });
-            r.AddButton(L.T("black.desk.out"), () => { _deskIn = false; Swap(); });
-            r.End();
-            void Swap()
-            {
-                if (!ReadAmount(out double dv)) return;
-                bool into = _deskIn; string other = _deskAsset;
-                string asset = into ? other : Assets.Ponero;
-                _web3Tab = Web3Tab.Trade;
-                BillFor(d.Address("desk"), L.T("pay.swap", Fmt.Num(dv), asset), asset, dv, pw => DeskSwap(dv, into, other, pw));
-            }
+            _web3Tab = Web3Tab.Trade;
+            BillFor(d.Address("desk"), L.T("pay.swap", Fmt.Num(v), from), from, v, pw => DeskSwap(v, from, to, pw));
         }
 
-        private static void DeskSwap(double v, bool into, string other, Wallet pw)
+        private static void DeskSwap(double v, string from, string to, Wallet pw)
         {
             var d = Session.Data;
-            _deskIn = into; _deskAsset = other;
             int day = StoreStation.GetDayCounter();
-            double got = _deskIn ? d.Black.ToPonero(pw, _deskAsset, v, day, Session.Price) : d.Black.FromPonero(pw, _deskAsset, v, day, Session.Price);
+            bool into = to == Assets.Ponero;
+            double got = into ? d.Black.ToPonero(pw, from, v, day, a => Session.DeskPrice(a, true)) : d.Black.FromPonero(pw, to, v, day, a => Session.DeskPrice(a, false));
             if (got < 0) { _message = L.T("black.desk.fail"); Open(); return; }
-            { double cr = v * Session.Price(_deskIn ? _deskAsset : Assets.Ponero); CandleChart.Trade(Assets.Ponero, cr); CandleChart.Trade(_deskAsset, cr); }
-            _message = _deskIn ? L.T("msg.trade", Fmt.Num(v), _deskAsset, Fmt.Num(got), Assets.Ponero) : L.T("msg.trade", Fmt.Num(v), Assets.Ponero, Fmt.Num(got), _deskAsset);
+            double cr = v * Session.Price(from);
+            CandleChart.Trade(Assets.Ponero, cr); CandleChart.Trade(into ? from : to, cr);
+            _message = L.T("msg.trade", Fmt.Num(v), from, Fmt.Num(got), to);
             Session.Save();
             Open();
         }

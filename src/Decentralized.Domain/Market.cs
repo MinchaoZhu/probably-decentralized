@@ -206,7 +206,7 @@ namespace Decentralized.Domain
             double anchor = Anchor(active);
             double lp = Math.Log(Price);
             lp += Tuning.Revert * (Math.Log(anchor) - lp) + rng.Gauss() * Volatility(active);
-            double p = Math.Max(Tuning.PscStartPrice * Tuning.PriceFloor, Math.Min(Tuning.PscStartPrice * Tuning.PriceCeiling, Math.Exp(lp)));
+            double p = Math.Max(anchor * Tuning.PriceFloor, Math.Min(anchor * Tuning.PriceCeiling, Math.Exp(lp)));
             double depth = Tuning.PoolDepth(day);
             Main.SetPrice(p, depth);
             foreach (var pool in Pools.Skip(1))

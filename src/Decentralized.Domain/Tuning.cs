@@ -13,7 +13,7 @@ namespace Decentralized.Domain
         /// <summary>第十一阶段把出块奖励和 NPC 初始算力同乘的倍数（100 → 1000、360 → 3600）；读旧存档时按它放大全网。</summary>
         public const double MiningScale = 10;
         public const double BlockReward = 1000;
-        public const int HalvingDays = 90;
+        public const int HalvingDays = 49;
         /// <summary>减半对币价的传导：每次减半在区间内随机一个指数，价格锚上移 2^指数 倍（0.15–0.85 即约 +11% 到 +80%）。
         /// 参考比特币：每次减半后的涨幅差别很大，市场也已部分预期到，所以既不固定也不翻倍。</summary>
         public const double HalvingPassMin = 0.15, HalvingPassMax = 0.85;
@@ -121,9 +121,9 @@ namespace Decentralized.Domain
         /// <summary>现货和商家货架在星期几的早上上新（游戏的天数 % 7：0 周日、1 周一……）；夜间 NPC 买家买走每件货的概率。</summary>
         public static readonly int[] BmRefreshWeekdays = { 1, 4 };
         public const double BmNpcBuyChance = 0.20;
-        /// <summary>Ponero 兑换处：开放所需黑市声望、每次兑入 / 兑出的手续费、每天可兑换的额度（信用点）、对 PSC 的价格比。</summary>
+        /// <summary>Ponero 兑换处：开放所需黑市声望；兑入 / 兑出各收的手续费；带脏币的币（脏比例不低于 PoneroDirtyMin）兑入时另收的费率；流动性深度（信用点，累计兑换量 / 深度决定价格变差多少）；累计兑换量每晚保留的比例；对 PSC 的价格比。</summary>
         public const int PoneroOpenRep = 30;
-        public const double PoneroFee = 0.06, PoneroDailyCap = 1000, PoneroPscRatio = 0.5;
+        public const double PoneroFee = 0.02, PoneroDirtyFee = 0.14, PoneroDirtyMin = 0.05, PoneroDepth = 150000, PoneroUsedKeep = 0.5, PoneroPscRatio = 0.5;
         /// <summary>黑市订单：订单价相对游戏基础价的折扣、托管费、提前放款再折扣、提前放款所需卖家成交数、上门的天数、
         /// 上门被截获的概率（镇压期间再加）、骗子卖家占比、每晚平台跑路基础概率与每万信用点托管资金加的概率（封顶）、跑路后关闭的天数。</summary>
         public const double BmEscrowFee = 0.05, BmAdvanceDiscount = 0.10, BmInterceptDoor = 0.08, BmInterceptCrackdown = 0.15;
@@ -313,9 +313,11 @@ namespace Decentralized.Domain
         public const double OwnMixRatingSpeed = 0.2, OwnMixTaintWeight = 0.1, OwnMixRivalGone = 0.03, OwnMixAnon0 = 20000, OwnMixAvgRounds = 3, OwnMixPendingWeight = 0.25;
         public const double OwnMixDemand0 = 40000, OwnMixDemandPerDay = 1400, OwnMixRepMin = 0.3, OwnMixFeeScale = 0.015, OwnMixNoise = 0.3, OwnMixTicket = 800;
         public const double OwnMixInTaintMin = 0.4, OwnMixInTaintMax = 1.0;
+        /// <summary>自营混币器的大单客户：客流 ×（1 + √(本金和未取收入的价值 / OwnMixCapitalScale)）。</summary>
+        public const double OwnMixCapitalScale = 25000;
         public static readonly double[] OwnMixAssetWeights = { 0.3, 0.1, 0.4, 0.2 };
         public const double OwnMixSting = 0.03, OwnMixStingCrime = 0.1;
-        public const double OwnMixHeatKeep = 0.9, OwnMixHeatScale = 100000, OwnMixHeatAnon0 = 160000, OwnMixSeizeRate = 0.002, OwnMixSeizeMax = 0.5, OwnMixSeizeCrackdown = 2, OwnMixSeizeCrime = 0.01, OwnMixHeatMid = 0.01, OwnMixHeatHigh = 0.03;
+        public const double OwnMixHeatKeep = 0.9, OwnMixHeatScale = 250000, OwnMixHeatAnon0 = 160000, OwnMixSeizeRate = 0.002, OwnMixSeizeMax = 0.5, OwnMixSeizeCrackdown = 2, OwnMixSeizeCrime = 0.01, OwnMixHeatMid = 0.01, OwnMixHeatHigh = 0.03;
         public const int OwnMixSeizeDays = 7, OwnMixRugRep = 25;
         public const double OwnMixRugCrime = 400;
 
@@ -338,7 +340,7 @@ namespace Decentralized.Domain
         /// <summary>混币器运营者 Tumbler：第几天起开始；帮他藏好密钥盘后的混币器手续费、匿名集倍率和谢礼（CRT）；举报的赏金（信用点）和治安部声望；
         /// 卖给黑市得的 CRT（一半带污点）、黑市声望、之后混币器的手续费和跑路倍率；密钥盘的价值（违禁品，搜到按它记罪证）。</summary>
         public const int TumblerMinDay = 30;
-        public const double TumblerKeptFee = 0.5, TumblerKeptVolume = 1.5, TumblerGift = 1000;
+        public const double TumblerKeptFee = 2.0 / 3, TumblerKeptVolume = 1.5, TumblerGift = 1000;
         public const int TumblerBounty = 1200, TumblerSecRep = 8, TumblerBmRep = 5;
         public const double TumblerSellCrt = 3000, TumblerSoldFee = 1.5, TumblerSoldRug = 4;
         public const int TumblerDriveValue = 600;
